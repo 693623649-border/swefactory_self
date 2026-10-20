@@ -96,6 +96,17 @@ def main() -> None:
 
     renderer = Renderer()
     records = load_records()
+    ids_seen = [r["instance_id"] for r in records]
+    if len(ids_seen) != len(set(ids_seen)):
+        # Restarted orchestrators can leave several run dirs; keep the first record per id.
+        deduped, seen = [], set()
+        for record in records:
+            if record["instance_id"] in seen:
+                continue
+            seen.add(record["instance_id"])
+            deduped.append(record)
+        print(f"deduped {len(records)-len(deduped)} duplicate records across run dirs", flush=True)
+        records = deduped
     seen_patch: dict[str, str] = {}
     ledger = []
     admitted = []

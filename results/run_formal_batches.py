@@ -47,10 +47,11 @@ def done_ids() -> set[str]:
 
 
 def run_batch(ids: list[str], index: int) -> tuple[int, int, str]:
-    out_dir = FORMAL / f"batch_{index:03d}"
+    # Unique per launch: a restart must not reuse an existing batch directory, or the
+    # accepted count would include the previous run's rows.
+    out_dir = FORMAL / f"batch_{index:03d}_{int(time.time())}"
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir.parent / f"batch_{index:03d}.ids.json").write_text(json.dumps(ids, indent=2),
-                                                                encoding="utf-8")
+    out_dir.with_suffix(".ids.json").write_text(json.dumps(ids, indent=2), encoding="utf-8")
     cmd = [sys.executable, "-X", "utf8", str(ROOT / "results" / "run_factory.py"),
            "--data-file", str(TASKS),
            "--config", "configs/tasks/dsh_scaleswe.yaml",
@@ -82,7 +83,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch", type=int, default=15)
     parser.add_argument("--max-batches", type=int, default=0, help="0 = until selection exhausted")
-    parser.add_argument("--pull-parallel", type=int, default=4)
+    parser.add_argument("--pull-parallel", type=int, default=8)
     args = parser.parse_args()
 
     all_ids = [json.loads(l)["instance_id"]
@@ -104,15 +105,21 @@ def main() -> None:
         preexisting = local_images()
         pulled: list[str] = []
         to_pull = [f"{REPO}:{i}" for i in ids if f"{REPO}:{i}" not in preexisting]
+        pull_started = time.time()
         for j in range(0, len(to_pull), args.pull_parallel):
             group = to_pull[j:j + args.pull_parallel]
             procs = [subprocess.Popen(["docker", "pull", img], stdout=subprocess.DEVNULL,
                                       stderr=subprocess.DEVNULL) for img in group]
-            for img, p in zip(group, procs):
-                if p.wait() == 0:
+            for img, proc in zip(group, procs):
+                if proc.wait() == 0:
                     pulled.append(img)
                 else:
                     print(f"  PULL FAIL {img}", flush=True)
+            print(f"  batch {index:03d}: pulled {len(pulled)}/{len(to_pull)} "
+                  f"({time.time()-pull_started:.0f}s)", flush=True)
+        if to_pull:
+            print(f"batch {index:03d}: pull phase {time.time()-pull_started:.0f}s "
+                  f"for {len(pulled)}/{len(to_pull)} images", flush=True)
         missing = [i for i in ids if f"{REPO}:{i}" not in local_images()]
         runnable = [i for i in ids if i not in missing]
         if missing:
