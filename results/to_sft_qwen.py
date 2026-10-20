@@ -113,19 +113,36 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True)
     parser.add_argument("--out", required=True)
+    parser.add_argument("--max-tokens", type=int, default=32768,
+                        help="drop samples longer than this (student window)")
     args = parser.parse_args()
     renderer = Renderer()
     records = [json.loads(line) for line in
                open(os.path.join(args.run, "trajectories.jsonl"), encoding="utf-8")]
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    totals = {"records": 0, "dropped": 0, "tokens": 0, "supervised": 0, "tool_blocks": 0}
+    totals = {"records": 0, "dropped": 0, "over_length": 0, "no_think": 0,
+              "tokens": 0, "supervised": 0, "tool_blocks": 0}
     with out.open("w", encoding="utf-8") as handle:
         for record in records:
             if not record.get("success"):
                 totals["dropped"] += 1
                 continue
+            if not any((m.get("reasoning_raw") or "").strip() for m in record["messages"]):
+                totals["no_think"] += 1     # thinking was requested; empty means it was lost
+                continue
             ids, mask, count = build(renderer, record["messages"])
+            if len(ids) > args.max_tokens:
+                totals["over_length"] += 1
+                continue
+            rendered = renderer.render(record["messages"])
+            # Require at least one *non-empty* think block; an empty one on some
+            # turn is fine (the template emits it whenever reasoning is absent).
+            empty = rendered.count("<think>\n\n</think>")
+            non_empty = rendered.count("<think>") - empty
+            if non_empty <= 0:
+                totals["no_think"] += 1
+                continue
             handle.write(json.dumps({"instance_id": record["instance_id"], "ids": ids,
                                      "mask": mask}, ensure_ascii=False) + "\n")
             totals["records"] += 1
