@@ -113,8 +113,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run", required=True)
     parser.add_argument("--out", required=True)
-    parser.add_argument("--max-tokens", type=int, default=32768,
-                        help="drop samples longer than this (student window)")
+    parser.add_argument("--max-tokens", type=int, default=81920,
+                        help="drop samples longer than this (80*1024 window)")
     args = parser.parse_args()
     renderer = Renderer()
     records = [json.loads(line) for line in
