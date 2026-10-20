@@ -203,15 +203,20 @@ async def _mode_debug(config, task, instance_id: str, skip_eval: bool) -> None:
 
         # Build agent
         search_constraints = task.get_search_constraints(inst)
-        agent = SearchSWEAgent(
-            enable_search=config.agent.enable_search,
-            bash_timeout=config.agent.bash_timeout,
-            bash_max_timeout=config.agent.bash_max_timeout,
-            max_output_length=config.agent.max_output_length,
-            bash_blocklist=config.security.bash_blocklist or None,
-            search_constraints=search_constraints,
-            tool_call_format=config.agent.tool_call_format,
-        )
+        if config.agent.type == "dsh_compat":
+            from aweagent.scaffold.dsh_compat import DSHCompatAgent
+            agent = DSHCompatAgent(inst.workdir, bash_timeout=config.agent.bash_timeout,
+                                   bash_max_timeout=config.agent.bash_max_timeout)
+        else:
+            agent = SearchSWEAgent(
+                enable_search=config.agent.enable_search,
+                bash_timeout=config.agent.bash_timeout,
+                bash_max_timeout=config.agent.bash_max_timeout,
+                max_output_length=config.agent.max_output_length,
+                bash_blocklist=config.security.bash_blocklist or None,
+                search_constraints=search_constraints,
+                tool_call_format=config.agent.tool_call_format,
+            )
         llm = LLMClient(config.llm)
         condenser = build_condenser(config.agent.condenser)
         if pre_agent_commit_id:

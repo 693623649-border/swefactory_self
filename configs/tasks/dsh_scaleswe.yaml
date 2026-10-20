@@ -1,0 +1,26 @@
+llm: "!include ${LLM_CONFIG:-../llm/local_deepseek.yaml}"
+runtime:
+  backend: docker
+  timeout: 14400
+  resource_limits:
+    cpu: "4"
+    memory: "8Gi"
+agent:
+  type: dsh_compat          # bash/read/edit only, native tool calls, natural stop
+  max_steps: 60
+  enable_search: false
+  enable_think: false
+  bash_timeout: 120         # DSH: timeoutMs 120000
+  bash_max_timeout: 600     # DSH: maxTimeoutMs 600000
+  tool_call_format: openai_function
+task:
+  type: scale_swe
+  dataset_id: scale_swe
+  data_file: ${DATA_FILE}
+eval:
+  enabled: true
+  timeout: 3600
+execution:
+  max_concurrent: 5
+  max_retries: 3
+  output_path: ./results/dsh_scaleswe
