@@ -39,7 +39,7 @@ def local_images() -> set[str]:
 
 def done_ids() -> set[str]:
     done: set[str] = set()
-    for f in FORMAL.glob("*/results.jsonl"):
+    for f in FORMAL.glob("batch_*/**/results.jsonl"):
         for line in f.read_text(encoding="utf-8").splitlines():
             if line.strip():
                 done.add(json.loads(line)["instance_id"])
@@ -94,6 +94,11 @@ def main() -> None:
     if args.max_batches:
         batches = batches[: args.max_batches]
 
+    # Freeze the set of images that existed before any batch started; only these survive.
+    baseline_keep: set[str] = set()
+    for cmd_out in sh(["docker", "images", "--format", "{{.Repository}}:{{.Tag}}"]).stdout.splitlines():
+        if cmd_out.startswith(REPO + ":"):
+            baseline_keep.add(cmd_out.split(":", 1)[1])
     ledger = FORMAL / "batch_ledger.jsonl"
     for index, ids in enumerate(batches, start=1):
         preexisting = local_images()
@@ -118,8 +123,14 @@ def main() -> None:
                 f.write(json.dumps({"batch": index, "ids": ids, "skipped_all": True}) + "\n")
             continue
         accepted, failed, run_dir = run_batch(runnable, index)
-        for img in pulled:  # reclaim C: disk; keep pre-existing images untouched
-            sh(["docker", "rmi", "-f", img], timeout=300)
+        # Reclaim disk by whitelist: keep only images that existed before this run and
+        # remove everything else under the dataset repo. rmi can fail while an eval
+        # container still holds a reference, so retry once after pruning containers.
+        sh(["docker", "container", "prune", "-f"], timeout=120)
+        keep = {img.split(":", 1)[1] for img in preexisting} | baseline_keep
+        for img in sorted(local_images()):
+            if img.split(":", 1)[1] not in keep:
+                sh(["docker", "rmi", "-f", img], timeout=120)
         with ledger.open("a", encoding="utf-8") as f:
             f.write(json.dumps({"batch": index, "attempted": runnable, "skipped": missing,
                                 "accepted": accepted, "run_dir": run_dir}) + "\n")
