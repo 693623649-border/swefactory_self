@@ -81,7 +81,7 @@
 
 旧CodeAct-XML pilot把调用内嵌在assistant文本、观察放在user消息，这不等于兼容学生Qwen模板。当前DSH适配器使用原生assistant.tool_calls和tool角色观察；需解析arguments、保留reasoning_raw并映射reasoning_content，再按学生模板渲染与核验token级mask。工具schema也必须进入实际训练模板。
 
-旧 [to_sft.py](<E:/Deeplearning/local_train/swefactory_self/results/to_sft.py>) 仅为历史消息级导出，`labels`每条消息一个0/1，不是causal-LM token labels；其内容分段token数不含完整模板。当前 [to_sft_qwen.py](<E:/Deeplearning/local_train/swefactory_self/results/to_sft_qwen.py>) 提供候选ids/mask与81920长度门，但工具schema、think监督覆盖及全部质量门仍需单独验收，不能把success直接视作训练成品。旧格式示例如下：
+旧 [to_sft.py](<results/to_sft.py>) 仅为历史消息级导出，`labels`每条消息一个0/1，不是causal-LM token labels；其内容分段token数不含完整模板。当前 [to_sft_qwen.py](<results/to_sft_qwen.py>) 提供候选ids/mask与81920长度门，但工具schema、think监督覆盖及全部质量门仍需单独验收，不能把success直接视作训练成品。旧格式示例如下：
 
 ```json
 {"instance_id": "...", "messages": [{"role": "...", "content": "..."}],
@@ -112,7 +112,7 @@
 | 问题 | 现象 | 处理 |
 |---|---|---|
 | 默认编码 | 读数据文件报 `'gbk' codec can't decode` | 启动前设 `PYTHONUTF8=1`（进程内设无效，必须解释器启动前） |
-| 代理模式 | `httpx.InvalidURL: Invalid port: ':1]'` | 宿主 `NO_PROXY` 含 IPv6 项；在导入 httpx 前把 `NO_PROXY/no_proxy` 改为 `localhost,127.0.0.1`（见 [run_factory.py](<E:/Deeplearning/local_train/swefactory_self/results/run_factory.py>) 包装层） |
+| 代理模式 | `httpx.InvalidURL: Invalid port: ':1]'` | 宿主 `NO_PROXY` 含 IPv6 项；在导入 httpx 前把 `NO_PROXY/no_proxy` 改为 `localhost,127.0.0.1`（见 [run_factory.py](<results/run_factory.py>) 包装层） |
 | 数据尾部 | 样本最后一行 JSON 被截断，加载即崩 | 先剔除非法行生成干净 JSONL（158 行） |
 | LLM 配置 | 默认走 `gpt-5.4` | 用 `--llm-config configs/llm/local_deepseek.yaml`（本仓库新增，`deepseek-chat`、非思考） |
 
