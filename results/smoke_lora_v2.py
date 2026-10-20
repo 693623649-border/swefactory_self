@@ -92,6 +92,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--lengths", type=int, nargs="*", default=LENGTHS)
     parser.add_argument("--attn", default="sdpa", choices=["sdpa", "eager", "flex_attention"])
+    parser.add_argument("--sdpa-backend", default=None,
+                        choices=["mem_efficient", "flash", "math"],
+                        help="force a specific SDPA backend (flash/cudnn lack head_dim 256)")
+    parser.add_argument("--fla", default="on", choices=["on", "off"],
+                        help="off forces the pure-PyTorch chunked reference (chunk=64)")
     args = parser.parse_args()
     device = "cuda"
     tokenizer = AutoTokenizer.from_pretrained(str(MODEL))
@@ -124,6 +129,18 @@ def main() -> None:
     import transformers.models.qwen3_5.modeling_qwen3_5 as _q35
     _q35.create_causal_mask = lambda **kw: None
     _q35.create_recurrent_attention_mask = lambda **kw: None
+    if args.sdpa_backend:
+        from torch.nn.attention import sdpa_kernel, SDPBackend
+        backend = {"mem_efficient": SDPBackend.EFFICIENT_ATTENTION,
+                   "flash": SDPBackend.FLASH_ATTENTION,
+                   "math": SDPBackend.MATH}[args.sdpa_backend]
+        sdpa_kernel([backend]).__enter__()
+        print(f"forced SDPA backend: {args.sdpa_backend}", flush=True)
+    if args.fla == "off":
+        # The triton kernel materialises [B, 32, L, L] (16 GiB at 16K, 64 GiB at 32K).
+        # The module's own reference implementation chunks at 64, so it should be linear.
+        _q35.torch_chunk_gated_delta_rule = _q35.torch_chunk_gated_delta_rule.__wrapped__
+        print("fla kernels disabled -> reference chunked delta rule", flush=True)
     # peft wraps modules; re-resolve head/backend against the wrapped model
     backend_head = model.get_output_embeddings()
     backend = model.base_model.model.model if hasattr(model.base_model, "model") else backend
@@ -147,6 +164,7 @@ def main() -> None:
         "gpu": torch.cuda.get_device_name(0),
         "gpu_total_GiB": round(torch.cuda.get_device_properties(0).total_memory / 2**30, 1),
         "precision": "bf16 + LoRA r32/a64, grad-ckpt, chunked-CE(chunk=1024, checkpointed)",
+        "fla": args.fla,
         "architecture_note": "hybrid: 24/32 linear_attention, vocab 248320, mamba fp32 states",
         "results": results,
         "window_65536_ok": any(r.get("length") == 65536 and not r.get("oom") for r in results),
