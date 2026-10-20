@@ -1,0 +1,10 @@
+# Local DeepSeek config for the Scale-SWE factory run.
+# Non-thinking chat model so that tool-calling loops stay stable; the teacher's
+# reasoning replay is not used here.
+backend: openai
+base_url: https://api.deepseek.com/v1
+api_key: ${DEEPSEEK_API_KEY}
+model: deepseek-chat
+params:
+  max_completion_tokens: 8192
+thinking: false
