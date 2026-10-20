@@ -1,0 +1,7226 @@
+[
+ {
+  "instance_id": "fonttools_fonttools_pr1539",
+  "family": "fonttools/fonttools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fonttools_fonttools_pr1539",
+  "f2p": 1,
+  "p2p": 850
+ },
+ {
+  "instance_id": "canonical_operator_pr1053",
+  "family": "canonical/operator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:canonical_operator_pr1053",
+  "f2p": 12,
+  "p2p": 542
+ },
+ {
+  "instance_id": "python-poetry_poetry-core_pr103",
+  "family": "python-poetry/poetry-core",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-poetry_poetry-core_pr103",
+  "f2p": 2,
+  "p2p": 171
+ },
+ {
+  "instance_id": "globus_globus-sdk-python_pr1018",
+  "family": "globus/globus-sdk-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:globus_globus-sdk-python_pr1018",
+  "f2p": 7,
+  "p2p": 447
+ },
+ {
+  "instance_id": "google_flatbuffers_pr4119",
+  "family": "google/flatbuffers",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google_flatbuffers_pr4119",
+  "f2p": 2,
+  "p2p": 29
+ },
+ {
+  "instance_id": "durandtibo_grizz_pr315",
+  "family": "durandtibo/grizz",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_grizz_pr315",
+  "f2p": 2,
+  "p2p": 199
+ },
+ {
+  "instance_id": "beetbox_beets_pr3647",
+  "family": "beetbox/beets",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:beetbox_beets_pr3647",
+  "f2p": 5,
+  "p2p": 446
+ },
+ {
+  "instance_id": "esphome_aioesphomeapi_pr1266",
+  "family": "esphome/aioesphomeapi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:esphome_aioesphomeapi_pr1266",
+  "f2p": 1,
+  "p2p": 171
+ },
+ {
+  "instance_id": "mongodb_mongo-python-driver_pr1324",
+  "family": "mongodb/mongo-python-driver",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mongodb_mongo-python-driver_pr1324",
+  "f2p": 2,
+  "p2p": 276
+ },
+ {
+  "instance_id": "mcu-tools_mcuboot_pr475",
+  "family": "mcu-tools/mcuboot",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mcu-tools_mcuboot_pr475",
+  "f2p": 6,
+  "p2p": 11
+ },
+ {
+  "instance_id": "k2-fsa_sherpa-onnx_pr1010",
+  "family": "k2-fsa/sherpa-onnx",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:k2-fsa_sherpa-onnx_pr1010",
+  "f2p": 4,
+  "p2p": 21
+ },
+ {
+  "instance_id": "tefra_xsdata_pr839",
+  "family": "tefra/xsdata",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tefra_xsdata_pr839",
+  "f2p": 24,
+  "p2p": 322
+ },
+ {
+  "instance_id": "facelessuser_coloraide_pr167",
+  "family": "facelessuser/coloraide",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facelessuser_coloraide_pr167",
+  "f2p": 1,
+  "p2p": 378
+ },
+ {
+  "instance_id": "pallets_click_pr2818",
+  "family": "pallets/click",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets_click_pr2818",
+  "f2p": 1,
+  "p2p": 194
+ },
+ {
+  "instance_id": "omni-us_jsonargparse_pr344",
+  "family": "omni-us/jsonargparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:omni-us_jsonargparse_pr344",
+  "f2p": 3,
+  "p2p": 208
+ },
+ {
+  "instance_id": "arviz-devs_preliz_pr373",
+  "family": "arviz-devs/preliz",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:arviz-devs_preliz_pr373",
+  "f2p": 1,
+  "p2p": 95
+ },
+ {
+  "instance_id": "jackdewinter_pymarkdown_pr497",
+  "family": "jackdewinter/pymarkdown",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jackdewinter_pymarkdown_pr497",
+  "f2p": 4,
+  "p2p": 1537
+ },
+ {
+  "instance_id": "ipython_traitlets_pr355",
+  "family": "ipython/traitlets",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ipython_traitlets_pr355",
+  "f2p": 4,
+  "p2p": 111
+ },
+ {
+  "instance_id": "telefonica_toolium_pr179",
+  "family": "telefonica/toolium",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:telefonica_toolium_pr179",
+  "f2p": 4,
+  "p2p": 130
+ },
+ {
+  "instance_id": "scikit-rf_scikit-rf_pr1069",
+  "family": "scikit-rf/scikit-rf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-rf_scikit-rf_pr1069",
+  "f2p": 2,
+  "p2p": 373
+ },
+ {
+  "instance_id": "optimizely_python-sdk_pr128",
+  "family": "optimizely/python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:optimizely_python-sdk_pr128",
+  "f2p": 1,
+  "p2p": 142
+ },
+ {
+  "instance_id": "bids-standard_pybids_pr822",
+  "family": "bids-standard/pybids",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bids-standard_pybids_pr822",
+  "f2p": 1,
+  "p2p": 94
+ },
+ {
+  "instance_id": "biopragmatics_bioregistry_pr169",
+  "family": "biopragmatics/bioregistry",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biopragmatics_bioregistry_pr169",
+  "f2p": 1,
+  "p2p": 30
+ },
+ {
+  "instance_id": "cloudtools_troposphere_pr2340",
+  "family": "cloudtools/troposphere",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cloudtools_troposphere_pr2340",
+  "f2p": 6,
+  "p2p": 169
+ },
+ {
+  "instance_id": "populationgenomics_production-pipelines_pr718",
+  "family": "populationgenomics/production-pipelines",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:populationgenomics_production-pipelines_pr718",
+  "f2p": 2,
+  "p2p": 77
+ },
+ {
+  "instance_id": "compas-dev_compas_pr735",
+  "family": "compas-dev/compas",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:compas-dev_compas_pr735",
+  "f2p": 3,
+  "p2p": 146
+ },
+ {
+  "instance_id": "delta-io_delta-sharing_pr36",
+  "family": "delta-io/delta-sharing",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:delta-io_delta-sharing_pr36",
+  "f2p": 3,
+  "p2p": 25
+ },
+ {
+  "instance_id": "evidentlyai_evidently_pr441",
+  "family": "evidentlyai/evidently",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:evidentlyai_evidently_pr441",
+  "f2p": 11,
+  "p2p": 261
+ },
+ {
+  "instance_id": "holoviz_param_pr974",
+  "family": "holoviz/param",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:holoviz_param_pr974",
+  "f2p": 10,
+  "p2p": 352
+ },
+ {
+  "instance_id": "oauthlib_oauthlib_pr214",
+  "family": "oauthlib/oauthlib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:oauthlib_oauthlib_pr214",
+  "f2p": 1,
+  "p2p": 86
+ },
+ {
+  "instance_id": "pallets-eco_flask-admin_pr1010",
+  "family": "pallets-eco/flask-admin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_flask-admin_pr1010",
+  "f2p": 4,
+  "p2p": 27
+ },
+ {
+  "instance_id": "nylas_nylas-python_pr96",
+  "family": "nylas/nylas-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nylas_nylas-python_pr96",
+  "f2p": 5,
+  "p2p": 31
+ },
+ {
+  "instance_id": "jxtech_wechatpy_pr365",
+  "family": "jxtech/wechatpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jxtech_wechatpy_pr365",
+  "f2p": 4,
+  "p2p": 85
+ },
+ {
+  "instance_id": "mirumee_ariadne-codegen_pr110",
+  "family": "mirumee/ariadne-codegen",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mirumee_ariadne-codegen_pr110",
+  "f2p": 9,
+  "p2p": 128
+ },
+ {
+  "instance_id": "getsentry_responses_pr712",
+  "family": "getsentry/responses",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:getsentry_responses_pr712",
+  "f2p": 1,
+  "p2p": 165
+ },
+ {
+  "instance_id": "xarray-contrib_cf-xarray_pr214",
+  "family": "xarray-contrib/cf-xarray",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xarray-contrib_cf-xarray_pr214",
+  "f2p": 2,
+  "p2p": 139
+ },
+ {
+  "instance_id": "erikbern_synchronicity_pr67",
+  "family": "erikbern/synchronicity",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:erikbern_synchronicity_pr67",
+  "f2p": 1,
+  "p2p": 33
+ },
+ {
+  "instance_id": "ipython_ipython_pr13528",
+  "family": "ipython/ipython",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ipython_ipython_pr13528",
+  "f2p": 2,
+  "p2p": 243
+ },
+ {
+  "instance_id": "gorakhargosh_watchdog_pr597",
+  "family": "gorakhargosh/watchdog",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gorakhargosh_watchdog_pr597",
+  "f2p": 1,
+  "p2p": 32
+ },
+ {
+  "instance_id": "influxdb_influxdb-python_pr289",
+  "family": "influxdb/influxdb-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:influxdb_influxdb-python_pr289",
+  "f2p": 2,
+  "p2p": 146
+ },
+ {
+  "instance_id": "regionmask_regionmask_pr68",
+  "family": "regionmask/regionmask",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:regionmask_regionmask_pr68",
+  "f2p": 4,
+  "p2p": 46
+ },
+ {
+  "instance_id": "sphinx-contrib_confluencebuilder_pr889",
+  "family": "sphinx-contrib/confluencebuilder",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sphinx-contrib_confluencebuilder_pr889",
+  "f2p": 3,
+  "p2p": 79
+ },
+ {
+  "instance_id": "materialsvirtuallab_monty_pr660",
+  "family": "materialsvirtuallab/monty",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:materialsvirtuallab_monty_pr660",
+  "f2p": 5,
+  "p2p": 35
+ },
+ {
+  "instance_id": "durandtibo_feu_pr512",
+  "family": "durandtibo/feu",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_feu_pr512",
+  "f2p": 5,
+  "p2p": 90
+ },
+ {
+  "instance_id": "burnash_gspread_pr1271",
+  "family": "burnash/gspread",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:burnash_gspread_pr1271",
+  "f2p": 1,
+  "p2p": 42
+ },
+ {
+  "instance_id": "hhatto_autopep8_pr496",
+  "family": "hhatto/autopep8",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hhatto_autopep8_pr496",
+  "f2p": 1,
+  "p2p": 539
+ },
+ {
+  "instance_id": "infobloxopen_infoblox-client_pr8",
+  "family": "infobloxopen/infoblox-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:infobloxopen_infoblox-client_pr8",
+  "f2p": 3,
+  "p2p": 43
+ },
+ {
+  "instance_id": "jupyter-widgets_ipywidgets_pr3796",
+  "family": "jupyter-widgets/ipywidgets",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jupyter-widgets_ipywidgets_pr3796",
+  "f2p": 3,
+  "p2p": 104
+ },
+ {
+  "instance_id": "python-trio_flake8-async_pr279",
+  "family": "python-trio/flake8-async",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-trio_flake8-async_pr279",
+  "f2p": 3,
+  "p2p": 263
+ },
+ {
+  "instance_id": "snowflakedb_snowflake-cli_pr708",
+  "family": "snowflakedb/snowflake-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:snowflakedb_snowflake-cli_pr708",
+  "f2p": 8,
+  "p2p": 195
+ },
+ {
+  "instance_id": "frictionlessdata_frictionless-py_pr875",
+  "family": "frictionlessdata/frictionless-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frictionlessdata_frictionless-py_pr875",
+  "f2p": 1,
+  "p2p": 392
+ },
+ {
+  "instance_id": "prompt-toolkit_python-prompt-toolkit_pr1312",
+  "family": "prompt-toolkit/python-prompt-toolkit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:prompt-toolkit_python-prompt-toolkit_pr1312",
+  "f2p": 4,
+  "p2p": 40
+ },
+ {
+  "instance_id": "sktime_skbase_pr345",
+  "family": "sktime/skbase",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sktime_skbase_pr345",
+  "f2p": 3,
+  "p2p": 442
+ },
+ {
+  "instance_id": "mercedes-benz_odxtools_pr55",
+  "family": "mercedes-benz/odxtools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mercedes-benz_odxtools_pr55",
+  "f2p": 4,
+  "p2p": 27
+ },
+ {
+  "instance_id": "python-control_python-control_pr765",
+  "family": "python-control/python-control",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-control_python-control_pr765",
+  "f2p": 2,
+  "p2p": 1112
+ },
+ {
+  "instance_id": "microsoft_fabric-cicd_pr196",
+  "family": "microsoft/fabric-cicd",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoft_fabric-cicd_pr196",
+  "f2p": 7,
+  "p2p": 25
+ },
+ {
+  "instance_id": "mitmproxy_mitmproxy_pr5563",
+  "family": "mitmproxy/mitmproxy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mitmproxy_mitmproxy_pr5563",
+  "f2p": 1,
+  "p2p": 438
+ },
+ {
+  "instance_id": "hetznercloud_hcloud-python_pr588",
+  "family": "hetznercloud/hcloud-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hetznercloud_hcloud-python_pr588",
+  "f2p": 2,
+  "p2p": 261
+ },
+ {
+  "instance_id": "dbcli_pgcli_pr706",
+  "family": "dbcli/pgcli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbcli_pgcli_pr706",
+  "f2p": 2,
+  "p2p": 616
+ },
+ {
+  "instance_id": "evergreen-ci_evergreen.py_pr135",
+  "family": "evergreen-ci/evergreen.py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:evergreen-ci_evergreen.py_pr135",
+  "f2p": 1,
+  "p2p": 130
+ },
+ {
+  "instance_id": "jpadilla_pyjwt_pr559",
+  "family": "jpadilla/pyjwt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jpadilla_pyjwt_pr559",
+  "f2p": 2,
+  "p2p": 94
+ },
+ {
+  "instance_id": "dwavesystems_dimod_pr510",
+  "family": "dwavesystems/dimod",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dwavesystems_dimod_pr510",
+  "f2p": 4,
+  "p2p": 234
+ },
+ {
+  "instance_id": "dwavesystems_dwave-cloud-client_pr429",
+  "family": "dwavesystems/dwave-cloud-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dwavesystems_dwave-cloud-client_pr429",
+  "f2p": 1,
+  "p2p": 71
+ },
+ {
+  "instance_id": "xnuinside_simple-ddl-parser_pr220",
+  "family": "xnuinside/simple-ddl-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xnuinside_simple-ddl-parser_pr220",
+  "f2p": 2,
+  "p2p": 80
+ },
+ {
+  "instance_id": "appium_python-client_pr386",
+  "family": "appium/python-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:appium_python-client_pr386",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "valohai_valohai-cli_pr9",
+  "family": "valohai/valohai-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:valohai_valohai-cli_pr9",
+  "f2p": 4,
+  "p2p": 26
+ },
+ {
+  "instance_id": "vasp-dev_py4vasp_pr233",
+  "family": "vasp-dev/py4vasp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:vasp-dev_py4vasp_pr233",
+  "f2p": 7,
+  "p2p": 688
+ },
+ {
+  "instance_id": "googlefonts_ufo2ft_pr811",
+  "family": "googlefonts/ufo2ft",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googlefonts_ufo2ft_pr811",
+  "f2p": 10,
+  "p2p": 330
+ },
+ {
+  "instance_id": "jazzband_tablib_pr614",
+  "family": "jazzband/tablib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_tablib_pr614",
+  "f2p": 1,
+  "p2p": 152
+ },
+ {
+  "instance_id": "jupyterhub_oauthenticator_pr708",
+  "family": "jupyterhub/oauthenticator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jupyterhub_oauthenticator_pr708",
+  "f2p": 1,
+  "p2p": 88
+ },
+ {
+  "instance_id": "stanford-crfm_haliax_pr40",
+  "family": "stanford-crfm/haliax",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:stanford-crfm_haliax_pr40",
+  "f2p": 2,
+  "p2p": 31
+ },
+ {
+  "instance_id": "pallets_jinja_pr1114",
+  "family": "pallets/jinja",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets_jinja_pr1114",
+  "f2p": 1,
+  "p2p": 240
+ },
+ {
+  "instance_id": "auth0_auth0-python_pr549",
+  "family": "auth0/auth0-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:auth0_auth0-python_pr549",
+  "f2p": 8,
+  "p2p": 142
+ },
+ {
+  "instance_id": "durandtibo_coola_pr24",
+  "family": "durandtibo/coola",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_coola_pr24",
+  "f2p": 7,
+  "p2p": 235
+ },
+ {
+  "instance_id": "iterative_gto_pr117",
+  "family": "iterative/gto",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_gto_pr117",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "pypa_twine_pr1024",
+  "family": "pypa/twine",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pypa_twine_pr1024",
+  "f2p": 3,
+  "p2p": 59
+ },
+ {
+  "instance_id": "mesonbuild_meson-python_pr22",
+  "family": "mesonbuild/meson-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mesonbuild_meson-python_pr22",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "meerk40t_svgelements_pr229",
+  "family": "meerk40t/svgelements",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:meerk40t_svgelements_pr229",
+  "f2p": 4,
+  "p2p": 135
+ },
+ {
+  "instance_id": "spulec_freezegun_pr24",
+  "family": "spulec/freezegun",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:spulec_freezegun_pr24",
+  "f2p": 3,
+  "p2p": 16
+ },
+ {
+  "instance_id": "hakancelikdev_unimport_pr60",
+  "family": "hakancelikdev/unimport",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hakancelikdev_unimport_pr60",
+  "f2p": 1,
+  "p2p": 50
+ },
+ {
+  "instance_id": "pinterest_pymemcache_pr315",
+  "family": "pinterest/pymemcache",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pinterest_pymemcache_pr315",
+  "f2p": 2,
+  "p2p": 146
+ },
+ {
+  "instance_id": "ncclient_ncclient_pr605",
+  "family": "ncclient/ncclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ncclient_ncclient_pr605",
+  "f2p": 3,
+  "p2p": 82
+ },
+ {
+  "instance_id": "blackducksoftware_hub-rest-api-python_pr121",
+  "family": "blackducksoftware/hub-rest-api-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:blackducksoftware_hub-rest-api-python_pr121",
+  "f2p": 4,
+  "p2p": 23
+ },
+ {
+  "instance_id": "eerkunt_terraform-compliance_pr290",
+  "family": "eerkunt/terraform-compliance",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:eerkunt_terraform-compliance_pr290",
+  "f2p": 5,
+  "p2p": 67
+ },
+ {
+  "instance_id": "joke2k_faker_pr1140",
+  "family": "joke2k/faker",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:joke2k_faker_pr1140",
+  "f2p": 1,
+  "p2p": 244
+ },
+ {
+  "instance_id": "praw-dev_prawcore_pr105",
+  "family": "praw-dev/prawcore",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:praw-dev_prawcore_pr105",
+  "f2p": 2,
+  "p2p": 70
+ },
+ {
+  "instance_id": "audreyr_cookiecutter_pr1545",
+  "family": "audreyr/cookiecutter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:audreyr_cookiecutter_pr1545",
+  "f2p": 46,
+  "p2p": 134
+ },
+ {
+  "instance_id": "openedx_edx-django-utils_pr68",
+  "family": "openedx/edx-django-utils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_edx-django-utils_pr68",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "scikit-hep_particle_pr73",
+  "family": "scikit-hep/particle",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_particle_pr73",
+  "f2p": 4,
+  "p2p": 27
+ },
+ {
+  "instance_id": "bluesky_event-model_pr24",
+  "family": "bluesky/event-model",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluesky_event-model_pr24",
+  "f2p": 1,
+  "p2p": 3
+ },
+ {
+  "instance_id": "iterative_scmrepo_pr219",
+  "family": "iterative/scmrepo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_scmrepo_pr219",
+  "f2p": 3,
+  "p2p": 56
+ },
+ {
+  "instance_id": "pallets-eco_wtforms_pr694",
+  "family": "pallets-eco/wtforms",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_wtforms_pr694",
+  "f2p": 4,
+  "p2p": 100
+ },
+ {
+  "instance_id": "tconbeer_sqlfmt_pr22",
+  "family": "tconbeer/sqlfmt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tconbeer_sqlfmt_pr22",
+  "f2p": 2,
+  "p2p": 49
+ },
+ {
+  "instance_id": "ludeeus_awesomeversion_pr69",
+  "family": "ludeeus/awesomeversion",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ludeeus_awesomeversion_pr69",
+  "f2p": 1,
+  "p2p": 63
+ },
+ {
+  "instance_id": "open-feature_python-sdk_pr213",
+  "family": "open-feature/python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:open-feature_python-sdk_pr213",
+  "f2p": 4,
+  "p2p": 27
+ },
+ {
+  "instance_id": "cookiecutter_cookiecutter_pr1546",
+  "family": "cookiecutter/cookiecutter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cookiecutter_cookiecutter_pr1546",
+  "f2p": 3,
+  "p2p": 97
+ },
+ {
+  "instance_id": "elastic_apm-agent-python_pr2216",
+  "family": "elastic/apm-agent-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:elastic_apm-agent-python_pr2216",
+  "f2p": 2,
+  "p2p": 228
+ },
+ {
+  "instance_id": "fastavro_fastavro_pr491",
+  "family": "fastavro/fastavro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fastavro_fastavro_pr491",
+  "f2p": 1,
+  "p2p": 101
+ },
+ {
+  "instance_id": "google_brotli_pr611",
+  "family": "google/brotli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google_brotli_pr611",
+  "f2p": 5,
+  "p2p": 112
+ },
+ {
+  "instance_id": "openedx_openedx-events_pr132",
+  "family": "openedx/openedx-events",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_openedx-events_pr132",
+  "f2p": 1,
+  "p2p": 35
+ },
+ {
+  "instance_id": "spdx_tools-python_pr343",
+  "family": "spdx/tools-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:spdx_tools-python_pr343",
+  "f2p": 6,
+  "p2p": 99
+ },
+ {
+  "instance_id": "facelessuser_soupsieve_pr73",
+  "family": "facelessuser/soupsieve",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facelessuser_soupsieve_pr73",
+  "f2p": 7,
+  "p2p": 48
+ },
+ {
+  "instance_id": "frictionlessdata_tabulator-py_pr141",
+  "family": "frictionlessdata/tabulator-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frictionlessdata_tabulator-py_pr141",
+  "f2p": 2,
+  "p2p": 54
+ },
+ {
+  "instance_id": "us-irs_spacepackets-py_pr1",
+  "family": "us-irs/spacepackets-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:us-irs_spacepackets-py_pr1",
+  "f2p": 2,
+  "p2p": 3
+ },
+ {
+  "instance_id": "durandtibo_iden_pr28",
+  "family": "durandtibo/iden",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_iden_pr28",
+  "f2p": 2,
+  "p2p": 33
+ },
+ {
+  "instance_id": "espressif_idf-build-apps_pr130",
+  "family": "espressif/idf-build-apps",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:espressif_idf-build-apps_pr130",
+  "f2p": 3,
+  "p2p": 25
+ },
+ {
+  "instance_id": "fugue-project_triad_pr58",
+  "family": "fugue-project/triad",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fugue-project_triad_pr58",
+  "f2p": 4,
+  "p2p": 41
+ },
+ {
+  "instance_id": "wireservice_csvkit_pr808",
+  "family": "wireservice/csvkit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wireservice_csvkit_pr808",
+  "f2p": 2,
+  "p2p": 98
+ },
+ {
+  "instance_id": "googleapis_proto-plus-python_pr57",
+  "family": "googleapis/proto-plus-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_proto-plus-python_pr57",
+  "f2p": 1,
+  "p2p": 68
+ },
+ {
+  "instance_id": "h5netcdf_h5netcdf_pr270",
+  "family": "h5netcdf/h5netcdf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:h5netcdf_h5netcdf_pr270",
+  "f2p": 1,
+  "p2p": 96
+ },
+ {
+  "instance_id": "microsoft_lsprotocol_pr230",
+  "family": "microsoft/lsprotocol",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoft_lsprotocol_pr230",
+  "f2p": 6,
+  "p2p": 31
+ },
+ {
+  "instance_id": "jodal_biip_pr327",
+  "family": "jodal/biip",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jodal_biip_pr327",
+  "f2p": 3,
+  "p2p": 105
+ },
+ {
+  "instance_id": "jsh9_pydoclint_pr185",
+  "family": "jsh9/pydoclint",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jsh9_pydoclint_pr185",
+  "f2p": 1,
+  "p2p": 113
+ },
+ {
+  "instance_id": "django-crispy-forms_django-crispy-forms_pr1116",
+  "family": "django-crispy-forms/django-crispy-forms",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-crispy-forms_django-crispy-forms_pr1116",
+  "f2p": 1,
+  "p2p": 188
+ },
+ {
+  "instance_id": "lancedb_lancedb_pr73",
+  "family": "lancedb/lancedb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lancedb_lancedb_pr73",
+  "f2p": 4,
+  "p2p": 12
+ },
+ {
+  "instance_id": "pytransitions_transitions_pr136",
+  "family": "pytransitions/transitions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pytransitions_transitions_pr136",
+  "f2p": 2,
+  "p2p": 112
+ },
+ {
+  "instance_id": "python-validators_validators_pr350",
+  "family": "python-validators/validators",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-validators_validators_pr350",
+  "f2p": 2,
+  "p2p": 205
+ },
+ {
+  "instance_id": "goose3_goose3_pr142",
+  "family": "goose3/goose3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:goose3_goose3_pr142",
+  "f2p": 4,
+  "p2p": 53
+ },
+ {
+  "instance_id": "iterative_dvc-data_pr95",
+  "family": "iterative/dvc-data",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_dvc-data_pr95",
+  "f2p": 4,
+  "p2p": 25
+ },
+ {
+  "instance_id": "karpetrosyan_hishel_pr104",
+  "family": "karpetrosyan/hishel",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:karpetrosyan_hishel_pr104",
+  "f2p": 1,
+  "p2p": 65
+ },
+ {
+  "instance_id": "itamarst_eliot_pr195",
+  "family": "itamarst/eliot",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:itamarst_eliot_pr195",
+  "f2p": 3,
+  "p2p": 109
+ },
+ {
+  "instance_id": "python-poetry_cleo_pr358",
+  "family": "python-poetry/cleo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-poetry_cleo_pr358",
+  "f2p": 3,
+  "p2p": 73
+ },
+ {
+  "instance_id": "sciunto-org_python-bibtexparser_pr29",
+  "family": "sciunto-org/python-bibtexparser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sciunto-org_python-bibtexparser_pr29",
+  "f2p": 6,
+  "p2p": 26
+ },
+ {
+  "instance_id": "cunla_fakeredis-py_pr46",
+  "family": "cunla/fakeredis-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cunla_fakeredis-py_pr46",
+  "f2p": 4,
+  "p2p": 543
+ },
+ {
+  "instance_id": "googleapis_python-firestore_pr274",
+  "family": "googleapis/python-firestore",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_python-firestore_pr274",
+  "f2p": 8,
+  "p2p": 617
+ },
+ {
+  "instance_id": "matrix-org_matrix-python-sdk_pr95",
+  "family": "matrix-org/matrix-python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matrix-org_matrix-python-sdk_pr95",
+  "f2p": 3,
+  "p2p": 14
+ },
+ {
+  "instance_id": "pyapp-kit_app-model_pr68",
+  "family": "pyapp-kit/app-model",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyapp-kit_app-model_pr68",
+  "f2p": 1,
+  "p2p": 92
+ },
+ {
+  "instance_id": "python-semver_python-semver_pr318",
+  "family": "python-semver/python-semver",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-semver_python-semver_pr318",
+  "f2p": 11,
+  "p2p": 91
+ },
+ {
+  "instance_id": "pyvisa_pyvisa_pr753",
+  "family": "pyvisa/pyvisa",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyvisa_pyvisa_pr753",
+  "f2p": 6,
+  "p2p": 49
+ },
+ {
+  "instance_id": "qiskit-community_qiskit-ionq_pr132",
+  "family": "qiskit-community/qiskit-ionq",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:qiskit-community_qiskit-ionq_pr132",
+  "f2p": 3,
+  "p2p": 48
+ },
+ {
+  "instance_id": "lasp_cdflib_pr49",
+  "family": "lasp/cdflib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lasp_cdflib_pr49",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "meadsteve_lagom_pr148",
+  "family": "meadsteve/lagom",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:meadsteve_lagom_pr148",
+  "f2p": 5,
+  "p2p": 49
+ },
+ {
+  "instance_id": "pdm-project_pdm-backend_pr114",
+  "family": "pdm-project/pdm-backend",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pdm-project_pdm-backend_pr114",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "scikit-hep_uproot3_pr385",
+  "family": "scikit-hep/uproot3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_uproot3_pr385",
+  "f2p": 6,
+  "p2p": 29
+ },
+ {
+  "instance_id": "strawberry-graphql_strawberry-django_pr480",
+  "family": "strawberry-graphql/strawberry-django",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:strawberry-graphql_strawberry-django_pr480",
+  "f2p": 12,
+  "p2p": 263
+ },
+ {
+  "instance_id": "dpkp_kafka-python_pr1995",
+  "family": "dpkp/kafka-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dpkp_kafka-python_pr1995",
+  "f2p": 1,
+  "p2p": 278
+ },
+ {
+  "instance_id": "frictionlessdata_tableschema-py_pr224",
+  "family": "frictionlessdata/tableschema-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frictionlessdata_tableschema-py_pr224",
+  "f2p": 1,
+  "p2p": 134
+ },
+ {
+  "instance_id": "hugovk_pypistats_pr371",
+  "family": "hugovk/pypistats",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hugovk_pypistats_pr371",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "iterative_dvc-objects_pr163",
+  "family": "iterative/dvc-objects",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_dvc-objects_pr163",
+  "f2p": 2,
+  "p2p": 29
+ },
+ {
+  "instance_id": "kivy_plyer_pr483",
+  "family": "kivy/plyer",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kivy_plyer_pr483",
+  "f2p": 5,
+  "p2p": 22
+ },
+ {
+  "instance_id": "scrapy_w3lib_pr30",
+  "family": "scrapy/w3lib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapy_w3lib_pr30",
+  "f2p": 2,
+  "p2p": 56
+ },
+ {
+  "instance_id": "argyle-engineering_pyap_pr62",
+  "family": "argyle-engineering/pyap",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:argyle-engineering_pyap_pr62",
+  "f2p": 7,
+  "p2p": 611
+ },
+ {
+  "instance_id": "bqplot_bqplot_pr1032",
+  "family": "bqplot/bqplot",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bqplot_bqplot_pr1032",
+  "f2p": 4,
+  "p2p": 5
+ },
+ {
+  "instance_id": "demisto_demisto-sdk_pr7",
+  "family": "demisto/demisto-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:demisto_demisto-sdk_pr7",
+  "f2p": 4,
+  "p2p": 31
+ },
+ {
+  "instance_id": "jborean93_smbprotocol_pr102",
+  "family": "jborean93/smbprotocol",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jborean93_smbprotocol_pr102",
+  "f2p": 6,
+  "p2p": 155
+ },
+ {
+  "instance_id": "keleshev_schema_pr220",
+  "family": "keleshev/schema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:keleshev_schema_pr220",
+  "f2p": 2,
+  "p2p": 85
+ },
+ {
+  "instance_id": "msiemens_tinydb_pr39",
+  "family": "msiemens/tinydb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:msiemens_tinydb_pr39",
+  "f2p": 1,
+  "p2p": 31
+ },
+ {
+  "instance_id": "singingwolfboy_flask-dance_pr406",
+  "family": "singingwolfboy/flask-dance",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:singingwolfboy_flask-dance_pr406",
+  "f2p": 3,
+  "p2p": 62
+ },
+ {
+  "instance_id": "xgcm_xrft_pr122",
+  "family": "xgcm/xrft",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xgcm_xrft_pr122",
+  "f2p": 4,
+  "p2p": 62
+ },
+ {
+  "instance_id": "joblib_joblib_pr1503",
+  "family": "joblib/joblib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:joblib_joblib_pr1503",
+  "f2p": 5,
+  "p2p": 372
+ },
+ {
+  "instance_id": "python-scim_scim2-models_pr97",
+  "family": "python-scim/scim2-models",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-scim_scim2-models_pr97",
+  "f2p": 3,
+  "p2p": 46
+ },
+ {
+  "instance_id": "swagger-api_swagger-codegen_pr3015",
+  "family": "swagger-api/swagger-codegen",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:swagger-api_swagger-codegen_pr3015",
+  "f2p": 3,
+  "p2p": 23
+ },
+ {
+  "instance_id": "xarray-contrib_flox_pr135",
+  "family": "xarray-contrib/flox",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xarray-contrib_flox_pr135",
+  "f2p": 1,
+  "p2p": 239
+ },
+ {
+  "instance_id": "developmentseed_morecantile_pr71",
+  "family": "developmentseed/morecantile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:developmentseed_morecantile_pr71",
+  "f2p": 1,
+  "p2p": 58
+ },
+ {
+  "instance_id": "xarray-contrib_datatree_pr172",
+  "family": "xarray-contrib/datatree",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xarray-contrib_datatree_pr172",
+  "f2p": 1,
+  "p2p": 87
+ },
+ {
+  "instance_id": "olofk_fusesoc_pr722",
+  "family": "olofk/fusesoc",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:olofk_fusesoc_pr722",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "pydantic_bump-pydantic_pr26",
+  "family": "pydantic/bump-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pydantic_bump-pydantic_pr26",
+  "f2p": 2,
+  "p2p": 27
+ },
+ {
+  "instance_id": "python-distro_distro_pr145",
+  "family": "python-distro/distro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-distro_distro_pr145",
+  "f2p": 5,
+  "p2p": 35
+ },
+ {
+  "instance_id": "bluetooth-devices_habluetooth_pr183",
+  "family": "bluetooth-devices/habluetooth",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_habluetooth_pr183",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "censys_censys-python_pr266",
+  "family": "censys/censys-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:censys_censys-python_pr266",
+  "f2p": 3,
+  "p2p": 94
+ },
+ {
+  "instance_id": "elalish_manifold_pr1112",
+  "family": "elalish/manifold",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:elalish_manifold_pr1112",
+  "f2p": 2,
+  "p2p": 2
+ },
+ {
+  "instance_id": "microsoft_knack_pr176",
+  "family": "microsoft/knack",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoft_knack_pr176",
+  "f2p": 3,
+  "p2p": 55
+ },
+ {
+  "instance_id": "stac-utils_stac-pydantic_pr70",
+  "family": "stac-utils/stac-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:stac-utils_stac-pydantic_pr70",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "treasure-data_td-client-python_pr75",
+  "family": "treasure-data/td-client-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:treasure-data_td-client-python_pr75",
+  "f2p": 5,
+  "p2p": 81
+ },
+ {
+  "instance_id": "wbond_asn1crypto_pr4",
+  "family": "wbond/asn1crypto",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wbond_asn1crypto_pr4",
+  "f2p": 1,
+  "p2p": 174
+ },
+ {
+  "instance_id": "asyncgui_asynckivy_pr99",
+  "family": "asyncgui/asynckivy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asyncgui_asynckivy_pr99",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "asyncgui_asyncgui_pr86",
+  "family": "asyncgui/asyncgui",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asyncgui_asyncgui_pr86",
+  "f2p": 1,
+  "p2p": 122
+ },
+ {
+  "instance_id": "hamdanal_rich-argparse_pr68",
+  "family": "hamdanal/rich-argparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hamdanal_rich-argparse_pr68",
+  "f2p": 1,
+  "p2p": 210
+ },
+ {
+  "instance_id": "luolingchun_flask-openapi3_pr83",
+  "family": "luolingchun/flask-openapi3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:luolingchun_flask-openapi3_pr83",
+  "f2p": 5,
+  "p2p": 29
+ },
+ {
+  "instance_id": "asottile_add-trailing-comma_pr12",
+  "family": "asottile/add-trailing-comma",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_add-trailing-comma_pr12",
+  "f2p": 1,
+  "p2p": 51
+ },
+ {
+  "instance_id": "durandtibo_batcharray_pr30",
+  "family": "durandtibo/batcharray",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_batcharray_pr30",
+  "f2p": 6,
+  "p2p": 83
+ },
+ {
+  "instance_id": "facelessuser_pyspelling_pr144",
+  "family": "facelessuser/pyspelling",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facelessuser_pyspelling_pr144",
+  "f2p": 1,
+  "p2p": 58
+ },
+ {
+  "instance_id": "fohrloop_wakepy_pr452",
+  "family": "fohrloop/wakepy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fohrloop_wakepy_pr452",
+  "f2p": 2,
+  "p2p": 90
+ },
+ {
+  "instance_id": "iterative_dvc-render_pr107",
+  "family": "iterative/dvc-render",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_dvc-render_pr107",
+  "f2p": 1,
+  "p2p": 39
+ },
+ {
+  "instance_id": "jazzband_dj-database-url_pr150",
+  "family": "jazzband/dj-database-url",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_dj-database-url_pr150",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "treasure-data_pytd_pr138",
+  "family": "treasure-data/pytd",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:treasure-data_pytd_pr138",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "xarray-contrib_pint-xarray_pr82",
+  "family": "xarray-contrib/pint-xarray",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xarray-contrib_pint-xarray_pr82",
+  "f2p": 4,
+  "p2p": 124
+ },
+ {
+  "instance_id": "durandtibo_batchtensor_pr54",
+  "family": "durandtibo/batchtensor",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_batchtensor_pr54",
+  "f2p": 3,
+  "p2p": 170
+ },
+ {
+  "instance_id": "farridav_django-jazzmin_pr156",
+  "family": "farridav/django-jazzmin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:farridav_django-jazzmin_pr156",
+  "f2p": 7,
+  "p2p": 23
+ },
+ {
+  "instance_id": "maxfischer2781_asyncstdlib_pr29",
+  "family": "maxfischer2781/asyncstdlib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maxfischer2781_asyncstdlib_pr29",
+  "f2p": 1,
+  "p2p": 55
+ },
+ {
+  "instance_id": "arcinstitute_cell-eval_pr16",
+  "family": "arcinstitute/cell-eval",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:arcinstitute_cell-eval_pr16",
+  "f2p": 1,
+  "p2p": 1
+ },
+ {
+  "instance_id": "brettcannon_gidgethub_pr5",
+  "family": "brettcannon/gidgethub",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:brettcannon_gidgethub_pr5",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "comtravo_ctparse_pr29",
+  "family": "comtravo/ctparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:comtravo_ctparse_pr29",
+  "f2p": 3,
+  "p2p": 25
+ },
+ {
+  "instance_id": "ethereum_eth-utils_pr100",
+  "family": "ethereum/eth-utils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-utils_pr100",
+  "f2p": 8,
+  "p2p": 117
+ },
+ {
+  "instance_id": "facebookresearch_clusterscope_pr143",
+  "family": "facebookresearch/clusterscope",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facebookresearch_clusterscope_pr143",
+  "f2p": 6,
+  "p2p": 26
+ },
+ {
+  "instance_id": "mwclient_mwclient_pr108",
+  "family": "mwclient/mwclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mwclient_mwclient_pr108",
+  "f2p": 5,
+  "p2p": 27
+ },
+ {
+  "instance_id": "reportportal_agent-python-pytest_pr203",
+  "family": "reportportal/agent-python-pytest",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:reportportal_agent-python-pytest_pr203",
+  "f2p": 4,
+  "p2p": 15
+ },
+ {
+  "instance_id": "workhorsy_py-cpuinfo_pr114",
+  "family": "workhorsy/py-cpuinfo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:workhorsy_py-cpuinfo_pr114",
+  "f2p": 86,
+  "p2p": 106
+ },
+ {
+  "instance_id": "atlassian_asap-authentication-python_pr65",
+  "family": "atlassian/asap-authentication-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:atlassian_asap-authentication-python_pr65",
+  "f2p": 4,
+  "p2p": 30
+ },
+ {
+  "instance_id": "cloudsmith-io_cloudsmith-cli_pr14",
+  "family": "cloudsmith-io/cloudsmith-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cloudsmith-io_cloudsmith-cli_pr14",
+  "f2p": 5,
+  "p2p": 1
+ },
+ {
+  "instance_id": "elastic_elastic-transport-python_pr42",
+  "family": "elastic/elastic-transport-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:elastic_elastic-transport-python_pr42",
+  "f2p": 4,
+  "p2p": 111
+ },
+ {
+  "instance_id": "ikalnytskyi_picobox_pr79",
+  "family": "ikalnytskyi/picobox",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ikalnytskyi_picobox_pr79",
+  "f2p": 24,
+  "p2p": 894
+ },
+ {
+  "instance_id": "jazzband_icalevents_pr66",
+  "family": "jazzband/icalevents",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_icalevents_pr66",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "mdomke_schwifty_pr85",
+  "family": "mdomke/schwifty",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mdomke_schwifty_pr85",
+  "f2p": 3,
+  "p2p": 171
+ },
+ {
+  "instance_id": "mit-ll-responsible-ai_hydra-zen_pr162",
+  "family": "mit-ll-responsible-ai/hydra-zen",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mit-ll-responsible-ai_hydra-zen_pr162",
+  "f2p": 1,
+  "p2p": 156
+ },
+ {
+  "instance_id": "russhousley_pyasn1-alt-modules_pr73",
+  "family": "russhousley/pyasn1-alt-modules",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:russhousley_pyasn1-alt-modules_pr73",
+  "f2p": 4,
+  "p2p": 126
+ },
+ {
+  "instance_id": "sbdchd_flake8-pie_pr96",
+  "family": "sbdchd/flake8-pie",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sbdchd_flake8-pie_pr96",
+  "f2p": 3,
+  "p2p": 66
+ },
+ {
+  "instance_id": "wyfo_apischema_pr30",
+  "family": "wyfo/apischema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wyfo_apischema_pr30",
+  "f2p": 2,
+  "p2p": 43
+ },
+ {
+  "instance_id": "barrust_pyprobables_pr64",
+  "family": "barrust/pyprobables",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:barrust_pyprobables_pr64",
+  "f2p": 23,
+  "p2p": 202
+ },
+ {
+  "instance_id": "common-workflow-language_cwl-utils_pr132",
+  "family": "common-workflow-language/cwl-utils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:common-workflow-language_cwl-utils_pr132",
+  "f2p": 1,
+  "p2p": 18
+ },
+ {
+  "instance_id": "django-crispy-forms_crispy-bootstrap5_pr44",
+  "family": "django-crispy-forms/crispy-bootstrap5",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-crispy-forms_crispy-bootstrap5_pr44",
+  "f2p": 1,
+  "p2p": 73
+ },
+ {
+  "instance_id": "fox-it_dissect.cstruct_pr93",
+  "family": "fox-it/dissect.cstruct",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fox-it_dissect.cstruct_pr93",
+  "f2p": 5,
+  "p2p": 130
+ },
+ {
+  "instance_id": "jazzband_django-axes_pr670",
+  "family": "jazzband/django-axes",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_django-axes_pr670",
+  "f2p": 1,
+  "p2p": 105
+ },
+ {
+  "instance_id": "joblib_threadpoolctl_pr163",
+  "family": "joblib/threadpoolctl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:joblib_threadpoolctl_pr163",
+  "f2p": 3,
+  "p2p": 15
+ },
+ {
+  "instance_id": "robotools_defcon_pr344",
+  "family": "robotools/defcon",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:robotools_defcon_pr344",
+  "f2p": 3,
+  "p2p": 188
+ },
+ {
+  "instance_id": "bufbuild_protovalidate-python_pr346",
+  "family": "bufbuild/protovalidate-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bufbuild_protovalidate-python_pr346",
+  "f2p": 2,
+  "p2p": 17
+ },
+ {
+  "instance_id": "developmentseed_geojson-pydantic_pr167",
+  "family": "developmentseed/geojson-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:developmentseed_geojson-pydantic_pr167",
+  "f2p": 2,
+  "p2p": 92
+ },
+ {
+  "instance_id": "eerimoq_asn1tools_pr129",
+  "family": "eerimoq/asn1tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:eerimoq_asn1tools_pr129",
+  "f2p": 3,
+  "p2p": 240
+ },
+ {
+  "instance_id": "frostming_marko_pr57",
+  "family": "frostming/marko",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frostming_marko_pr57",
+  "f2p": 1,
+  "p2p": 1299
+ },
+ {
+  "instance_id": "jupyter_nbclient_pr117",
+  "family": "jupyter/nbclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jupyter_nbclient_pr117",
+  "f2p": 2,
+  "p2p": 27
+ },
+ {
+  "instance_id": "octoenergy_tentaclio_pr164",
+  "family": "octoenergy/tentaclio",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:octoenergy_tentaclio_pr164",
+  "f2p": 7,
+  "p2p": 57
+ },
+ {
+  "instance_id": "peterbe_hashin_pr106",
+  "family": "peterbe/hashin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:peterbe_hashin_pr106",
+  "f2p": 1,
+  "p2p": 52
+ },
+ {
+  "instance_id": "philpep_testinfra_pr642",
+  "family": "philpep/testinfra",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:philpep_testinfra_pr642",
+  "f2p": 1,
+  "p2p": 21
+ },
+ {
+  "instance_id": "r1chardj0n3s_parse_pr139",
+  "family": "r1chardj0n3s/parse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:r1chardj0n3s_parse_pr139",
+  "f2p": 5,
+  "p2p": 28
+ },
+ {
+  "instance_id": "ros-infrastructure_rosdep_pr640",
+  "family": "ros-infrastructure/rosdep",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ros-infrastructure_rosdep_pr640",
+  "f2p": 4,
+  "p2p": 35
+ },
+ {
+  "instance_id": "tilezen_mapbox-vector-tile_pr55",
+  "family": "tilezen/mapbox-vector-tile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tilezen_mapbox-vector-tile_pr55",
+  "f2p": 1,
+  "p2p": 34
+ },
+ {
+  "instance_id": "tinytag_tinytag_pr198",
+  "family": "tinytag/tinytag",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tinytag_tinytag_pr198",
+  "f2p": 1,
+  "p2p": 129
+ },
+ {
+  "instance_id": "c4deszes_ldfparser_pr114",
+  "family": "c4deszes/ldfparser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:c4deszes_ldfparser_pr114",
+  "f2p": 7,
+  "p2p": 33
+ },
+ {
+  "instance_id": "cohere-ai_cohere-compass-sdk_pr57",
+  "family": "cohere-ai/cohere-compass-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cohere-ai_cohere-compass-sdk_pr57",
+  "f2p": 5,
+  "p2p": 4
+ },
+ {
+  "instance_id": "cthoyt_pystow_pr47",
+  "family": "cthoyt/pystow",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cthoyt_pystow_pr47",
+  "f2p": 5,
+  "p2p": 15
+ },
+ {
+  "instance_id": "dbt-labs_dbt-adapters_pr43",
+  "family": "dbt-labs/dbt-adapters",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbt-labs_dbt-adapters_pr43",
+  "f2p": 1,
+  "p2p": 30
+ },
+ {
+  "instance_id": "frictionlessdata_goodtables_pr331",
+  "family": "frictionlessdata/goodtables",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frictionlessdata_goodtables_pr331",
+  "f2p": 1,
+  "p2p": 51
+ },
+ {
+  "instance_id": "loadsmart_django-jaiminho_pr36",
+  "family": "loadsmart/django-jaiminho",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:loadsmart_django-jaiminho_pr36",
+  "f2p": 5,
+  "p2p": 52
+ },
+ {
+  "instance_id": "logandk_serverless-wsgi_pr189",
+  "family": "logandk/serverless-wsgi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:logandk_serverless-wsgi_pr189",
+  "f2p": 6,
+  "p2p": 27
+ },
+ {
+  "instance_id": "openedx_edx-drf-extensions_pr442",
+  "family": "openedx/edx-drf-extensions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_edx-drf-extensions_pr442",
+  "f2p": 5,
+  "p2p": 65
+ },
+ {
+  "instance_id": "bambinos_formulae_pr35",
+  "family": "bambinos/formulae",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bambinos_formulae_pr35",
+  "f2p": 4,
+  "p2p": 34
+ },
+ {
+  "instance_id": "frictionlessdata_datapackage-py_pr220",
+  "family": "frictionlessdata/datapackage-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frictionlessdata_datapackage-py_pr220",
+  "f2p": 1,
+  "p2p": 52
+ },
+ {
+  "instance_id": "gruebel_pycep_pr41",
+  "family": "gruebel/pycep",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gruebel_pycep_pr41",
+  "f2p": 3,
+  "p2p": 31
+ },
+ {
+  "instance_id": "honeybadger-io_honeybadger-python_pr218",
+  "family": "honeybadger-io/honeybadger-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:honeybadger-io_honeybadger-python_pr218",
+  "f2p": 2,
+  "p2p": 44
+ },
+ {
+  "instance_id": "hussein-awala_spark-on-k8s_pr138",
+  "family": "hussein-awala/spark-on-k8s",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hussein-awala_spark-on-k8s_pr138",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "matiasb_python-unidiff_pr46",
+  "family": "matiasb/python-unidiff",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matiasb_python-unidiff_pr46",
+  "f2p": 4,
+  "p2p": 23
+ },
+ {
+  "instance_id": "mido_mido_pr465",
+  "family": "mido/mido",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mido_mido_pr465",
+  "f2p": 3,
+  "p2p": 37
+ },
+ {
+  "instance_id": "raimon49_pip-licenses_pr102",
+  "family": "raimon49/pip-licenses",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:raimon49_pip-licenses_pr102",
+  "f2p": 1,
+  "p2p": 48
+ },
+ {
+  "instance_id": "roskakori_pygount_pr96",
+  "family": "roskakori/pygount",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:roskakori_pygount_pr96",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "salesforce_cloudsplaining_pr167",
+  "family": "salesforce/cloudsplaining",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:salesforce_cloudsplaining_pr167",
+  "f2p": 1,
+  "p2p": 34
+ },
+ {
+  "instance_id": "wjohnson_pyapacheatlas_pr19",
+  "family": "wjohnson/pyapacheatlas",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wjohnson_pyapacheatlas_pr19",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "ansys_pyfluent_pr311",
+  "family": "ansys/pyfluent",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ansys_pyfluent_pr311",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "cogeotiff_rio-cogeo_pr14",
+  "family": "cogeotiff/rio-cogeo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cogeotiff_rio-cogeo_pr14",
+  "f2p": 2,
+  "p2p": 22
+ },
+ {
+  "instance_id": "cthoyt_class-resolver_pr13",
+  "family": "cthoyt/class-resolver",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cthoyt_class-resolver_pr13",
+  "f2p": 3,
+  "p2p": 18
+ },
+ {
+  "instance_id": "ethereum_py-trie_pr84",
+  "family": "ethereum/py-trie",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_py-trie_pr84",
+  "f2p": 2,
+  "p2p": 835
+ },
+ {
+  "instance_id": "frostming_unearth_pr78",
+  "family": "frostming/unearth",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frostming_unearth_pr78",
+  "f2p": 3,
+  "p2p": 64
+ },
+ {
+  "instance_id": "goodmami_wn_pr240",
+  "family": "goodmami/wn",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:goodmami_wn_pr240",
+  "f2p": 8,
+  "p2p": 35
+ },
+ {
+  "instance_id": "horejsek_python-fastjsonschema_pr52",
+  "family": "horejsek/python-fastjsonschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:horejsek_python-fastjsonschema_pr52",
+  "f2p": 3,
+  "p2p": 120
+ },
+ {
+  "instance_id": "masci_banks_pr37",
+  "family": "masci/banks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:masci_banks_pr37",
+  "f2p": 2,
+  "p2p": 24
+ },
+ {
+  "instance_id": "maxcountryman_flask-login_pr334",
+  "family": "maxcountryman/flask-login",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maxcountryman_flask-login_pr334",
+  "f2p": 1,
+  "p2p": 88
+ },
+ {
+  "instance_id": "peterbe_premailer_pr116",
+  "family": "peterbe/premailer",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:peterbe_premailer_pr116",
+  "f2p": 5,
+  "p2p": 29
+ },
+ {
+  "instance_id": "pyvisa_pyvisa-py_pr352",
+  "family": "pyvisa/pyvisa-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyvisa_pyvisa-py_pr352",
+  "f2p": 3,
+  "p2p": 2
+ },
+ {
+  "instance_id": "rbw_pysnow_pr18",
+  "family": "rbw/pysnow",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rbw_pysnow_pr18",
+  "f2p": 19,
+  "p2p": 16
+ },
+ {
+  "instance_id": "scrapinghub_web-poet_pr96",
+  "family": "scrapinghub/web-poet",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapinghub_web-poet_pr96",
+  "f2p": 4,
+  "p2p": 41
+ },
+ {
+  "instance_id": "si-23_py-import-cycles_pr19",
+  "family": "si-23/py-import-cycles",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:si-23_py-import-cycles_pr19",
+  "f2p": 3,
+  "p2p": 19
+ },
+ {
+  "instance_id": "zabuldon_teslajsonpy_pr457",
+  "family": "zabuldon/teslajsonpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:zabuldon_teslajsonpy_pr457",
+  "f2p": 2,
+  "p2p": 29
+ },
+ {
+  "instance_id": "fredrik-johansson_mpmath_pr689",
+  "family": "fredrik-johansson/mpmath",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fredrik-johansson_mpmath_pr689",
+  "f2p": 1,
+  "p2p": 112
+ },
+ {
+  "instance_id": "godatadriven_pydantic-avro_pr82",
+  "family": "godatadriven/pydantic-avro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:godatadriven_pydantic-avro_pr82",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "jshwi_docsig_pr551",
+  "family": "jshwi/docsig",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jshwi_docsig_pr551",
+  "f2p": 1,
+  "p2p": 609
+ },
+ {
+  "instance_id": "mindee_mindee-api-python_pr67",
+  "family": "mindee/mindee-api-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mindee_mindee-api-python_pr67",
+  "f2p": 3,
+  "p2p": 34
+ },
+ {
+  "instance_id": "plamere_spotipy_pr893",
+  "family": "plamere/spotipy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:plamere_spotipy_pr893",
+  "f2p": 5,
+  "p2p": 26
+ },
+ {
+  "instance_id": "pyasi_pybuildkite_pr18",
+  "family": "pyasi/pybuildkite",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyasi_pybuildkite_pr18",
+  "f2p": 5,
+  "p2p": 4
+ },
+ {
+  "instance_id": "pyca_pyopenssl_pr1308",
+  "family": "pyca/pyopenssl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyca_pyopenssl_pr1308",
+  "f2p": 3,
+  "p2p": 144
+ },
+ {
+  "instance_id": "qntm_greenery_pr30",
+  "family": "qntm/greenery",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:qntm_greenery_pr30",
+  "f2p": 1,
+  "p2p": 128
+ },
+ {
+  "instance_id": "radish-bdd_radish_pr395",
+  "family": "radish-bdd/radish",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:radish-bdd_radish_pr395",
+  "f2p": 6,
+  "p2p": 113
+ },
+ {
+  "instance_id": "sanic-org_sanic-routing_pr62",
+  "family": "sanic-org/sanic-routing",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sanic-org_sanic-routing_pr62",
+  "f2p": 2,
+  "p2p": 42
+ },
+ {
+  "instance_id": "splitio_python-client_pr162",
+  "family": "splitio/python-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:splitio_python-client_pr162",
+  "f2p": 1,
+  "p2p": 76
+ },
+ {
+  "instance_id": "weaviate_weaviate-python-client_pr125",
+  "family": "weaviate/weaviate-python-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:weaviate_weaviate-python-client_pr125",
+  "f2p": 11,
+  "p2p": 83
+ },
+ {
+  "instance_id": "cerfacs-globc_icclim_pr283",
+  "family": "cerfacs-globc/icclim",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cerfacs-globc_icclim_pr283",
+  "f2p": 1,
+  "p2p": 89
+ },
+ {
+  "instance_id": "jacksmith15_json-ref-dict_pr13",
+  "family": "jacksmith15/json-ref-dict",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jacksmith15_json-ref-dict_pr13",
+  "f2p": 1,
+  "p2p": 24
+ },
+ {
+  "instance_id": "kelproject_pykube_pr83",
+  "family": "kelproject/pykube",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kelproject_pykube_pr83",
+  "f2p": 4,
+  "p2p": 14
+ },
+ {
+  "instance_id": "martinblech_xmltodict_pr222",
+  "family": "martinblech/xmltodict",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:martinblech_xmltodict_pr222",
+  "f2p": 1,
+  "p2p": 41
+ },
+ {
+  "instance_id": "mdowds_mock-firestore_pr49",
+  "family": "mdowds/mock-firestore",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mdowds_mock-firestore_pr49",
+  "f2p": 1,
+  "p2p": 55
+ },
+ {
+  "instance_id": "mehcode_python-xmlsec_pr68",
+  "family": "mehcode/python-xmlsec",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mehcode_python-xmlsec_pr68",
+  "f2p": 7,
+  "p2p": 27
+ },
+ {
+  "instance_id": "mhostetter_galois_pr101",
+  "family": "mhostetter/galois",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mhostetter_galois_pr101",
+  "f2p": 5,
+  "p2p": 1420
+ },
+ {
+  "instance_id": "opensanctions_rigour_pr23",
+  "family": "opensanctions/rigour",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:opensanctions_rigour_pr23",
+  "f2p": 1,
+  "p2p": 49
+ },
+ {
+  "instance_id": "rasahq_rasa-sdk_pr105",
+  "family": "rasahq/rasa-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rasahq_rasa-sdk_pr105",
+  "f2p": 1,
+  "p2p": 30
+ },
+ {
+  "instance_id": "serge-sans-paille_beniget_pr97",
+  "family": "serge-sans-paille/beniget",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:serge-sans-paille_beniget_pr97",
+  "f2p": 2,
+  "p2p": 169
+ },
+ {
+  "instance_id": "siliconcompiler_lambdapdk_pr71",
+  "family": "siliconcompiler/lambdapdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:siliconcompiler_lambdapdk_pr71",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "slackapi_python-slack-sdk_pr152",
+  "family": "slackapi/python-slack-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:slackapi_python-slack-sdk_pr152",
+  "f2p": 1,
+  "p2p": 12
+ },
+ {
+  "instance_id": "bluetooth-devices_bluetooth-auto-recovery_pr26",
+  "family": "bluetooth-devices/bluetooth-auto-recovery",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_bluetooth-auto-recovery_pr26",
+  "f2p": 5,
+  "p2p": 1
+ },
+ {
+  "instance_id": "configcat_python-sdk_pr35",
+  "family": "configcat/python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:configcat_python-sdk_pr35",
+  "f2p": 24,
+  "p2p": 20
+ },
+ {
+  "instance_id": "livekit_python-sdks_pr126",
+  "family": "livekit/python-sdks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:livekit_python-sdks_pr126",
+  "f2p": 2,
+  "p2p": 6
+ },
+ {
+  "instance_id": "liormizr_s3path_pr171",
+  "family": "liormizr/s3path",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:liormizr_s3path_pr171",
+  "f2p": 1,
+  "p2p": 67
+ },
+ {
+  "instance_id": "neovim_python-client_pr534",
+  "family": "neovim/python-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:neovim_python-client_pr534",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "psd-tools_psd-tools_pr182",
+  "family": "psd-tools/psd-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:psd-tools_psd-tools_pr182",
+  "f2p": 1,
+  "p2p": 235
+ },
+ {
+  "instance_id": "py-moneyed_py-moneyed_pr180",
+  "family": "py-moneyed/py-moneyed",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:py-moneyed_py-moneyed_pr180",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "python-openapi_openapi-spec-validator_pr232",
+  "family": "python-openapi/openapi-spec-validator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-openapi_openapi-spec-validator_pr232",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "rasterio_affine_pr11",
+  "family": "rasterio/affine",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rasterio_affine_pr11",
+  "f2p": 4,
+  "p2p": 42
+ },
+ {
+  "instance_id": "scrapy_itemadapter_pr74",
+  "family": "scrapy/itemadapter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapy_itemadapter_pr74",
+  "f2p": 4,
+  "p2p": 39
+ },
+ {
+  "instance_id": "astropy_sphinx-automodapi_pr25",
+  "family": "astropy/sphinx-automodapi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:astropy_sphinx-automodapi_pr25",
+  "f2p": 2,
+  "p2p": 22
+ },
+ {
+  "instance_id": "asottile_blacken-docs_pr347",
+  "family": "asottile/blacken-docs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_blacken-docs_pr347",
+  "f2p": 1,
+  "p2p": 55
+ },
+ {
+  "instance_id": "adamtheturtle_sybil-extras_pr304",
+  "family": "adamtheturtle/sybil-extras",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamtheturtle_sybil-extras_pr304",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "bdraco_bluetooth-data-tools_pr9",
+  "family": "bdraco/bluetooth-data-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bdraco_bluetooth-data-tools_pr9",
+  "f2p": 2,
+  "p2p": 18
+ },
+ {
+  "instance_id": "biopragmatics_curies_pr204",
+  "family": "biopragmatics/curies",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biopragmatics_curies_pr204",
+  "f2p": 1,
+  "p2p": 92
+ },
+ {
+  "instance_id": "deschler_django-modeltranslation_pr783",
+  "family": "deschler/django-modeltranslation",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:deschler_django-modeltranslation_pr783",
+  "f2p": 3,
+  "p2p": 46
+ },
+ {
+  "instance_id": "gijzelaerr_python-snap7_pr28",
+  "family": "gijzelaerr/python-snap7",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gijzelaerr_python-snap7_pr28",
+  "f2p": 1,
+  "p2p": 15
+ },
+ {
+  "instance_id": "googleapis_python-datastore_pr190",
+  "family": "googleapis/python-datastore",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_python-datastore_pr190",
+  "f2p": 3,
+  "p2p": 342
+ },
+ {
+  "instance_id": "guillp_jwskate_pr27",
+  "family": "guillp/jwskate",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:guillp_jwskate_pr27",
+  "f2p": 1,
+  "p2p": 386
+ },
+ {
+  "instance_id": "hplt-project_sacremoses_pr59",
+  "family": "hplt-project/sacremoses",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hplt-project_sacremoses_pr59",
+  "f2p": 2,
+  "p2p": 22
+ },
+ {
+  "instance_id": "jsonpickle_jsonpickle_pr494",
+  "family": "jsonpickle/jsonpickle",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jsonpickle_jsonpickle_pr494",
+  "f2p": 1,
+  "p2p": 177
+ },
+ {
+  "instance_id": "localstack_plux_pr28",
+  "family": "localstack/plux",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:localstack_plux_pr28",
+  "f2p": 2,
+  "p2p": 28
+ },
+ {
+  "instance_id": "mapbox_mercantile_pr60",
+  "family": "mapbox/mercantile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mapbox_mercantile_pr60",
+  "f2p": 3,
+  "p2p": 40
+ },
+ {
+  "instance_id": "makinacorpus_django-safedelete_pr179",
+  "family": "makinacorpus/django-safedelete",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:makinacorpus_django-safedelete_pr179",
+  "f2p": 2,
+  "p2p": 36
+ },
+ {
+  "instance_id": "manuzhang_mkdocs-htmlproofer-plugin_pr51",
+  "family": "manuzhang/mkdocs-htmlproofer-plugin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:manuzhang_mkdocs-htmlproofer-plugin_pr51",
+  "f2p": 10,
+  "p2p": 31
+ },
+ {
+  "instance_id": "petl-developers_petl_pr463",
+  "family": "petl-developers/petl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:petl-developers_petl_pr463",
+  "f2p": 2,
+  "p2p": 103
+ },
+ {
+  "instance_id": "pre-commit_identify_pr202",
+  "family": "pre-commit/identify",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pre-commit_identify_pr202",
+  "f2p": 3,
+  "p2p": 170
+ },
+ {
+  "instance_id": "pwwang_python-varname_pr105",
+  "family": "pwwang/python-varname",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pwwang_python-varname_pr105",
+  "f2p": 2,
+  "p2p": 78
+ },
+ {
+  "instance_id": "pyapp-kit_psygnal_pr232",
+  "family": "pyapp-kit/psygnal",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyapp-kit_psygnal_pr232",
+  "f2p": 1,
+  "p2p": 183
+ },
+ {
+  "instance_id": "pylast_pylast_pr442",
+  "family": "pylast/pylast",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pylast_pylast_pr442",
+  "f2p": 5,
+  "p2p": 3
+ },
+ {
+  "instance_id": "rubik_radon_pr236",
+  "family": "rubik/radon",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rubik_radon_pr236",
+  "f2p": 3,
+  "p2p": 119
+ },
+ {
+  "instance_id": "awslabs_serverless-application-model_pr2261",
+  "family": "awslabs/serverless-application-model",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:awslabs_serverless-application-model_pr2261",
+  "f2p": 3,
+  "p2p": 1259
+ },
+ {
+  "instance_id": "canimus_cuallee_pr29",
+  "family": "canimus/cuallee",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:canimus_cuallee_pr29",
+  "f2p": 5,
+  "p2p": 93
+ },
+ {
+  "instance_id": "dhermes_bezier_pr259",
+  "family": "dhermes/bezier",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dhermes_bezier_pr259",
+  "f2p": 4,
+  "p2p": 315
+ },
+ {
+  "instance_id": "durandtibo_hya_pr109",
+  "family": "durandtibo/hya",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_hya_pr109",
+  "f2p": 2,
+  "p2p": 28
+ },
+ {
+  "instance_id": "jupyter_nbclassic_pr141",
+  "family": "jupyter/nbclassic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jupyter_nbclassic_pr141",
+  "f2p": 5,
+  "p2p": 19
+ },
+ {
+  "instance_id": "karask_python-bitcoin-utils_pr141",
+  "family": "karask/python-bitcoin-utils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:karask_python-bitcoin-utils_pr141",
+  "f2p": 2,
+  "p2p": 29
+ },
+ {
+  "instance_id": "microsoft_sarif-tools_pr15",
+  "family": "microsoft/sarif-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoft_sarif-tools_pr15",
+  "f2p": 3,
+  "p2p": 1
+ },
+ {
+  "instance_id": "pahaz_sshtunnel_pr149",
+  "family": "pahaz/sshtunnel",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pahaz_sshtunnel_pr149",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "oras-project_oras-py_pr109",
+  "family": "oras-project/oras-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:oras-project_oras-py_pr109",
+  "f2p": 4,
+  "p2p": 11
+ },
+ {
+  "instance_id": "python-grimp_grimp_pr103",
+  "family": "python-grimp/grimp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-grimp_grimp_pr103",
+  "f2p": 1,
+  "p2p": 78
+ },
+ {
+  "instance_id": "python-tap_tappy_pr9",
+  "family": "python-tap/tappy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-tap_tappy_pr9",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "python-lsp_python-lsp-ruff_pr13",
+  "family": "python-lsp/python-lsp-ruff",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-lsp_python-lsp-ruff_pr13",
+  "f2p": 4,
+  "p2p": 5
+ },
+ {
+  "instance_id": "snyk-labs_pysnyk_pr140",
+  "family": "snyk-labs/pysnyk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:snyk-labs_pysnyk_pr140",
+  "f2p": 1,
+  "p2p": 81
+ },
+ {
+  "instance_id": "stravalib_stravalib_pr584",
+  "family": "stravalib/stravalib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:stravalib_stravalib_pr584",
+  "f2p": 6,
+  "p2p": 124
+ },
+ {
+  "instance_id": "bastibe_python-soundfile_pr148",
+  "family": "bastibe/python-soundfile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bastibe_python-soundfile_pr148",
+  "f2p": 3,
+  "p2p": 225
+ },
+ {
+  "instance_id": "beetbox_confuse_pr142",
+  "family": "beetbox/confuse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:beetbox_confuse_pr142",
+  "f2p": 59,
+  "p2p": 105
+ },
+ {
+  "instance_id": "buildkite_test-collector-python_pr2",
+  "family": "buildkite/test-collector-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:buildkite_test-collector-python_pr2",
+  "f2p": 2,
+  "p2p": 11
+ },
+ {
+  "instance_id": "commit-check_commit-check_pr50",
+  "family": "commit-check/commit-check",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:commit-check_commit-check_pr50",
+  "f2p": 3,
+  "p2p": 40
+ },
+ {
+  "instance_id": "dbader_schedule_pr28",
+  "family": "dbader/schedule",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbader_schedule_pr28",
+  "f2p": 3,
+  "p2p": 14
+ },
+ {
+  "instance_id": "googleapis_python-db-dtypes-pandas_pr54",
+  "family": "googleapis/python-db-dtypes-pandas",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_python-db-dtypes-pandas_pr54",
+  "f2p": 1,
+  "p2p": 69
+ },
+ {
+  "instance_id": "growthbook_growthbook-python_pr55",
+  "family": "growthbook/growthbook-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:growthbook_growthbook-python_pr55",
+  "f2p": 5,
+  "p2p": 609
+ },
+ {
+  "instance_id": "jfhbrook_pyee_pr99",
+  "family": "jfhbrook/pyee",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jfhbrook_pyee_pr99",
+  "f2p": 8,
+  "p2p": 21
+ },
+ {
+  "instance_id": "ivankorobkov_python-inject_pr60",
+  "family": "ivankorobkov/python-inject",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ivankorobkov_python-inject_pr60",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "keboola_python-component_pr8",
+  "family": "keboola/python-component",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:keboola_python-component_pr8",
+  "f2p": 8,
+  "p2p": 48
+ },
+ {
+  "instance_id": "magmax_python-inquirer_pr526",
+  "family": "magmax/python-inquirer",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:magmax_python-inquirer_pr526",
+  "f2p": 1,
+  "p2p": 55
+ },
+ {
+  "instance_id": "p2p-ld_numpydantic_pr15",
+  "family": "p2p-ld/numpydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:p2p-ld_numpydantic_pr15",
+  "f2p": 4,
+  "p2p": 185
+ },
+ {
+  "instance_id": "pyapp-kit_in-n-out_pr9",
+  "family": "pyapp-kit/in-n-out",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyapp-kit_in-n-out_pr9",
+  "f2p": 4,
+  "p2p": 67
+ },
+ {
+  "instance_id": "python-hyper_hpack_pr38",
+  "family": "python-hyper/hpack",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-hyper_hpack_pr38",
+  "f2p": 5,
+  "p2p": 19
+ },
+ {
+  "instance_id": "rollbar_pyrollbar_pr469",
+  "family": "rollbar/pyrollbar",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rollbar_pyrollbar_pr469",
+  "f2p": 1,
+  "p2p": 96
+ },
+ {
+  "instance_id": "sigma-py_npx_pr8",
+  "family": "sigma-py/npx",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sigma-py_npx_pr8",
+  "f2p": 2,
+  "p2p": 13
+ },
+ {
+  "instance_id": "tomasvotava_fastapi-sso_pr152",
+  "family": "tomasvotava/fastapi-sso",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tomasvotava_fastapi-sso_pr152",
+  "f2p": 1,
+  "p2p": 71
+ },
+ {
+  "instance_id": "zheller_flake8-quotes_pr34",
+  "family": "zheller/flake8-quotes",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:zheller_flake8-quotes_pr34",
+  "f2p": 1,
+  "p2p": 9
+ },
+ {
+  "instance_id": "astropy_astroplan_pr581",
+  "family": "astropy/astroplan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:astropy_astroplan_pr581",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "django-json-api_django-rest-framework-json-api_pr1286",
+  "family": "django-json-api/django-rest-framework-json-api",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-json-api_django-rest-framework-json-api_pr1286",
+  "f2p": 1,
+  "p2p": 124
+ },
+ {
+  "instance_id": "google_mediapy_pr28",
+  "family": "google/mediapy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google_mediapy_pr28",
+  "f2p": 5,
+  "p2p": 63
+ },
+ {
+  "instance_id": "guillermo-navas-palencia_optbinning_pr95",
+  "family": "guillermo-navas-palencia/optbinning",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:guillermo-navas-palencia_optbinning_pr95",
+  "f2p": 4,
+  "p2p": 31
+ },
+ {
+  "instance_id": "jwbargsten_pytest-archon_pr10",
+  "family": "jwbargsten/pytest-archon",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jwbargsten_pytest-archon_pr10",
+  "f2p": 3,
+  "p2p": 10
+ },
+ {
+  "instance_id": "kensho-technologies_pyctcdecode_pr32",
+  "family": "kensho-technologies/pyctcdecode",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kensho-technologies_pyctcdecode_pr32",
+  "f2p": 1,
+  "p2p": 31
+ },
+ {
+  "instance_id": "kiorky_croniter_pr78",
+  "family": "kiorky/croniter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kiorky_croniter_pr78",
+  "f2p": 1,
+  "p2p": 103
+ },
+ {
+  "instance_id": "mkdocs_mkdocs-click_pr60",
+  "family": "mkdocs/mkdocs-click",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mkdocs_mkdocs-click_pr60",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "pallets-eco_flask-debugtoolbar_pr290",
+  "family": "pallets-eco/flask-debugtoolbar",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_flask-debugtoolbar_pr290",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "piskvorky_sqlitedict_pr72",
+  "family": "piskvorky/sqlitedict",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:piskvorky_sqlitedict_pr72",
+  "f2p": 1,
+  "p2p": 52
+ },
+ {
+  "instance_id": "pdfminer_pdfminer.six_pr88",
+  "family": "pdfminer/pdfminer.six",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pdfminer_pdfminer.six_pr88",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "pyout_pyout_pr109",
+  "family": "pyout/pyout",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyout_pyout_pr109",
+  "f2p": 9,
+  "p2p": 127
+ },
+ {
+  "instance_id": "quintoandar_hive-metastore-client_pr49",
+  "family": "quintoandar/hive-metastore-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:quintoandar_hive-metastore-client_pr49",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "sphinx-gallery_sphinx-gallery_pr944",
+  "family": "sphinx-gallery/sphinx-gallery",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sphinx-gallery_sphinx-gallery_pr944",
+  "f2p": 2,
+  "p2p": 110
+ },
+ {
+  "instance_id": "untitaker_click-repl_pr28",
+  "family": "untitaker/click-repl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:untitaker_click-repl_pr28",
+  "f2p": 3,
+  "p2p": 1
+ },
+ {
+  "instance_id": "ariebovenberg_slotscheck_pr228",
+  "family": "ariebovenberg/slotscheck",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ariebovenberg_slotscheck_pr228",
+  "f2p": 3,
+  "p2p": 63
+ },
+ {
+  "instance_id": "asottile_classify-imports_pr19",
+  "family": "asottile/classify-imports",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_classify-imports_pr19",
+  "f2p": 3,
+  "p2p": 57
+ },
+ {
+  "instance_id": "aws-samples_amazon-textract-response-parser_pr181",
+  "family": "aws-samples/amazon-textract-response-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aws-samples_amazon-textract-response-parser_pr181",
+  "f2p": 6,
+  "p2p": 54
+ },
+ {
+  "instance_id": "coveragepy_coveragepy_pr1479",
+  "family": "coveragepy/coveragepy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:coveragepy_coveragepy_pr1479",
+  "f2p": 7,
+  "p2p": 415
+ },
+ {
+  "instance_id": "drgarcia1986_simple-settings_pr23",
+  "family": "drgarcia1986/simple-settings",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:drgarcia1986_simple-settings_pr23",
+  "f2p": 21,
+  "p2p": 12
+ },
+ {
+  "instance_id": "fbruzzesi_iso-week-date_pr53",
+  "family": "fbruzzesi/iso-week-date",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fbruzzesi_iso-week-date_pr53",
+  "f2p": 90,
+  "p2p": 93
+ },
+ {
+  "instance_id": "fox-it_dissect.util_pr70",
+  "family": "fox-it/dissect.util",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fox-it_dissect.util_pr70",
+  "f2p": 4,
+  "p2p": 30
+ },
+ {
+  "instance_id": "gocardless_airflow-dbt_pr17",
+  "family": "gocardless/airflow-dbt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gocardless_airflow-dbt_pr17",
+  "f2p": 5,
+  "p2p": 4
+ },
+ {
+  "instance_id": "kjd_idna_pr24",
+  "family": "kjd/idna",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kjd_idna_pr24",
+  "f2p": 7,
+  "p2p": 17
+ },
+ {
+  "instance_id": "kyleking_mdformat-mkdocs_pr26",
+  "family": "kyleking/mdformat-mkdocs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kyleking_mdformat-mkdocs_pr26",
+  "f2p": 1,
+  "p2p": 31
+ },
+ {
+  "instance_id": "madpah_serializable_pr178",
+  "family": "madpah/serializable",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:madpah_serializable_pr178",
+  "f2p": 6,
+  "p2p": 50
+ },
+ {
+  "instance_id": "mkorpela_overrides_pr81",
+  "family": "mkorpela/overrides",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mkorpela_overrides_pr81",
+  "f2p": 1,
+  "p2p": 39
+ },
+ {
+  "instance_id": "nipreps_nireports_pr171",
+  "family": "nipreps/nireports",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nipreps_nireports_pr171",
+  "f2p": 1,
+  "p2p": 47
+ },
+ {
+  "instance_id": "oasis-open_cti-taxii-client_pr11",
+  "family": "oasis-open/cti-taxii-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:oasis-open_cti-taxii-client_pr11",
+  "f2p": 1,
+  "p2p": 15
+ },
+ {
+  "instance_id": "oxan_djangorestframework-dataclasses_pr66",
+  "family": "oxan/djangorestframework-dataclasses",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:oxan_djangorestframework-dataclasses_pr66",
+  "f2p": 1,
+  "p2p": 37
+ },
+ {
+  "instance_id": "pylabel-project_pylabel_pr28",
+  "family": "pylabel-project/pylabel",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pylabel-project_pylabel_pr28",
+  "f2p": 3,
+  "p2p": 7
+ },
+ {
+  "instance_id": "pytest-dev_pytest-bdd_pr445",
+  "family": "pytest-dev/pytest-bdd",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pytest-dev_pytest-bdd_pr445",
+  "f2p": 3,
+  "p2p": 45
+ },
+ {
+  "instance_id": "python-poetry_poetry-plugin-export_pr109",
+  "family": "python-poetry/poetry-plugin-export",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-poetry_poetry-plugin-export_pr109",
+  "f2p": 1,
+  "p2p": 51
+ },
+ {
+  "instance_id": "renatopp_liac-arff_pr91",
+  "family": "renatopp/liac-arff",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:renatopp_liac-arff_pr91",
+  "f2p": 3,
+  "p2p": 51
+ },
+ {
+  "instance_id": "rockem_busypie_pr44",
+  "family": "rockem/busypie",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rockem_busypie_pr44",
+  "f2p": 4,
+  "p2p": 26
+ },
+ {
+  "instance_id": "scikit-hep_uproot3-methods_pr43",
+  "family": "scikit-hep/uproot3-methods",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_uproot3-methods_pr43",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "scikit-hep_awkward-0.x_pr248",
+  "family": "scikit-hep/awkward-0.x",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_awkward-0.x_pr248",
+  "f2p": 2,
+  "p2p": 158
+ },
+ {
+  "instance_id": "sethmlarson_truststore_pr157",
+  "family": "sethmlarson/truststore",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sethmlarson_truststore_pr157",
+  "f2p": 4,
+  "p2p": 43
+ },
+ {
+  "instance_id": "siliconcompiler_lambdalib_pr98",
+  "family": "siliconcompiler/lambdalib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:siliconcompiler_lambdalib_pr98",
+  "f2p": 2,
+  "p2p": 23
+ },
+ {
+  "instance_id": "astronomer_airflow-provider-great-expectations_pr93",
+  "family": "astronomer/airflow-provider-great-expectations",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:astronomer_airflow-provider-great-expectations_pr93",
+  "f2p": 1,
+  "p2p": 39
+ },
+ {
+  "instance_id": "betodealmeida_shillelagh_pr522",
+  "family": "betodealmeida/shillelagh",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:betodealmeida_shillelagh_pr522",
+  "f2p": 2,
+  "p2p": 127
+ },
+ {
+  "instance_id": "banesullivan_scooby_pr87",
+  "family": "banesullivan/scooby",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:banesullivan_scooby_pr87",
+  "f2p": 5,
+  "p2p": 9
+ },
+ {
+  "instance_id": "bluetooth-devices_bluetooth-adapters_pr71",
+  "family": "bluetooth-devices/bluetooth-adapters",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_bluetooth-adapters_pr71",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "cclib_cclib_pr770",
+  "family": "cclib/cclib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cclib_cclib_pr770",
+  "f2p": 2,
+  "p2p": 30
+ },
+ {
+  "instance_id": "dbt-labs_dbt-common_pr323",
+  "family": "dbt-labs/dbt-common",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbt-labs_dbt-common_pr323",
+  "f2p": 8,
+  "p2p": 74
+ },
+ {
+  "instance_id": "diyan_pywinrm_pr213",
+  "family": "diyan/pywinrm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:diyan_pywinrm_pr213",
+  "f2p": 2,
+  "p2p": 22
+ },
+ {
+  "instance_id": "durandtibo_minrecord_pr18",
+  "family": "durandtibo/minrecord",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_minrecord_pr18",
+  "f2p": 3,
+  "p2p": 42
+ },
+ {
+  "instance_id": "fulder_pki-tools_pr34",
+  "family": "fulder/pki-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fulder_pki-tools_pr34",
+  "f2p": 2,
+  "p2p": 15
+ },
+ {
+  "instance_id": "googleapis_python-documentai-toolbox_pr21",
+  "family": "googleapis/python-documentai-toolbox",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_python-documentai-toolbox_pr21",
+  "f2p": 13,
+  "p2p": 17
+ },
+ {
+  "instance_id": "houfu_redlines_pr4",
+  "family": "houfu/redlines",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:houfu_redlines_pr4",
+  "f2p": 2,
+  "p2p": 7
+ },
+ {
+  "instance_id": "iamdual_ua-generator_pr8",
+  "family": "iamdual/ua-generator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iamdual_ua-generator_pr8",
+  "f2p": 2,
+  "p2p": 27
+ },
+ {
+  "instance_id": "jongracecox_anybadge_pr19",
+  "family": "jongracecox/anybadge",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jongracecox_anybadge_pr19",
+  "f2p": 10,
+  "p2p": 9
+ },
+ {
+  "instance_id": "kolonialno_django-api-decorator_pr18",
+  "family": "kolonialno/django-api-decorator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kolonialno_django-api-decorator_pr18",
+  "f2p": 3,
+  "p2p": 34
+ },
+ {
+  "instance_id": "kodemore_kink_pr25",
+  "family": "kodemore/kink",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kodemore_kink_pr25",
+  "f2p": 1,
+  "p2p": 24
+ },
+ {
+  "instance_id": "mivek_python-metar-taf-parser_pr7",
+  "family": "mivek/python-metar-taf-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mivek_python-metar-taf-parser_pr7",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "nicklambourne_slackblocks_pr49",
+  "family": "nicklambourne/slackblocks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nicklambourne_slackblocks_pr49",
+  "f2p": 1,
+  "p2p": 32
+ },
+ {
+  "instance_id": "nuclio_nuclio-jupyter_pr28",
+  "family": "nuclio/nuclio-jupyter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nuclio_nuclio-jupyter_pr28",
+  "f2p": 1,
+  "p2p": 16
+ },
+ {
+  "instance_id": "openedx_codejail_pr105",
+  "family": "openedx/codejail",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_codejail_pr105",
+  "f2p": 3,
+  "p2p": 7
+ },
+ {
+  "instance_id": "pallets-eco_blinker_pr94",
+  "family": "pallets-eco/blinker",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_blinker_pr94",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "pamelafox_openai-messages-token-helper_pr14",
+  "family": "pamelafox/openai-messages-token-helper",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pamelafox_openai-messages-token-helper_pr14",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "peterdemin_pip-compile-multi_pr288",
+  "family": "peterdemin/pip-compile-multi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:peterdemin_pip-compile-multi_pr288",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "polkascan_py-scale-codec_pr107",
+  "family": "polkascan/py-scale-codec",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:polkascan_py-scale-codec_pr107",
+  "f2p": 1,
+  "p2p": 134
+ },
+ {
+  "instance_id": "python-openapi_openapi-schema-validator_pr57",
+  "family": "python-openapi/openapi-schema-validator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-openapi_openapi-schema-validator_pr57",
+  "f2p": 5,
+  "p2p": 65
+ },
+ {
+  "instance_id": "python-hyper_wsproto_pr149",
+  "family": "python-hyper/wsproto",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-hyper_wsproto_pr149",
+  "f2p": 3,
+  "p2p": 87
+ },
+ {
+  "instance_id": "regebro_svg.path_pr99",
+  "family": "regebro/svg.path",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:regebro_svg.path_pr99",
+  "f2p": 1,
+  "p2p": 51
+ },
+ {
+  "instance_id": "scikit-hep_cabinetry_pr34",
+  "family": "scikit-hep/cabinetry",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_cabinetry_pr34",
+  "f2p": 5,
+  "p2p": 25
+ },
+ {
+  "instance_id": "scrapy_itemloaders_pr81",
+  "family": "scrapy/itemloaders",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapy_itemloaders_pr81",
+  "f2p": 1,
+  "p2p": 38
+ },
+ {
+  "instance_id": "sklarsa_django-sendgrid-v5_pr103",
+  "family": "sklarsa/django-sendgrid-v5",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sklarsa_django-sendgrid-v5_pr103",
+  "f2p": 1,
+  "p2p": 16
+ },
+ {
+  "instance_id": "spacetelescope_pysiaf_pr331",
+  "family": "spacetelescope/pysiaf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:spacetelescope_pysiaf_pr331",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "vacanza_holidays_pr716",
+  "family": "vacanza/holidays",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:vacanza_holidays_pr716",
+  "f2p": 31,
+  "p2p": 347
+ },
+ {
+  "instance_id": "weblyzard_inscriptis_pr49",
+  "family": "weblyzard/inscriptis",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:weblyzard_inscriptis_pr49",
+  "f2p": 4,
+  "p2p": 27
+ },
+ {
+  "instance_id": "bennylope_pydiscourse_pr16",
+  "family": "bennylope/pydiscourse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bennylope_pydiscourse_pr16",
+  "f2p": 3,
+  "p2p": 24
+ },
+ {
+  "instance_id": "aio-libs_aiosmtpd_pr184",
+  "family": "aio-libs/aiosmtpd",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aio-libs_aiosmtpd_pr184",
+  "f2p": 3,
+  "p2p": 163
+ },
+ {
+  "instance_id": "bluetooth-devices_bleak-retry-connector_pr61",
+  "family": "bluetooth-devices/bleak-retry-connector",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_bleak-retry-connector_pr61",
+  "f2p": 3,
+  "p2p": 30
+ },
+ {
+  "instance_id": "cloud-custodian_cel-python_pr130",
+  "family": "cloud-custodian/cel-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cloud-custodian_cel-python_pr130",
+  "f2p": 3,
+  "p2p": 133
+ },
+ {
+  "instance_id": "containerbuildsystem_dockerfile-parse_pr5",
+  "family": "containerbuildsystem/dockerfile-parse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:containerbuildsystem_dockerfile-parse_pr5",
+  "f2p": 2,
+  "p2p": 28
+ },
+ {
+  "instance_id": "corteva_geocube_pr171",
+  "family": "corteva/geocube",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:corteva_geocube_pr171",
+  "f2p": 2,
+  "p2p": 31
+ },
+ {
+  "instance_id": "dbcli_pgspecial_pr137",
+  "family": "dbcli/pgspecial",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbcli_pgspecial_pr137",
+  "f2p": 1,
+  "p2p": 20
+ },
+ {
+  "instance_id": "django-extensions_django-extensions_pr1914",
+  "family": "django-extensions/django-extensions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-extensions_django-extensions_pr1914",
+  "f2p": 3,
+  "p2p": 152
+ },
+ {
+  "instance_id": "django-treebeard_django-treebeard_pr91",
+  "family": "django-treebeard/django-treebeard",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-treebeard_django-treebeard_pr91",
+  "f2p": 2,
+  "p2p": 265
+ },
+ {
+  "instance_id": "ej2_python-quickbooks_pr25",
+  "family": "ej2/python-quickbooks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ej2_python-quickbooks_pr25",
+  "f2p": 1,
+  "p2p": 73
+ },
+ {
+  "instance_id": "dorthu_openapi3_pr42",
+  "family": "dorthu/openapi3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dorthu_openapi3_pr42",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "executablebooks_myst-nb_pr620",
+  "family": "executablebooks/myst-nb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:executablebooks_myst-nb_pr620",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "fetchai_cosmpy_pr6",
+  "family": "fetchai/cosmpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fetchai_cosmpy_pr6",
+  "f2p": 4,
+  "p2p": 16
+ },
+ {
+  "instance_id": "giampaolo_pyftpdlib_pr656",
+  "family": "giampaolo/pyftpdlib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:giampaolo_pyftpdlib_pr656",
+  "f2p": 3,
+  "p2p": 177
+ },
+ {
+  "instance_id": "florimondmanca_asgi-lifespan_pr19",
+  "family": "florimondmanca/asgi-lifespan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:florimondmanca_asgi-lifespan_pr19",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "h5io_h5io_pr77",
+  "family": "h5io/h5io",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:h5io_h5io_pr77",
+  "f2p": 4,
+  "p2p": 10
+ },
+ {
+  "instance_id": "hammem_monarchmoney_pr85",
+  "family": "hammem/monarchmoney",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hammem_monarchmoney_pr85",
+  "f2p": 1,
+  "p2p": 4
+ },
+ {
+  "instance_id": "hukkin_tomli-w_pr15",
+  "family": "hukkin/tomli-w",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hukkin_tomli-w_pr15",
+  "f2p": 4,
+  "p2p": 80
+ },
+ {
+  "instance_id": "imageio_imageio_pr162",
+  "family": "imageio/imageio",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:imageio_imageio_pr162",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "itamarst_crochet_pr83",
+  "family": "itamarst/crochet",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:itamarst_crochet_pr83",
+  "f2p": 3,
+  "p2p": 29
+ },
+ {
+  "instance_id": "jmccrohan_pysolarmanv5_pr38",
+  "family": "jmccrohan/pysolarmanv5",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jmccrohan_pysolarmanv5_pr38",
+  "f2p": 3,
+  "p2p": 2
+ },
+ {
+  "instance_id": "m-burst_flake8-pytest-style_pr323",
+  "family": "m-burst/flake8-pytest-style",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:m-burst_flake8-pytest-style_pr323",
+  "f2p": 1,
+  "p2p": 76
+ },
+ {
+  "instance_id": "logdna_python_pr93",
+  "family": "logdna/python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:logdna_python_pr93",
+  "f2p": 2,
+  "p2p": 19
+ },
+ {
+  "instance_id": "mewwts_addict_pr128",
+  "family": "mewwts/addict",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mewwts_addict_pr128",
+  "f2p": 8,
+  "p2p": 112
+ },
+ {
+  "instance_id": "meeb_whoisit_pr33",
+  "family": "meeb/whoisit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:meeb_whoisit_pr33",
+  "f2p": 16,
+  "p2p": 16
+ },
+ {
+  "instance_id": "mmaitre314_picklescan_pr12",
+  "family": "mmaitre314/picklescan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mmaitre314_picklescan_pr12",
+  "f2p": 2,
+  "p2p": 3
+ },
+ {
+  "instance_id": "okken_pytest-check_pr177",
+  "family": "okken/pytest-check",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:okken_pytest-check_pr177",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "numpy_numpy-financial_pr81",
+  "family": "numpy/numpy-financial",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:numpy_numpy-financial_pr81",
+  "f2p": 5,
+  "p2p": 33
+ },
+ {
+  "instance_id": "openshift_openshift-client-python_pr83",
+  "family": "openshift/openshift-client-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openshift_openshift-client-python_pr83",
+  "f2p": 2,
+  "p2p": 11
+ },
+ {
+  "instance_id": "perrygeo_python-rasterstats_pr290",
+  "family": "perrygeo/python-rasterstats",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:perrygeo_python-rasterstats_pr290",
+  "f2p": 1,
+  "p2p": 65
+ },
+ {
+  "instance_id": "pangeo-data_rechunker_pr27",
+  "family": "pangeo-data/rechunker",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pangeo-data_rechunker_pr27",
+  "f2p": 8,
+  "p2p": 28
+ },
+ {
+  "instance_id": "rossumai_rossum_pr4",
+  "family": "rossumai/rossum",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rossumai_rossum_pr4",
+  "f2p": 5,
+  "p2p": 27
+ },
+ {
+  "instance_id": "semuconsulting_pynmeagps_pr62",
+  "family": "semuconsulting/pynmeagps",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:semuconsulting_pynmeagps_pr62",
+  "f2p": 2,
+  "p2p": 40
+ },
+ {
+  "instance_id": "sissaschool_elementpath_pr2",
+  "family": "sissaschool/elementpath",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sissaschool_elementpath_pr2",
+  "f2p": 12,
+  "p2p": 325
+ },
+ {
+  "instance_id": "serge-sans-paille_gast_pr96",
+  "family": "serge-sans-paille/gast",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:serge-sans-paille_gast_pr96",
+  "f2p": 5,
+  "p2p": 36
+ },
+ {
+  "instance_id": "teamtomo_starfile_pr76",
+  "family": "teamtomo/starfile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:teamtomo_starfile_pr76",
+  "f2p": 2,
+  "p2p": 36
+ },
+ {
+  "instance_id": "ultrabug_mkdocs-static-i18n_pr139",
+  "family": "ultrabug/mkdocs-static-i18n",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ultrabug_mkdocs-static-i18n_pr139",
+  "f2p": 4,
+  "p2p": 24
+ },
+ {
+  "instance_id": "vespa-engine_pyvespa_pr10",
+  "family": "vespa-engine/pyvespa",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:vespa-engine_pyvespa_pr10",
+  "f2p": 5,
+  "p2p": 24
+ },
+ {
+  "instance_id": "yu-iskw_dbt-artifacts-parser_pr19",
+  "family": "yu-iskw/dbt-artifacts-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:yu-iskw_dbt-artifacts-parser_pr19",
+  "f2p": 2,
+  "p2p": 24
+ },
+ {
+  "instance_id": "ynqa_pandavro_pr12",
+  "family": "ynqa/pandavro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ynqa_pandavro_pr12",
+  "f2p": 6,
+  "p2p": 6
+ },
+ {
+  "instance_id": "adamchainz_django-cors-headers_pr451",
+  "family": "adamchainz/django-cors-headers",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_django-cors-headers_pr451",
+  "f2p": 1,
+  "p2p": 65
+ },
+ {
+  "instance_id": "dandi_dandi-cli_pr20",
+  "family": "dandi/dandi-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dandi_dandi-cli_pr20",
+  "f2p": 1,
+  "p2p": 4
+ },
+ {
+  "instance_id": "containers_podman-py_pr44",
+  "family": "containers/podman-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:containers_podman-py_pr44",
+  "f2p": 5,
+  "p2p": 40
+ },
+ {
+  "instance_id": "dantebben_nox-uv_pr35",
+  "family": "dantebben/nox-uv",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dantebben_nox-uv_pr35",
+  "f2p": 2,
+  "p2p": 2
+ },
+ {
+  "instance_id": "dbt-msft_dbt-sqlserver_pr122",
+  "family": "dbt-msft/dbt-sqlserver",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbt-msft_dbt-sqlserver_pr122",
+  "f2p": 1,
+  "p2p": 1
+ },
+ {
+  "instance_id": "django-cas-ng_django-cas-ng_pr187",
+  "family": "django-cas-ng/django-cas-ng",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-cas-ng_django-cas-ng_pr187",
+  "f2p": 2,
+  "p2p": 28
+ },
+ {
+  "instance_id": "eoda-dev_py-maplibregl_pr92",
+  "family": "eoda-dev/py-maplibregl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:eoda-dev_py-maplibregl_pr92",
+  "f2p": 5,
+  "p2p": 19
+ },
+ {
+  "instance_id": "espdev_csaps_pr47",
+  "family": "espdev/csaps",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:espdev_csaps_pr47",
+  "f2p": 3,
+  "p2p": 132
+ },
+ {
+  "instance_id": "fortran-lang_fortls_pr82",
+  "family": "fortran-lang/fortls",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fortran-lang_fortls_pr82",
+  "f2p": 3,
+  "p2p": 17
+ },
+ {
+  "instance_id": "georgebv_drf-pydantic_pr26",
+  "family": "georgebv/drf-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:georgebv_drf-pydantic_pr26",
+  "f2p": 1,
+  "p2p": 49
+ },
+ {
+  "instance_id": "fuhrysteve_marshmallow-jsonschema_pr37",
+  "family": "fuhrysteve/marshmallow-jsonschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fuhrysteve_marshmallow-jsonschema_pr37",
+  "f2p": 15,
+  "p2p": 3
+ },
+ {
+  "instance_id": "gjoseph92_stackstac_pr209",
+  "family": "gjoseph92/stackstac",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gjoseph92_stackstac_pr209",
+  "f2p": 4,
+  "p2p": 24
+ },
+ {
+  "instance_id": "h2oai_cloud-discovery-py_pr18",
+  "family": "h2oai/cloud-discovery-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:h2oai_cloud-discovery-py_pr18",
+  "f2p": 3,
+  "p2p": 15
+ },
+ {
+  "instance_id": "harlowja_fasteners_pr23",
+  "family": "harlowja/fasteners",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:harlowja_fasteners_pr23",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "hynek_svcs_pr139",
+  "family": "hynek/svcs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hynek_svcs_pr139",
+  "f2p": 4,
+  "p2p": 38
+ },
+ {
+  "instance_id": "hynek_pem_pr39",
+  "family": "hynek/pem",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hynek_pem_pr39",
+  "f2p": 5,
+  "p2p": 13
+ },
+ {
+  "instance_id": "jazzband_django-redshift-backend_pr90",
+  "family": "jazzband/django-redshift-backend",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_django-redshift-backend_pr90",
+  "f2p": 1,
+  "p2p": 9
+ },
+ {
+  "instance_id": "keis_base58_pr43",
+  "family": "keis/base58",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:keis_base58_pr43",
+  "f2p": 4,
+  "p2p": 15
+ },
+ {
+  "instance_id": "lepture_mistune_pr337",
+  "family": "lepture/mistune",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lepture_mistune_pr337",
+  "f2p": 7,
+  "p2p": 280
+ },
+ {
+  "instance_id": "lasselindqvist_robotframework-imaplibrary2_pr17",
+  "family": "lasselindqvist/robotframework-imaplibrary2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lasselindqvist_robotframework-imaplibrary2_pr17",
+  "f2p": 3,
+  "p2p": 21
+ },
+ {
+  "instance_id": "mahmoudimus_nose-timer_pr40",
+  "family": "mahmoudimus/nose-timer",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mahmoudimus_nose-timer_pr40",
+  "f2p": 5,
+  "p2p": 9
+ },
+ {
+  "instance_id": "maurerle_eralchemy2_pr12",
+  "family": "maurerle/eralchemy2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maurerle_eralchemy2_pr12",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "maxpmaxp_pdfreader_pr19",
+  "family": "maxpmaxp/pdfreader",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maxpmaxp_pdfreader_pr19",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "masaccio_compact-json_pr23",
+  "family": "masaccio/compact-json",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:masaccio_compact-json_pr23",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "microsoftgraph_msgraph-sdk-python-core_pr804",
+  "family": "microsoftgraph/msgraph-sdk-python-core",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoftgraph_msgraph-sdk-python-core_pr804",
+  "f2p": 2,
+  "p2p": 30
+ },
+ {
+  "instance_id": "mkorpela_pabot_pr520",
+  "family": "mkorpela/pabot",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mkorpela_pabot_pr520",
+  "f2p": 7,
+  "p2p": 25
+ },
+ {
+  "instance_id": "nschloe_pytest-codeblocks_pr25",
+  "family": "nschloe/pytest-codeblocks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nschloe_pytest-codeblocks_pr25",
+  "f2p": 2,
+  "p2p": 14
+ },
+ {
+  "instance_id": "ofek_coincurve_pr188",
+  "family": "ofek/coincurve",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ofek_coincurve_pr188",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "p1c2u_pathable_pr13",
+  "family": "p1c2u/pathable",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:p1c2u_pathable_pr13",
+  "f2p": 3,
+  "p2p": 39
+ },
+ {
+  "instance_id": "pallets_itsdangerous_pr141",
+  "family": "pallets/itsdangerous",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets_itsdangerous_pr141",
+  "f2p": 4,
+  "p2p": 219
+ },
+ {
+  "instance_id": "openedx_edx-rest-api-client_pr35",
+  "family": "openedx/edx-rest-api-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_edx-rest-api-client_pr35",
+  "f2p": 6,
+  "p2p": 6
+ },
+ {
+  "instance_id": "osantana_prettyconf_pr29",
+  "family": "osantana/prettyconf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:osantana_prettyconf_pr29",
+  "f2p": 23,
+  "p2p": 48
+ },
+ {
+  "instance_id": "peter-wangxu_persist-queue_pr12",
+  "family": "peter-wangxu/persist-queue",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:peter-wangxu_persist-queue_pr12",
+  "f2p": 4,
+  "p2p": 15
+ },
+ {
+  "instance_id": "orsinium_textdistance_pr66",
+  "family": "orsinium/textdistance",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:orsinium_textdistance_pr66",
+  "f2p": 10,
+  "p2p": 207
+ },
+ {
+  "instance_id": "pepkit_pipestat_pr208",
+  "family": "pepkit/pipestat",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pepkit_pipestat_pr208",
+  "f2p": 2,
+  "p2p": 31
+ },
+ {
+  "instance_id": "pinax_django-user-accounts_pr363",
+  "family": "pinax/django-user-accounts",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pinax_django-user-accounts_pr363",
+  "f2p": 5,
+  "p2p": 25
+ },
+ {
+  "instance_id": "pyca_pynacl_pr52",
+  "family": "pyca/pynacl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyca_pynacl_pr52",
+  "f2p": 1,
+  "p2p": 624
+ },
+ {
+  "instance_id": "python-hyper_hyperframe_pr151",
+  "family": "python-hyper/hyperframe",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-hyper_hyperframe_pr151",
+  "f2p": 8,
+  "p2p": 3
+ },
+ {
+  "instance_id": "regebro_tzlocal_pr137",
+  "family": "regebro/tzlocal",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:regebro_tzlocal_pr137",
+  "f2p": 1,
+  "p2p": 18
+ },
+ {
+  "instance_id": "reportportal_agent-python-behave_pr38",
+  "family": "reportportal/agent-python-behave",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:reportportal_agent-python-behave_pr38",
+  "f2p": 9,
+  "p2p": 88
+ },
+ {
+  "instance_id": "readthedocs_sphinx-autoapi_pr362",
+  "family": "readthedocs/sphinx-autoapi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:readthedocs_sphinx-autoapi_pr362",
+  "f2p": 1,
+  "p2p": 113
+ },
+ {
+  "instance_id": "sangwonl_python-mpegdash_pr37",
+  "family": "sangwonl/python-mpegdash",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sangwonl_python-mpegdash_pr37",
+  "f2p": 5,
+  "p2p": 8
+ },
+ {
+  "instance_id": "scrapinghub_number-parser_pr19",
+  "family": "scrapinghub/number-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapinghub_number-parser_pr19",
+  "f2p": 4,
+  "p2p": 6
+ },
+ {
+  "instance_id": "sco1_flake8-annotations_pr73",
+  "family": "sco1/flake8-annotations",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sco1_flake8-annotations_pr73",
+  "f2p": 3,
+  "p2p": 57
+ },
+ {
+  "instance_id": "semuconsulting_pyubx2_pr77",
+  "family": "semuconsulting/pyubx2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:semuconsulting_pyubx2_pr77",
+  "f2p": 1,
+  "p2p": 84
+ },
+ {
+  "instance_id": "sifive_pydevicetree_pr22",
+  "family": "sifive/pydevicetree",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sifive_pydevicetree_pr22",
+  "f2p": 1,
+  "p2p": 22
+ },
+ {
+  "instance_id": "tompollard_tableone_pr170",
+  "family": "tompollard/tableone",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tompollard_tableone_pr170",
+  "f2p": 3,
+  "p2p": 24
+ },
+ {
+  "instance_id": "visgl_deck.gl_pr6554",
+  "family": "visgl/deck.gl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:visgl_deck.gl_pr6554",
+  "f2p": 9,
+  "p2p": 22
+ },
+ {
+  "instance_id": "xhtml2pdf_xhtml2pdf_pr717",
+  "family": "xhtml2pdf/xhtml2pdf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xhtml2pdf_xhtml2pdf_pr717",
+  "f2p": 30,
+  "p2p": 106
+ },
+ {
+  "instance_id": "aws_aws-encryption-sdk-cli_pr47",
+  "family": "aws/aws-encryption-sdk-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aws_aws-encryption-sdk-cli_pr47",
+  "f2p": 1,
+  "p2p": 127
+ },
+ {
+  "instance_id": "breid48_cacheing_pr20",
+  "family": "breid48/cacheing",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:breid48_cacheing_pr20",
+  "f2p": 5,
+  "p2p": 76
+ },
+ {
+  "instance_id": "bridgecrewio_python-hcl2_pr17",
+  "family": "bridgecrewio/python-hcl2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bridgecrewio_python-hcl2_pr17",
+  "f2p": 6,
+  "p2p": 2
+ },
+ {
+  "instance_id": "clemense_yourdfpy_pr33",
+  "family": "clemense/yourdfpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:clemense_yourdfpy_pr33",
+  "f2p": 4,
+  "p2p": 19
+ },
+ {
+  "instance_id": "cloudtools_awacs_pr186",
+  "family": "cloudtools/awacs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cloudtools_awacs_pr186",
+  "f2p": 1,
+  "p2p": 30
+ },
+ {
+  "instance_id": "corydolphin_flask-cors_pr363",
+  "family": "corydolphin/flask-cors",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:corydolphin_flask-cors_pr363",
+  "f2p": 3,
+  "p2p": 27
+ },
+ {
+  "instance_id": "codingjoe_django-stdimage_pr324",
+  "family": "codingjoe/django-stdimage",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:codingjoe_django-stdimage_pr324",
+  "f2p": 2,
+  "p2p": 36
+ },
+ {
+  "instance_id": "cphyc_matplotlib-label-lines_pr153",
+  "family": "cphyc/matplotlib-label-lines",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cphyc_matplotlib-label-lines_pr153",
+  "f2p": 3,
+  "p2p": 25
+ },
+ {
+  "instance_id": "darosior_python-bip32_pr23",
+  "family": "darosior/python-bip32",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:darosior_python-bip32_pr23",
+  "f2p": 2,
+  "p2p": 4
+ },
+ {
+  "instance_id": "developmentseed_cogeo-mosaic_pr241",
+  "family": "developmentseed/cogeo-mosaic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:developmentseed_cogeo-mosaic_pr241",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "digitalocean_pydo_pr34",
+  "family": "digitalocean/pydo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:digitalocean_pydo_pr34",
+  "f2p": 3,
+  "p2p": 30
+ },
+ {
+  "instance_id": "django-hijack_django-hijack_pr505",
+  "family": "django-hijack/django-hijack",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-hijack_django-hijack_pr505",
+  "f2p": 2,
+  "p2p": 31
+ },
+ {
+  "instance_id": "ecmwf_cfgrib_pr294",
+  "family": "ecmwf/cfgrib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ecmwf_cfgrib_pr294",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "fredrikaverpil_creosote_pr217",
+  "family": "fredrikaverpil/creosote",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fredrikaverpil_creosote_pr217",
+  "f2p": 2,
+  "p2p": 79
+ },
+ {
+  "instance_id": "gauge-sh_tach_pr7",
+  "family": "gauge-sh/tach",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gauge-sh_tach_pr7",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "glotzerlab_parsnip_pr35",
+  "family": "glotzerlab/parsnip",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:glotzerlab_parsnip_pr35",
+  "f2p": 1,
+  "p2p": 479
+ },
+ {
+  "instance_id": "gristlabs_asttokens_pr156",
+  "family": "gristlabs/asttokens",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gristlabs_asttokens_pr156",
+  "f2p": 1,
+  "p2p": 31
+ },
+ {
+  "instance_id": "hynek_environ-config_pr100",
+  "family": "hynek/environ-config",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hynek_environ-config_pr100",
+  "f2p": 1,
+  "p2p": 41
+ },
+ {
+  "instance_id": "jupyter-server_jupyter-scheduler_pr450",
+  "family": "jupyter-server/jupyter-scheduler",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jupyter-server_jupyter-scheduler_pr450",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "kelsin_mysql-mimic_pr4",
+  "family": "kelsin/mysql-mimic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kelsin_mysql-mimic_pr4",
+  "f2p": 15,
+  "p2p": 21
+ },
+ {
+  "instance_id": "lepture_flask-oauthlib_pr340",
+  "family": "lepture/flask-oauthlib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lepture_flask-oauthlib_pr340",
+  "f2p": 1,
+  "p2p": 38
+ },
+ {
+  "instance_id": "linkml_prefixmaps_pr17",
+  "family": "linkml/prefixmaps",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:linkml_prefixmaps_pr17",
+  "f2p": 1,
+  "p2p": 14
+ },
+ {
+  "instance_id": "marshallward_f90nml_pr70",
+  "family": "marshallward/f90nml",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:marshallward_f90nml_pr70",
+  "f2p": 2,
+  "p2p": 75
+ },
+ {
+  "instance_id": "manchenkoff_openapi3-parser_pr44",
+  "family": "manchenkoff/openapi3-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:manchenkoff_openapi3-parser_pr44",
+  "f2p": 2,
+  "p2p": 39
+ },
+ {
+  "instance_id": "mbr_tinyrpc_pr64",
+  "family": "mbr/tinyrpc",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mbr_tinyrpc_pr64",
+  "f2p": 2,
+  "p2p": 187
+ },
+ {
+  "instance_id": "mozilla_django-csp_pr237",
+  "family": "mozilla/django-csp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mozilla_django-csp_pr237",
+  "f2p": 3,
+  "p2p": 29
+ },
+ {
+  "instance_id": "okta_okta-jwt-verifier-python_pr32",
+  "family": "okta/okta-jwt-verifier-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:okta_okta-jwt-verifier-python_pr32",
+  "f2p": 1,
+  "p2p": 20
+ },
+ {
+  "instance_id": "pecan_pecan_pr160",
+  "family": "pecan/pecan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pecan_pecan_pr160",
+  "f2p": 5,
+  "p2p": 161
+ },
+ {
+  "instance_id": "pycasbin_sqlalchemy-adapter_pr56",
+  "family": "pycasbin/sqlalchemy-adapter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pycasbin_sqlalchemy-adapter_pr56",
+  "f2p": 1,
+  "p2p": 13
+ },
+ {
+  "instance_id": "pytroll_donfig_pr49",
+  "family": "pytroll/donfig",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pytroll_donfig_pr49",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "raphaelm_python-sepaxml_pr5",
+  "family": "raphaelm/python-sepaxml",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:raphaelm_python-sepaxml_pr5",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "ramonhagenaars_jsons_pr7",
+  "family": "ramonhagenaars/jsons",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ramonhagenaars_jsons_pr7",
+  "f2p": 2,
+  "p2p": 60
+ },
+ {
+  "instance_id": "sayanarijit_expandvars_pr18",
+  "family": "sayanarijit/expandvars",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sayanarijit_expandvars_pr18",
+  "f2p": 1,
+  "p2p": 18
+ },
+ {
+  "instance_id": "sbtinstruments_asyncio-mqtt_pr285",
+  "family": "sbtinstruments/asyncio-mqtt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sbtinstruments_asyncio-mqtt_pr285",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "scott-griffiths_bitstring_pr271",
+  "family": "scott-griffiths/bitstring",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scott-griffiths_bitstring_pr271",
+  "f2p": 2,
+  "p2p": 532
+ },
+ {
+  "instance_id": "sissaschool_xmlschema_pr118",
+  "family": "sissaschool/xmlschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sissaschool_xmlschema_pr118",
+  "f2p": 2,
+  "p2p": 195
+ },
+ {
+  "instance_id": "sphinx-contrib_openapi_pr98",
+  "family": "sphinx-contrib/openapi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sphinx-contrib_openapi_pr98",
+  "f2p": 3,
+  "p2p": 116
+ },
+ {
+  "instance_id": "tmux-python_tmuxp_pr931",
+  "family": "tmux-python/tmuxp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tmux-python_tmuxp_pr931",
+  "f2p": 1,
+  "p2p": 74
+ },
+ {
+  "instance_id": "wireservice_agate_pr770",
+  "family": "wireservice/agate",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wireservice_agate_pr770",
+  "f2p": 1,
+  "p2p": 130
+ },
+ {
+  "instance_id": "zeth_inputs_pr33",
+  "family": "zeth/inputs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:zeth_inputs_pr33",
+  "f2p": 1,
+  "p2p": 12
+ },
+ {
+  "instance_id": "andialbrecht_sqlparse_pr317",
+  "family": "andialbrecht/sqlparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:andialbrecht_sqlparse_pr317",
+  "f2p": 3,
+  "p2p": 102
+ },
+ {
+  "instance_id": "adamchainz_treepoem_pr587",
+  "family": "adamchainz/treepoem",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_treepoem_pr587",
+  "f2p": 1,
+  "p2p": 24
+ },
+ {
+  "instance_id": "awslabs_aws-serverlessrepo-python_pr25",
+  "family": "awslabs/aws-serverlessrepo-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:awslabs_aws-serverlessrepo-python_pr25",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "biopragmatics_bioversions_pr84",
+  "family": "biopragmatics/bioversions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biopragmatics_bioversions_pr84",
+  "f2p": 3,
+  "p2p": 4
+ },
+ {
+  "instance_id": "catcombo_jira2markdown_pr13",
+  "family": "catcombo/jira2markdown",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:catcombo_jira2markdown_pr13",
+  "f2p": 3,
+  "p2p": 99
+ },
+ {
+  "instance_id": "choderalab_pymbar_pr558",
+  "family": "choderalab/pymbar",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:choderalab_pymbar_pr558",
+  "f2p": 4,
+  "p2p": 31
+ },
+ {
+  "instance_id": "contentful_contentful-management.py_pr28",
+  "family": "contentful/contentful-management.py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:contentful_contentful-management.py_pr28",
+  "f2p": 1,
+  "p2p": 100
+ },
+ {
+  "instance_id": "crflynn_pbspark_pr33",
+  "family": "crflynn/pbspark",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:crflynn_pbspark_pr33",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "dask_dask-jobqueue_pr582",
+  "family": "dask/dask-jobqueue",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dask_dask-jobqueue_pr582",
+  "f2p": 2,
+  "p2p": 56
+ },
+ {
+  "instance_id": "dbatten5_maison_pr16",
+  "family": "dbatten5/maison",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dbatten5_maison_pr16",
+  "f2p": 3,
+  "p2p": 11
+ },
+ {
+  "instance_id": "durandtibo_objectory_pr528",
+  "family": "durandtibo/objectory",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:durandtibo_objectory_pr528",
+  "f2p": 7,
+  "p2p": 57
+ },
+ {
+  "instance_id": "eigenein_protobuf_pr174",
+  "family": "eigenein/protobuf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:eigenein_protobuf_pr174",
+  "f2p": 1,
+  "p2p": 33
+ },
+ {
+  "instance_id": "exasol_error-reporting-python_pr31",
+  "family": "exasol/error-reporting-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:exasol_error-reporting-python_pr31",
+  "f2p": 4,
+  "p2p": 24
+ },
+ {
+  "instance_id": "frankie567_httpx-ws_pr110",
+  "family": "frankie567/httpx-ws",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frankie567_httpx-ws_pr110",
+  "f2p": 2,
+  "p2p": 37
+ },
+ {
+  "instance_id": "getpelican_feedgenerator_pr7",
+  "family": "getpelican/feedgenerator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:getpelican_feedgenerator_pr7",
+  "f2p": 1,
+  "p2p": 4
+ },
+ {
+  "instance_id": "gmr_pamqp_pr37",
+  "family": "gmr/pamqp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gmr_pamqp_pr37",
+  "f2p": 4,
+  "p2p": 299
+ },
+ {
+  "instance_id": "google-deepmind_treescope_pr43",
+  "family": "google-deepmind/treescope",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google-deepmind_treescope_pr43",
+  "f2p": 1,
+  "p2p": 41
+ },
+ {
+  "instance_id": "home-assistant-libs_voluptuous-serialize_pr155",
+  "family": "home-assistant-libs/voluptuous-serialize",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:home-assistant-libs_voluptuous-serialize_pr155",
+  "f2p": 3,
+  "p2p": 50
+ },
+ {
+  "instance_id": "ihmwg_python-ihm_pr54",
+  "family": "ihmwg/python-ihm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ihmwg_python-ihm_pr54",
+  "f2p": 2,
+  "p2p": 316
+ },
+ {
+  "instance_id": "izimobil_django-rest-framework-datatables_pr112",
+  "family": "izimobil/django-rest-framework-datatables",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:izimobil_django-rest-framework-datatables_pr112",
+  "f2p": 1,
+  "p2p": 21
+ },
+ {
+  "instance_id": "jodal_pykka_pr226",
+  "family": "jodal/pykka",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jodal_pykka_pr226",
+  "f2p": 3,
+  "p2p": 129
+ },
+ {
+  "instance_id": "joblib_joblib-spark_pr35",
+  "family": "joblib/joblib-spark",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:joblib_joblib-spark_pr35",
+  "f2p": 1,
+  "p2p": 3
+ },
+ {
+  "instance_id": "jazzband_django-fsm-log_pr143",
+  "family": "jazzband/django-fsm-log",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_django-fsm-log_pr143",
+  "f2p": 5,
+  "p2p": 22
+ },
+ {
+  "instance_id": "kurtbrose_pyjks_pr18",
+  "family": "kurtbrose/pyjks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kurtbrose_pyjks_pr18",
+  "f2p": 1,
+  "p2p": 20
+ },
+ {
+  "instance_id": "llybin_drf-recaptcha_pr20",
+  "family": "llybin/drf-recaptcha",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:llybin_drf-recaptcha_pr20",
+  "f2p": 8,
+  "p2p": 26
+ },
+ {
+  "instance_id": "madpah_requirements-parser_pr98",
+  "family": "madpah/requirements-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:madpah_requirements-parser_pr98",
+  "f2p": 4,
+  "p2p": 7
+ },
+ {
+  "instance_id": "marshmallow-code_marshmallow-oneofschema_pr6",
+  "family": "marshmallow-code/marshmallow-oneofschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:marshmallow-code_marshmallow-oneofschema_pr6",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "matthew-brett_delocate_pr183",
+  "family": "matthew-brett/delocate",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matthew-brett_delocate_pr183",
+  "f2p": 5,
+  "p2p": 20
+ },
+ {
+  "instance_id": "maxb2_typer-config_pr6",
+  "family": "maxb2/typer-config",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maxb2_typer-config_pr6",
+  "f2p": 1,
+  "p2p": 1
+ },
+ {
+  "instance_id": "matplotlib_cycler_pr103",
+  "family": "matplotlib/cycler",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matplotlib_cycler_pr103",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "microsoft_kiota_pr1290",
+  "family": "microsoft/kiota",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:microsoft_kiota_pr1290",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "mmore500_alifedata-phyloinformatics-convert_pr24",
+  "family": "mmore500/alifedata-phyloinformatics-convert",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mmore500_alifedata-phyloinformatics-convert_pr24",
+  "f2p": 2,
+  "p2p": 66
+ },
+ {
+  "instance_id": "midstar_pycstruct_pr28",
+  "family": "midstar/pycstruct",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:midstar_pycstruct_pr28",
+  "f2p": 2,
+  "p2p": 1
+ },
+ {
+  "instance_id": "napari_napari-plugin-engine_pr2",
+  "family": "napari/napari-plugin-engine",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:napari_napari-plugin-engine_pr2",
+  "f2p": 4,
+  "p2p": 34
+ },
+ {
+  "instance_id": "olzhasar_pytest-watcher_pr9",
+  "family": "olzhasar/pytest-watcher",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:olzhasar_pytest-watcher_pr9",
+  "f2p": 23,
+  "p2p": 6
+ },
+ {
+  "instance_id": "openedx_django-user-tasks_pr151",
+  "family": "openedx/django-user-tasks",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_django-user-tasks_pr151",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "ouhammmourachid_mermaid-py_pr26",
+  "family": "ouhammmourachid/mermaid-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ouhammmourachid_mermaid-py_pr26",
+  "f2p": 5,
+  "p2p": 22
+ },
+ {
+  "instance_id": "pappasam_toml-sort_pr91",
+  "family": "pappasam/toml-sort",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pappasam_toml-sort_pr91",
+  "f2p": 1,
+  "p2p": 32
+ },
+ {
+  "instance_id": "predictive-analytics-lab_data-science-types_pr76",
+  "family": "predictive-analytics-lab/data-science-types",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:predictive-analytics-lab_data-science-types_pr76",
+  "f2p": 7,
+  "p2p": 13
+ },
+ {
+  "instance_id": "pycqa_doc8_pr66",
+  "family": "pycqa/doc8",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pycqa_doc8_pr66",
+  "f2p": 3,
+  "p2p": 30
+ },
+ {
+  "instance_id": "pycontribs_subprocess-tee_pr47",
+  "family": "pycontribs/subprocess-tee",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pycontribs_subprocess-tee_pr47",
+  "f2p": 3,
+  "p2p": 15
+ },
+ {
+  "instance_id": "pyinfra-dev_pyinfra_pr194",
+  "family": "pyinfra-dev/pyinfra",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyinfra-dev_pyinfra_pr194",
+  "f2p": 2,
+  "p2p": 128
+ },
+ {
+  "instance_id": "pytest-dev_pytest-subtests_pr169",
+  "family": "pytest-dev/pytest-subtests",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pytest-dev_pytest-subtests_pr169",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "python-jsonschema_jsonschema_pr203",
+  "family": "python-jsonschema/jsonschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-jsonschema_jsonschema_pr203",
+  "f2p": 2,
+  "p2p": 272
+ },
+ {
+  "instance_id": "ramonhagenaars_typish_pr10",
+  "family": "ramonhagenaars/typish",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ramonhagenaars_typish_pr10",
+  "f2p": 3,
+  "p2p": 39
+ },
+ {
+  "instance_id": "richard-gyiko_json-schema-to-pydantic_pr20",
+  "family": "richard-gyiko/json-schema-to-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:richard-gyiko_json-schema-to-pydantic_pr20",
+  "f2p": 2,
+  "p2p": 36
+ },
+ {
+  "instance_id": "rtfd_recommonmark_pr122",
+  "family": "rtfd/recommonmark",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rtfd_recommonmark_pr122",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "scrapinghub_price-parser_pr66",
+  "family": "scrapinghub/price-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapinghub_price-parser_pr66",
+  "f2p": 6,
+  "p2p": 316
+ },
+ {
+  "instance_id": "scikit-build_ninja-python-distributions_pr63",
+  "family": "scikit-build/ninja-python-distributions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-build_ninja-python-distributions_pr63",
+  "f2p": 3,
+  "p2p": 2
+ },
+ {
+  "instance_id": "shinichi-takii_ddlparse_pr62",
+  "family": "shinichi-takii/ddlparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:shinichi-takii_ddlparse_pr62",
+  "f2p": 2,
+  "p2p": 19
+ },
+ {
+  "instance_id": "severb_graypy_pr66",
+  "family": "severb/graypy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:severb_graypy_pr66",
+  "f2p": 2,
+  "p2p": 9
+ },
+ {
+  "instance_id": "tartley_colorama_pr5",
+  "family": "tartley/colorama",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tartley_colorama_pr5",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "trufont_uharfbuzz_pr119",
+  "family": "trufont/uharfbuzz",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:trufont_uharfbuzz_pr119",
+  "f2p": 8,
+  "p2p": 64
+ },
+ {
+  "instance_id": "valohai_laituri_pr11",
+  "family": "valohai/laituri",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:valohai_laituri_pr11",
+  "f2p": 3,
+  "p2p": 27
+ },
+ {
+  "instance_id": "wayfair-incubator_pygitops_pr129",
+  "family": "wayfair-incubator/pygitops",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wayfair-incubator_pygitops_pr129",
+  "f2p": 3,
+  "p2p": 43
+ },
+ {
+  "instance_id": "your-tools_python-cli-ui_pr106",
+  "family": "your-tools/python-cli-ui",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:your-tools_python-cli-ui_pr106",
+  "f2p": 1,
+  "p2p": 32
+ },
+ {
+  "instance_id": "adamchainz_apig-wsgi_pr93",
+  "family": "adamchainz/apig-wsgi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_apig-wsgi_pr93",
+  "f2p": 5,
+  "p2p": 22
+ },
+ {
+  "instance_id": "beetbox_mediafile_pr58",
+  "family": "beetbox/mediafile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:beetbox_mediafile_pr58",
+  "f2p": 13,
+  "p2p": 411
+ },
+ {
+  "instance_id": "box_box-python-sdk_pr705",
+  "family": "box/box-python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:box_box-python-sdk_pr705",
+  "f2p": 28,
+  "p2p": 1758
+ },
+ {
+  "instance_id": "bastikr_boolean.py_pr32",
+  "family": "bastikr/boolean.py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bastikr_boolean.py_pr32",
+  "f2p": 1,
+  "p2p": 49
+ },
+ {
+  "instance_id": "brack3t_django-braces_pr305",
+  "family": "brack3t/django-braces",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:brack3t_django-braces_pr305",
+  "f2p": 3,
+  "p2p": 64
+ },
+ {
+  "instance_id": "cdgriffith_puremagic_pr108",
+  "family": "cdgriffith/puremagic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cdgriffith_puremagic_pr108",
+  "f2p": 4,
+  "p2p": 22
+ },
+ {
+  "instance_id": "cgoldberg_xvfbwrapper_pr61",
+  "family": "cgoldberg/xvfbwrapper",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cgoldberg_xvfbwrapper_pr61",
+  "f2p": 1,
+  "p2p": 12
+ },
+ {
+  "instance_id": "cldf_csvw_pr42",
+  "family": "cldf/csvw",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cldf_csvw_pr42",
+  "f2p": 2,
+  "p2p": 110
+ },
+ {
+  "instance_id": "chargebee_chargebee-python_pr101",
+  "family": "chargebee/chargebee-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:chargebee_chargebee-python_pr101",
+  "f2p": 3,
+  "p2p": 14
+ },
+ {
+  "instance_id": "cobrateam_django-htmlmin_pr99",
+  "family": "cobrateam/django-htmlmin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cobrateam_django-htmlmin_pr99",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "daggaz_json-stream_pr11",
+  "family": "daggaz/json-stream",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:daggaz_json-stream_pr11",
+  "f2p": 2,
+  "p2p": 20
+ },
+ {
+  "instance_id": "davidvujic_poetry-multiproject-plugin_pr67",
+  "family": "davidvujic/poetry-multiproject-plugin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:davidvujic_poetry-multiproject-plugin_pr67",
+  "f2p": 4,
+  "p2p": 10
+ },
+ {
+  "instance_id": "deepghs_hfutils_pr56",
+  "family": "deepghs/hfutils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:deepghs_hfutils_pr56",
+  "f2p": 4,
+  "p2p": 173
+ },
+ {
+  "instance_id": "deeplook_sparklines_pr2",
+  "family": "deeplook/sparklines",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:deeplook_sparklines_pr2",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "dchevell_flask-executor_pr2",
+  "family": "dchevell/flask-executor",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dchevell_flask-executor_pr2",
+  "f2p": 2,
+  "p2p": 14
+ },
+ {
+  "instance_id": "didix21_mdutils_pr61",
+  "family": "didix21/mdutils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:didix21_mdutils_pr61",
+  "f2p": 6,
+  "p2p": 26
+ },
+ {
+  "instance_id": "ecies_py_pr403",
+  "family": "ecies/py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ecies_py_pr403",
+  "f2p": 28,
+  "p2p": 26
+ },
+ {
+  "instance_id": "erezlife_html2docx_pr40",
+  "family": "erezlife/html2docx",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:erezlife_html2docx_pr40",
+  "f2p": 6,
+  "p2p": 29
+ },
+ {
+  "instance_id": "ethereum_eth-tester_pr269",
+  "family": "ethereum/eth-tester",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-tester_pr269",
+  "f2p": 5,
+  "p2p": 240
+ },
+ {
+  "instance_id": "ethereum_hexbytes_pr13",
+  "family": "ethereum/hexbytes",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_hexbytes_pr13",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "executablebooks_sphinx-design_pr105",
+  "family": "executablebooks/sphinx-design",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:executablebooks_sphinx-design_pr105",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "fivetran_airflow-provider-fivetran_pr36",
+  "family": "fivetran/airflow-provider-fivetran",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fivetran_airflow-provider-fivetran_pr36",
+  "f2p": 3,
+  "p2p": 4
+ },
+ {
+  "instance_id": "ghazi-git_drf-standardized-errors_pr30",
+  "family": "ghazi-git/drf-standardized-errors",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ghazi-git_drf-standardized-errors_pr30",
+  "f2p": 1,
+  "p2p": 52
+ },
+ {
+  "instance_id": "geotab_mygeotab-python_pr7",
+  "family": "geotab/mygeotab-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:geotab_mygeotab-python_pr7",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "geopy_geopy_pr281",
+  "family": "geopy/geopy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:geopy_geopy_pr281",
+  "f2p": 6,
+  "p2p": 46
+ },
+ {
+  "instance_id": "gotcha_ipdb_pr193",
+  "family": "gotcha/ipdb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gotcha_ipdb_pr193",
+  "f2p": 1,
+  "p2p": 13
+ },
+ {
+  "instance_id": "h2oai_authn-py_pr5",
+  "family": "h2oai/authn-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:h2oai_authn-py_pr5",
+  "f2p": 2,
+  "p2p": 13
+ },
+ {
+  "instance_id": "heroku_salesforce-bulk_pr86",
+  "family": "heroku/salesforce-bulk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:heroku_salesforce-bulk_pr86",
+  "f2p": 5,
+  "p2p": 12
+ },
+ {
+  "instance_id": "hh-h_aiohttp-swagger3_pr92",
+  "family": "hh-h/aiohttp-swagger3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hh-h_aiohttp-swagger3_pr92",
+  "f2p": 1,
+  "p2p": 59
+ },
+ {
+  "instance_id": "jacobschaer_python-doipclient_pr30",
+  "family": "jacobschaer/python-doipclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jacobschaer_python-doipclient_pr30",
+  "f2p": 3,
+  "p2p": 76
+ },
+ {
+  "instance_id": "jazzband_django-smart-selects_pr291",
+  "family": "jazzband/django-smart-selects",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_django-smart-selects_pr291",
+  "f2p": 4,
+  "p2p": 25
+ },
+ {
+  "instance_id": "jerry-git_pytest-split_pr18",
+  "family": "jerry-git/pytest-split",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jerry-git_pytest-split_pr18",
+  "f2p": 1,
+  "p2p": 15
+ },
+ {
+  "instance_id": "jazzband_geojson_pr215",
+  "family": "jazzband/geojson",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_geojson_pr215",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "jborean93_pypsrp_pr136",
+  "family": "jborean93/pypsrp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jborean93_pypsrp_pr136",
+  "f2p": 2,
+  "p2p": 107
+ },
+ {
+  "instance_id": "joerick_pyinstrument_pr45",
+  "family": "joerick/pyinstrument",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:joerick_pyinstrument_pr45",
+  "f2p": 1,
+  "p2p": 6
+ },
+ {
+  "instance_id": "jwodder_versioningit_pr79",
+  "family": "jwodder/versioningit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jwodder_versioningit_pr79",
+  "f2p": 2,
+  "p2p": 131
+ },
+ {
+  "instance_id": "langchain-ai_langchain-milvus_pr8",
+  "family": "langchain-ai/langchain-milvus",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:langchain-ai_langchain-milvus_pr8",
+  "f2p": 2,
+  "p2p": 3
+ },
+ {
+  "instance_id": "lmmentel_mendeleev_pr76",
+  "family": "lmmentel/mendeleev",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lmmentel_mendeleev_pr76",
+  "f2p": 4,
+  "p2p": 299
+ },
+ {
+  "instance_id": "matrix-org_python-canonicaljson_pr34",
+  "family": "matrix-org/python-canonicaljson",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matrix-org_python-canonicaljson_pr34",
+  "f2p": 1,
+  "p2p": 6
+ },
+ {
+  "instance_id": "marksparkza_jschon_pr55",
+  "family": "marksparkza/jschon",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:marksparkza_jschon_pr55",
+  "f2p": 3,
+  "p2p": 1065
+ },
+ {
+  "instance_id": "meteostat_meteostat-python_pr66",
+  "family": "meteostat/meteostat-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:meteostat_meteostat-python_pr66",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "miso-belica_sumy_pr189",
+  "family": "miso-belica/sumy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:miso-belica_sumy_pr189",
+  "f2p": 3,
+  "p2p": 76
+ },
+ {
+  "instance_id": "miguelgrinberg_python-engineio_pr286",
+  "family": "miguelgrinberg/python-engineio",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:miguelgrinberg_python-engineio_pr286",
+  "f2p": 21,
+  "p2p": 234
+ },
+ {
+  "instance_id": "mongodb_pymongo-auth-aws_pr7",
+  "family": "mongodb/pymongo-auth-aws",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mongodb_pymongo-auth-aws_pr7",
+  "f2p": 8,
+  "p2p": 2
+ },
+ {
+  "instance_id": "myusuf3_delorean_pr62",
+  "family": "myusuf3/delorean",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:myusuf3_delorean_pr62",
+  "f2p": 1,
+  "p2p": 62
+ },
+ {
+  "instance_id": "nipy_nitransforms_pr27",
+  "family": "nipy/nitransforms",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nipy_nitransforms_pr27",
+  "f2p": 14,
+  "p2p": 6
+ },
+ {
+  "instance_id": "ofek_hatch-vcs_pr6",
+  "family": "ofek/hatch-vcs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ofek_hatch-vcs_pr6",
+  "f2p": 4,
+  "p2p": 15
+ },
+ {
+  "instance_id": "openedx_super-csv_pr216",
+  "family": "openedx/super-csv",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_super-csv_pr216",
+  "f2p": 3,
+  "p2p": 21
+ },
+ {
+  "instance_id": "p1c2u_jsonschema-spec_pr74",
+  "family": "p1c2u/jsonschema-spec",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:p1c2u_jsonschema-spec_pr74",
+  "f2p": 5,
+  "p2p": 26
+ },
+ {
+  "instance_id": "oxigraph_oxrdflib_pr14",
+  "family": "oxigraph/oxrdflib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:oxigraph_oxrdflib_pr14",
+  "f2p": 5,
+  "p2p": 24
+ },
+ {
+  "instance_id": "pallets_flask_pr3574",
+  "family": "pallets/flask",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets_flask_pr3574",
+  "f2p": 1,
+  "p2p": 138
+ },
+ {
+  "instance_id": "orsinium-labs_mypy-baseline_pr1",
+  "family": "orsinium-labs/mypy-baseline",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:orsinium-labs_mypy-baseline_pr1",
+  "f2p": 2,
+  "p2p": 6
+ },
+ {
+  "instance_id": "posthog_drf-exceptions-hog_pr13",
+  "family": "posthog/drf-exceptions-hog",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:posthog_drf-exceptions-hog_pr13",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "podhmo_python-node-semver_pr14",
+  "family": "podhmo/python-node-semver",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:podhmo_python-node-semver_pr14",
+  "f2p": 4,
+  "p2p": 328
+ },
+ {
+  "instance_id": "pwwang_liquidpy_pr54",
+  "family": "pwwang/liquidpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pwwang_liquidpy_pr54",
+  "f2p": 1,
+  "p2p": 66
+ },
+ {
+  "instance_id": "pyasn1_pyasn1_pr13",
+  "family": "pyasn1/pyasn1",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyasn1_pyasn1_pr13",
+  "f2p": 1,
+  "p2p": 377
+ },
+ {
+  "instance_id": "python-visualization_branca_pr4",
+  "family": "python-visualization/branca",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-visualization_branca_pr4",
+  "f2p": 7,
+  "p2p": 5
+ },
+ {
+  "instance_id": "pyvisa_pyvisa-sim_pr96",
+  "family": "pyvisa/pyvisa-sim",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyvisa_pyvisa-sim_pr96",
+  "f2p": 5,
+  "p2p": 44
+ },
+ {
+  "instance_id": "pyupio_dparse_pr68",
+  "family": "pyupio/dparse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyupio_dparse_pr68",
+  "f2p": 4,
+  "p2p": 37
+ },
+ {
+  "instance_id": "pysal_spopt_pr312",
+  "family": "pysal/spopt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pysal_spopt_pr312",
+  "f2p": 8,
+  "p2p": 45
+ },
+ {
+  "instance_id": "rom1504_embedding-reader_pr25",
+  "family": "rom1504/embedding-reader",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rom1504_embedding-reader_pr25",
+  "f2p": 1,
+  "p2p": 13
+ },
+ {
+  "instance_id": "sbdchd_django-types_pr353",
+  "family": "sbdchd/django-types",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sbdchd_django-types_pr353",
+  "f2p": 6,
+  "p2p": 10
+ },
+ {
+  "instance_id": "scour-project_scour_pr255",
+  "family": "scour-project/scour",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scour-project_scour_pr255",
+  "f2p": 1,
+  "p2p": 259
+ },
+ {
+  "instance_id": "scikit-hep_mplhep_pr222",
+  "family": "scikit-hep/mplhep",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scikit-hep_mplhep_pr222",
+  "f2p": 2,
+  "p2p": 12
+ },
+ {
+  "instance_id": "scrapinghub_andi_pr14",
+  "family": "scrapinghub/andi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapinghub_andi_pr14",
+  "f2p": 6,
+  "p2p": 12
+ },
+ {
+  "instance_id": "serhatbolsu_robotframework-appiumlibrary_pr354",
+  "family": "serhatbolsu/robotframework-appiumlibrary",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:serhatbolsu_robotframework-appiumlibrary_pr354",
+  "f2p": 5,
+  "p2p": 20
+ },
+ {
+  "instance_id": "snok_django-guid_pr31",
+  "family": "snok/django-guid",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:snok_django-guid_pr31",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "spyoungtech_json-five_pr2",
+  "family": "spyoungtech/json-five",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:spyoungtech_json-five_pr2",
+  "f2p": 6,
+  "p2p": 26
+ },
+ {
+  "instance_id": "t3rn0_ast-comments_pr12",
+  "family": "t3rn0/ast-comments",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:t3rn0_ast-comments_pr12",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "thobbs_pure-sasl_pr19",
+  "family": "thobbs/pure-sasl",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:thobbs_pure-sasl_pr19",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "vmware_pyvmomi_pr555",
+  "family": "vmware/pyvmomi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:vmware_pyvmomi_pr555",
+  "f2p": 1,
+  "p2p": 19
+ },
+ {
+  "instance_id": "webrecorder_warcio_pr13",
+  "family": "webrecorder/warcio",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:webrecorder_warcio_pr13",
+  "f2p": 6,
+  "p2p": 38
+ },
+ {
+  "instance_id": "xmunoz_sodapy_pr23",
+  "family": "xmunoz/sodapy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:xmunoz_sodapy_pr23",
+  "f2p": 1,
+  "p2p": 12
+ },
+ {
+  "instance_id": "will-ockmore_httpx-retries_pr38",
+  "family": "will-ockmore/httpx-retries",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:will-ockmore_httpx-retries_pr38",
+  "f2p": 6,
+  "p2p": 28
+ },
+ {
+  "instance_id": "yurymalkov_hnsw_pr85",
+  "family": "yurymalkov/hnsw",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:yurymalkov_hnsw_pr85",
+  "f2p": 1,
+  "p2p": 1
+ },
+ {
+  "instance_id": "aiven_aiven-client_pr287",
+  "family": "aiven/aiven-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aiven_aiven-client_pr287",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "biocommons_biocommons.seqrepo_pr190",
+  "family": "biocommons/biocommons.seqrepo",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biocommons_biocommons.seqrepo_pr190",
+  "f2p": 6,
+  "p2p": 28
+ },
+ {
+  "instance_id": "assertpy_assertpy_pr96",
+  "family": "assertpy/assertpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:assertpy_assertpy_pr96",
+  "f2p": 1,
+  "p2p": 166
+ },
+ {
+  "instance_id": "aio-libs_aiozipkin_pr40",
+  "family": "aio-libs/aiozipkin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aio-libs_aiozipkin_pr40",
+  "f2p": 8,
+  "p2p": 25
+ },
+ {
+  "instance_id": "awslabs_mxnet-model-server_pr303",
+  "family": "awslabs/mxnet-model-server",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:awslabs_mxnet-model-server_pr303",
+  "f2p": 3,
+  "p2p": 23
+ },
+ {
+  "instance_id": "adamchainz_ec2-metadata_pr339",
+  "family": "adamchainz/ec2-metadata",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_ec2-metadata_pr339",
+  "f2p": 2,
+  "p2p": 78
+ },
+ {
+  "instance_id": "awslabs_amazon-sns-python-extended-client-lib_pr9",
+  "family": "awslabs/amazon-sns-python-extended-client-lib",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:awslabs_amazon-sns-python-extended-client-lib_pr9",
+  "f2p": 5,
+  "p2p": 18
+ },
+ {
+  "instance_id": "astronomer_airflow-provider-fivetran-async_pr101",
+  "family": "astronomer/airflow-provider-fivetran-async",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:astronomer_airflow-provider-fivetran-async_pr101",
+  "f2p": 3,
+  "p2p": 42
+ },
+ {
+  "instance_id": "avian2_jsonmerge_pr19",
+  "family": "avian2/jsonmerge",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:avian2_jsonmerge_pr19",
+  "f2p": 1,
+  "p2p": 62
+ },
+ {
+  "instance_id": "bigjason_django-choices_pr13",
+  "family": "bigjason/django-choices",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bigjason_django-choices_pr13",
+  "f2p": 3,
+  "p2p": 12
+ },
+ {
+  "instance_id": "ansys_pyedb-core_pr349",
+  "family": "ansys/pyedb-core",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ansys_pyedb-core_pr349",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "blake-r_pytest-durations_pr34",
+  "family": "blake-r/pytest-durations",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:blake-r_pytest-durations_pr34",
+  "f2p": 14,
+  "p2p": 61
+ },
+ {
+  "instance_id": "benhoyt_graphyte_pr11",
+  "family": "benhoyt/graphyte",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:benhoyt_graphyte_pr11",
+  "f2p": 1,
+  "p2p": 18
+ },
+ {
+  "instance_id": "btubbs_sseclient_pr64",
+  "family": "btubbs/sseclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:btubbs_sseclient_pr64",
+  "f2p": 5,
+  "p2p": 19
+ },
+ {
+  "instance_id": "bretello_pdbpp_pr45",
+  "family": "bretello/pdbpp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bretello_pdbpp_pr45",
+  "f2p": 1,
+  "p2p": 61
+ },
+ {
+  "instance_id": "biocommons_hgvs_pr699",
+  "family": "biocommons/hgvs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biocommons_hgvs_pr699",
+  "f2p": 2,
+  "p2p": 127
+ },
+ {
+  "instance_id": "backstage_mkdocs-monorepo-plugin_pr86",
+  "family": "backstage/mkdocs-monorepo-plugin",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:backstage_mkdocs-monorepo-plugin_pr86",
+  "f2p": 2,
+  "p2p": 4
+ },
+ {
+  "instance_id": "bobthemighty_punq_pr10",
+  "family": "bobthemighty/punq",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bobthemighty_punq_pr10",
+  "f2p": 3,
+  "p2p": 16
+ },
+ {
+  "instance_id": "bluetooth-devices_ulid-transform_pr18",
+  "family": "bluetooth-devices/ulid-transform",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_ulid-transform_pr18",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "carbonplan_xarray-schema_pr2",
+  "family": "carbonplan/xarray-schema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:carbonplan_xarray-schema_pr2",
+  "f2p": 2,
+  "p2p": 8
+ },
+ {
+  "instance_id": "bluetooth-devices_aiooui_pr5",
+  "family": "bluetooth-devices/aiooui",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bluetooth-devices_aiooui_pr5",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "childsish_dynamic-yaml_pr27",
+  "family": "childsish/dynamic-yaml",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:childsish_dynamic-yaml_pr27",
+  "f2p": 1,
+  "p2p": 17
+ },
+ {
+  "instance_id": "brightway-lca_brightway2-data_pr207",
+  "family": "brightway-lca/brightway2-data",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:brightway-lca_brightway2-data_pr207",
+  "f2p": 4,
+  "p2p": 26
+ },
+ {
+  "instance_id": "compilerla_conventional-pre-commit_pr140",
+  "family": "compilerla/conventional-pre-commit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:compilerla_conventional-pre-commit_pr140",
+  "f2p": 5,
+  "p2p": 149
+ },
+ {
+  "instance_id": "da4089_simplefix_pr17",
+  "family": "da4089/simplefix",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:da4089_simplefix_pr17",
+  "f2p": 1,
+  "p2p": 35
+ },
+ {
+  "instance_id": "csurfer_rake-nltk_pr59",
+  "family": "csurfer/rake-nltk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:csurfer_rake-nltk_pr59",
+  "f2p": 6,
+  "p2p": 5
+ },
+ {
+  "instance_id": "con_fscacher_pr79",
+  "family": "con/fscacher",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:con_fscacher_pr79",
+  "f2p": 1,
+  "p2p": 24
+ },
+ {
+  "instance_id": "corenting_immutabledict_pr244",
+  "family": "corenting/immutabledict",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:corenting_immutabledict_pr244",
+  "f2p": 1,
+  "p2p": 20
+ },
+ {
+  "instance_id": "crate_sqlalchemy-cratedb_pr140",
+  "family": "crate/sqlalchemy-cratedb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:crate_sqlalchemy-cratedb_pr140",
+  "f2p": 2,
+  "p2p": 32
+ },
+ {
+  "instance_id": "dapr_python-sdk_pr89",
+  "family": "dapr/python-sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dapr_python-sdk_pr89",
+  "f2p": 4,
+  "p2p": 26
+ },
+ {
+  "instance_id": "cucumber_cucumber-expressions_pr280",
+  "family": "cucumber/cucumber-expressions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cucumber_cucumber-expressions_pr280",
+  "f2p": 4,
+  "p2p": 55
+ },
+ {
+  "instance_id": "dask_partd_pr12",
+  "family": "dask/partd",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dask_partd_pr12",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "cs01_pygdbmi_pr16",
+  "family": "cs01/pygdbmi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cs01_pygdbmi_pr16",
+  "f2p": 1,
+  "p2p": 3
+ },
+ {
+  "instance_id": "ddmee_polling2_pr27",
+  "family": "ddmee/polling2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ddmee_polling2_pr27",
+  "f2p": 13,
+  "p2p": 10
+ },
+ {
+  "instance_id": "darvid_python-hyperscan_pr136",
+  "family": "darvid/python-hyperscan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:darvid_python-hyperscan_pr136",
+  "f2p": 6,
+  "p2p": 24
+ },
+ {
+  "instance_id": "di_pip-api_pr99",
+  "family": "di/pip-api",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:di_pip-api_pr99",
+  "f2p": 1,
+  "p2p": 31
+ },
+ {
+  "instance_id": "devrimcavusoglu_pybboxes_pr24",
+  "family": "devrimcavusoglu/pybboxes",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:devrimcavusoglu_pybboxes_pr24",
+  "f2p": 26,
+  "p2p": 42
+ },
+ {
+  "instance_id": "devolo_ssllabs_pr37",
+  "family": "devolo/ssllabs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:devolo_ssllabs_pr37",
+  "f2p": 1,
+  "p2p": 19
+ },
+ {
+  "instance_id": "developmentseed_rio-stac_pr65",
+  "family": "developmentseed/rio-stac",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:developmentseed_rio-stac_pr65",
+  "f2p": 3,
+  "p2p": 31
+ },
+ {
+  "instance_id": "dlwh_draccus_pr41",
+  "family": "dlwh/draccus",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dlwh_draccus_pr41",
+  "f2p": 1,
+  "p2p": 124
+ },
+ {
+  "instance_id": "dmort27_panphon_pr68",
+  "family": "dmort27/panphon",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dmort27_panphon_pr68",
+  "f2p": 1,
+  "p2p": 35
+ },
+ {
+  "instance_id": "edornd_argdantic_pr20",
+  "family": "edornd/argdantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:edornd_argdantic_pr20",
+  "f2p": 5,
+  "p2p": 28
+ },
+ {
+  "instance_id": "eht16_python-logstash-async_pr91",
+  "family": "eht16/python-logstash-async",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:eht16_python-logstash-async_pr91",
+  "f2p": 2,
+  "p2p": 24
+ },
+ {
+  "instance_id": "epicserve_django-cache-url_pr24",
+  "family": "epicserve/django-cache-url",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:epicserve_django-cache-url_pr24",
+  "f2p": 4,
+  "p2p": 24
+ },
+ {
+  "instance_id": "ethereum_eth-keyfile_pr22",
+  "family": "ethereum/eth-keyfile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-keyfile_pr22",
+  "f2p": 1,
+  "p2p": 16
+ },
+ {
+  "instance_id": "excitoon_gitignorefile_pr33",
+  "family": "excitoon/gitignorefile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:excitoon_gitignorefile_pr33",
+  "f2p": 1,
+  "p2p": 43
+ },
+ {
+  "instance_id": "explosion_spacy-curated-transformers_pr8",
+  "family": "explosion/spacy-curated-transformers",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:explosion_spacy-curated-transformers_pr8",
+  "f2p": 4,
+  "p2p": 26
+ },
+ {
+  "instance_id": "ezyang_expecttest_pr7",
+  "family": "ezyang/expecttest",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ezyang_expecttest_pr7",
+  "f2p": 1,
+  "p2p": 4
+ },
+ {
+  "instance_id": "fortifyadmin_fortifyapi_pr17",
+  "family": "fortifyadmin/fortifyapi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fortifyadmin_fortifyapi_pr17",
+  "f2p": 4,
+  "p2p": 1
+ },
+ {
+  "instance_id": "freakboy3742_pyxero_pr396",
+  "family": "freakboy3742/pyxero",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:freakboy3742_pyxero_pr396",
+  "f2p": 2,
+  "p2p": 72
+ },
+ {
+  "instance_id": "flaport_sax_pr58",
+  "family": "flaport/sax",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:flaport_sax_pr58",
+  "f2p": 4,
+  "p2p": 7
+ },
+ {
+  "instance_id": "getmoto_py-partiql-parser_pr24",
+  "family": "getmoto/py-partiql-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:getmoto_py-partiql-parser_pr24",
+  "f2p": 1,
+  "p2p": 51
+ },
+ {
+  "instance_id": "geopozo_logistro_pr25",
+  "family": "geopozo/logistro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:geopozo_logistro_pr25",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "geomet_geomet_pr18",
+  "family": "geomet/geomet",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:geomet_geomet_pr18",
+  "f2p": 3,
+  "p2p": 29
+ },
+ {
+  "instance_id": "glut23_webvtt-py_pr67",
+  "family": "glut23/webvtt-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:glut23_webvtt-py_pr67",
+  "f2p": 12,
+  "p2p": 103
+ },
+ {
+  "instance_id": "flexxui_pscript_pr70",
+  "family": "flexxui/pscript",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:flexxui_pscript_pr70",
+  "f2p": 1,
+  "p2p": 217
+ },
+ {
+  "instance_id": "holoviz-dev_pyct_pr98",
+  "family": "holoviz-dev/pyct",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:holoviz-dev_pyct_pr98",
+  "f2p": 4,
+  "p2p": 18
+ },
+ {
+  "instance_id": "huggingface_kernels_pr178",
+  "family": "huggingface/kernels",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:huggingface_kernels_pr178",
+  "f2p": 4,
+  "p2p": 7
+ },
+ {
+  "instance_id": "home-assistant-libs_python-supervisor-client_pr167",
+  "family": "home-assistant-libs/python-supervisor-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:home-assistant-libs_python-supervisor-client_pr167",
+  "f2p": 2,
+  "p2p": 60
+ },
+ {
+  "instance_id": "heremaps_flexible-polyline_pr24",
+  "family": "heremaps/flexible-polyline",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:heremaps_flexible-polyline_pr24",
+  "f2p": 2,
+  "p2p": 9
+ },
+ {
+  "instance_id": "ioxiocom_pyjwt-key-fetcher_pr21",
+  "family": "ioxiocom/pyjwt-key-fetcher",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ioxiocom_pyjwt-key-fetcher_pr21",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "johnnoone_json-spec_pr2",
+  "family": "johnnoone/json-spec",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:johnnoone_json-spec_pr2",
+  "f2p": 3,
+  "p2p": 25
+ },
+ {
+  "instance_id": "jonghwanhyeon_python-ffmpeg_pr25",
+  "family": "jonghwanhyeon/python-ffmpeg",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jonghwanhyeon_python-ffmpeg_pr25",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "justindujardin_pathy_pr96",
+  "family": "justindujardin/pathy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:justindujardin_pathy_pr96",
+  "f2p": 2,
+  "p2p": 63
+ },
+ {
+  "instance_id": "khaeru_sdmx_pr10",
+  "family": "khaeru/sdmx",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:khaeru_sdmx_pr10",
+  "f2p": 2,
+  "p2p": 78
+ },
+ {
+  "instance_id": "kipe_pycron_pr41",
+  "family": "kipe/pycron",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kipe_pycron_pr41",
+  "f2p": 2,
+  "p2p": 18
+ },
+ {
+  "instance_id": "litl_backoff_pr161",
+  "family": "litl/backoff",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:litl_backoff_pr161",
+  "f2p": 2,
+  "p2p": 105
+ },
+ {
+  "instance_id": "mapado_haversine_pr20",
+  "family": "mapado/haversine",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mapado_haversine_pr20",
+  "f2p": 5,
+  "p2p": 1
+ },
+ {
+  "instance_id": "landscapeio_requirements-detector_pr50",
+  "family": "landscapeio/requirements-detector",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:landscapeio_requirements-detector_pr50",
+  "f2p": 3,
+  "p2p": 44
+ },
+ {
+  "instance_id": "mattrobenolt_jinja2-cli_pr28",
+  "family": "mattrobenolt/jinja2-cli",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mattrobenolt_jinja2-cli_pr28",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "mgeier_sphinx-last-updated-by-git_pr25",
+  "family": "mgeier/sphinx-last-updated-by-git",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mgeier_sphinx-last-updated-by-git_pr25",
+  "f2p": 2,
+  "p2p": 10
+ },
+ {
+  "instance_id": "meltano_sdk_pr2603",
+  "family": "meltano/sdk",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:meltano_sdk_pr2603",
+  "f2p": 3,
+  "p2p": 159
+ },
+ {
+  "instance_id": "maximkulkin_lollipop-jsonschema_pr11",
+  "family": "maximkulkin/lollipop-jsonschema",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:maximkulkin_lollipop-jsonschema_pr11",
+  "f2p": 5,
+  "p2p": 100
+ },
+ {
+  "instance_id": "matplotlib_cmocean_pr106",
+  "family": "matplotlib/cmocean",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:matplotlib_cmocean_pr106",
+  "f2p": 5,
+  "p2p": 1
+ },
+ {
+  "instance_id": "miguelgrinberg_flask-httpauth_pr74",
+  "family": "miguelgrinberg/flask-httpauth",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:miguelgrinberg_flask-httpauth_pr74",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "ml31415_numpy-groupies_pr59",
+  "family": "ml31415/numpy-groupies",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ml31415_numpy-groupies_pr59",
+  "f2p": 3,
+  "p2p": 585
+ },
+ {
+  "instance_id": "mtth_hdfs_pr192",
+  "family": "mtth/hdfs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:mtth_hdfs_pr192",
+  "f2p": 2,
+  "p2p": 12
+ },
+ {
+  "instance_id": "nedbat_cog_pr4",
+  "family": "nedbat/cog",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nedbat_cog_pr4",
+  "f2p": 1,
+  "p2p": 108
+ },
+ {
+  "instance_id": "nomonosound_numpy-minmax_pr23",
+  "family": "nomonosound/numpy-minmax",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nomonosound_numpy-minmax_pr23",
+  "f2p": 5,
+  "p2p": 22
+ },
+ {
+  "instance_id": "nschloe_matplotx_pr11",
+  "family": "nschloe/matplotx",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nschloe_matplotx_pr11",
+  "f2p": 7,
+  "p2p": 14
+ },
+ {
+  "instance_id": "nipy_nitime_pr199",
+  "family": "nipy/nitime",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:nipy_nitime_pr199",
+  "f2p": 9,
+  "p2p": 36
+ },
+ {
+  "instance_id": "openedx_edx-lint_pr41",
+  "family": "openedx/edx-lint",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_edx-lint_pr41",
+  "f2p": 1,
+  "p2p": 6
+ },
+ {
+  "instance_id": "openedx_edx-celeryutils_pr101",
+  "family": "openedx/edx-celeryutils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_edx-celeryutils_pr101",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "opencobra_optlang_pr259",
+  "family": "opencobra/optlang",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:opencobra_optlang_pr259",
+  "f2p": 5,
+  "p2p": 100
+ },
+ {
+  "instance_id": "openedx_api-doc-tools_pr53",
+  "family": "openedx/api-doc-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openedx_api-doc-tools_pr53",
+  "f2p": 2,
+  "p2p": 20
+ },
+ {
+  "instance_id": "openwisp_django-swappable-models_pr33",
+  "family": "openwisp/django-swappable-models",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:openwisp_django-swappable-models_pr33",
+  "f2p": 1,
+  "p2p": 7
+ },
+ {
+  "instance_id": "opentracing_basictracer-python_pr43",
+  "family": "opentracing/basictracer-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:opentracing_basictracer-python_pr43",
+  "f2p": 3,
+  "p2p": 26
+ },
+ {
+  "instance_id": "pallets-eco_flask-pydantic_pr44",
+  "family": "pallets-eco/flask-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_flask-pydantic_pr44",
+  "f2p": 2,
+  "p2p": 39
+ },
+ {
+  "instance_id": "pallets-eco_flask-mail_pr221",
+  "family": "pallets-eco/flask-mail",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_flask-mail_pr221",
+  "f2p": 4,
+  "p2p": 49
+ },
+ {
+  "instance_id": "pallets-eco_flask-alembic_pr29",
+  "family": "pallets-eco/flask-alembic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pallets-eco_flask-alembic_pr29",
+  "f2p": 4,
+  "p2p": 17
+ },
+ {
+  "instance_id": "polm_cutlet_pr1",
+  "family": "polm/cutlet",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:polm_cutlet_pr1",
+  "f2p": 2,
+  "p2p": 37
+ },
+ {
+  "instance_id": "prompt-toolkit_ptpython_pr621",
+  "family": "prompt-toolkit/ptpython",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:prompt-toolkit_ptpython_pr621",
+  "f2p": 5,
+  "p2p": 1
+ },
+ {
+  "instance_id": "pwaller_pyprof2calltree_pr58",
+  "family": "pwaller/pyprof2calltree",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pwaller_pyprof2calltree_pr58",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "pydantic_typing-inspection_pr24",
+  "family": "pydantic/typing-inspection",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pydantic_typing-inspection_pr24",
+  "f2p": 1,
+  "p2p": 64
+ },
+ {
+  "instance_id": "pydoit_doit_pr292",
+  "family": "pydoit/doit",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pydoit_doit_pr292",
+  "f2p": 2,
+  "p2p": 217
+ },
+ {
+  "instance_id": "pysal_giddy_pr171",
+  "family": "pysal/giddy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pysal_giddy_pr171",
+  "f2p": 7,
+  "p2p": 19
+ },
+ {
+  "instance_id": "python-parsy_parsy_pr45",
+  "family": "python-parsy/parsy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:python-parsy_parsy_pr45",
+  "f2p": 3,
+  "p2p": 65
+ },
+ {
+  "instance_id": "pyvista_pyminiply_pr16",
+  "family": "pyvista/pyminiply",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pyvista_pyminiply_pr16",
+  "f2p": 3,
+  "p2p": 4
+ },
+ {
+  "instance_id": "quantumgizmos_ldpc_pr50",
+  "family": "quantumgizmos/ldpc",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:quantumgizmos_ldpc_pr50",
+  "f2p": 7,
+  "p2p": 24
+ },
+ {
+  "instance_id": "pythonnet_clr-loader_pr32",
+  "family": "pythonnet/clr-loader",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:pythonnet_clr-loader_pr32",
+  "f2p": 4,
+  "p2p": 4
+ },
+ {
+  "instance_id": "remcohaszing_pywakeonlan_pr24",
+  "family": "remcohaszing/pywakeonlan",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:remcohaszing_pywakeonlan_pr24",
+  "f2p": 1,
+  "p2p": 7
+ },
+ {
+  "instance_id": "rlabbe_filterpy_pr192",
+  "family": "rlabbe/filterpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rlabbe_filterpy_pr192",
+  "f2p": 3,
+  "p2p": 31
+ },
+ {
+  "instance_id": "rstudio_py-shinyswatch_pr12",
+  "family": "rstudio/py-shinyswatch",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:rstudio_py-shinyswatch_pr12",
+  "f2p": 2,
+  "p2p": 2
+ },
+ {
+  "instance_id": "sbdchd_codeowners_pr37",
+  "family": "sbdchd/codeowners",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sbdchd_codeowners_pr37",
+  "f2p": 4,
+  "p2p": 35
+ },
+ {
+  "instance_id": "sbidoul_whool_pr15",
+  "family": "sbidoul/whool",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sbidoul_whool_pr15",
+  "f2p": 1,
+  "p2p": 21
+ },
+ {
+  "instance_id": "scastlara_pytest-tagging_pr13",
+  "family": "scastlara/pytest-tagging",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scastlara_pytest-tagging_pr13",
+  "f2p": 2,
+  "p2p": 11
+ },
+ {
+  "instance_id": "scitokens_scitokens_pr50",
+  "family": "scitokens/scitokens",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scitokens_scitokens_pr50",
+  "f2p": 1,
+  "p2p": 15
+ },
+ {
+  "instance_id": "scrapy_protego_pr25",
+  "family": "scrapy/protego",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:scrapy_protego_pr25",
+  "f2p": 5,
+  "p2p": 1298
+ },
+ {
+  "instance_id": "semuconsulting_pyrtcm_pr68",
+  "family": "semuconsulting/pyrtcm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:semuconsulting_pyrtcm_pr68",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "sethmlarson_socksio_pr12",
+  "family": "sethmlarson/socksio",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sethmlarson_socksio_pr12",
+  "f2p": 2,
+  "p2p": 11
+ },
+ {
+  "instance_id": "shiphero_skippy-cov_pr14",
+  "family": "shiphero/skippy-cov",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:shiphero_skippy-cov_pr14",
+  "f2p": 7,
+  "p2p": 20
+ },
+ {
+  "instance_id": "sklearn-compat_sklearn-compat_pr21",
+  "family": "sklearn-compat/sklearn-compat",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sklearn-compat_sklearn-compat_pr21",
+  "f2p": 1,
+  "p2p": 73
+ },
+ {
+  "instance_id": "slackapi_python-slack-events-api_pr91",
+  "family": "slackapi/python-slack-events-api",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:slackapi_python-slack-events-api_pr91",
+  "f2p": 3,
+  "p2p": 16
+ },
+ {
+  "instance_id": "sktime_skpro_pr151",
+  "family": "sktime/skpro",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:sktime_skpro_pr151",
+  "f2p": 29,
+  "p2p": 277
+ },
+ {
+  "instance_id": "stchris_untangle_pr68",
+  "family": "stchris/untangle",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:stchris_untangle_pr68",
+  "f2p": 1,
+  "p2p": 33
+ },
+ {
+  "instance_id": "socialwifi_jsonapi-requests_pr11",
+  "family": "socialwifi/jsonapi-requests",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:socialwifi_jsonapi-requests_pr11",
+  "f2p": 5,
+  "p2p": 7
+ },
+ {
+  "instance_id": "tlambert03_mkdocs-api-autonav_pr12",
+  "family": "tlambert03/mkdocs-api-autonav",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tlambert03_mkdocs-api-autonav_pr12",
+  "f2p": 11,
+  "p2p": 7
+ },
+ {
+  "instance_id": "thesimj_envyaml_pr10",
+  "family": "thesimj/envyaml",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:thesimj_envyaml_pr10",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "tortoise_pypika-tortoise_pr37",
+  "family": "tortoise/pypika-tortoise",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:tortoise_pypika-tortoise_pr37",
+  "f2p": 1,
+  "p2p": 389
+ },
+ {
+  "instance_id": "timkpaine_ipydagred3_pr32",
+  "family": "timkpaine/ipydagred3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:timkpaine_ipydagred3_pr32",
+  "f2p": 3,
+  "p2p": 1
+ },
+ {
+  "instance_id": "websocket-client_websocket-client_pr116",
+  "family": "websocket-client/websocket-client",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:websocket-client_websocket-client_pr116",
+  "f2p": 2,
+  "p2p": 16
+ },
+ {
+  "instance_id": "vertica_dbt-vertica_pr45",
+  "family": "vertica/dbt-vertica",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:vertica_dbt-vertica_pr45",
+  "f2p": 2,
+  "p2p": 1
+ },
+ {
+  "instance_id": "wimglenn_pytest-structlog_pr40",
+  "family": "wimglenn/pytest-structlog",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wimglenn_pytest-structlog_pr40",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "woodgern_confusables_pr14",
+  "family": "woodgern/confusables",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:woodgern_confusables_pr14",
+  "f2p": 3,
+  "p2p": 12
+ },
+ {
+  "instance_id": "wwrechard_pydlm_pr78",
+  "family": "wwrechard/pydlm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:wwrechard_pydlm_pr78",
+  "f2p": 4,
+  "p2p": 19
+ },
+ {
+  "instance_id": "zapier_email-reply-parser_pr31",
+  "family": "zapier/email-reply-parser",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:zapier_email-reply-parser_pr31",
+  "f2p": 1,
+  "p2p": 20
+ },
+ {
+  "instance_id": "atlanhq_atlan-python_pr37",
+  "family": "atlanhq/atlan-python",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:atlanhq_atlan-python_pr37",
+  "f2p": 17,
+  "p2p": 190
+ },
+ {
+  "instance_id": "bharel_asynciolimiter_pr15",
+  "family": "bharel/asynciolimiter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bharel_asynciolimiter_pr15",
+  "f2p": 2,
+  "p2p": 27
+ },
+ {
+  "instance_id": "adamchainz_flake8-no-pep420_pr103",
+  "family": "adamchainz/flake8-no-pep420",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_flake8-no-pep420_pr103",
+  "f2p": 3,
+  "p2p": 4
+ },
+ {
+  "instance_id": "adamchainz_pytest-reverse_pr10",
+  "family": "adamchainz/pytest-reverse",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_pytest-reverse_pr10",
+  "f2p": 3,
+  "p2p": 3
+ },
+ {
+  "instance_id": "adamjstewart_fiscalyear_pr24",
+  "family": "adamjstewart/fiscalyear",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamjstewart_fiscalyear_pr24",
+  "f2p": 4,
+  "p2p": 196
+ },
+ {
+  "instance_id": "asottile_future-fstrings_pr10",
+  "family": "asottile/future-fstrings",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_future-fstrings_pr10",
+  "f2p": 4,
+  "p2p": 20
+ },
+ {
+  "instance_id": "awslabs_aws-lambda-builders_pr61",
+  "family": "awslabs/aws-lambda-builders",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:awslabs_aws-lambda-builders_pr61",
+  "f2p": 3,
+  "p2p": 40
+ },
+ {
+  "instance_id": "asottile_astpretty_pr28",
+  "family": "asottile/astpretty",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_astpretty_pr28",
+  "f2p": 3,
+  "p2p": 20
+ },
+ {
+  "instance_id": "best-doctor_flake8-functions_pr5",
+  "family": "best-doctor/flake8-functions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:best-doctor_flake8-functions_pr5",
+  "f2p": 2,
+  "p2p": 27
+ },
+ {
+  "instance_id": "biocommons_bioutils_pr53",
+  "family": "biocommons/bioutils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:biocommons_bioutils_pr53",
+  "f2p": 2,
+  "p2p": 20
+ },
+ {
+  "instance_id": "best-doctor_flake8-annotations-complexity_pr23",
+  "family": "best-doctor/flake8-annotations-complexity",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:best-doctor_flake8-annotations-complexity_pr23",
+  "f2p": 1,
+  "p2p": 8
+ },
+ {
+  "instance_id": "adamchainz_flake8-logging_pr4",
+  "family": "adamchainz/flake8-logging",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:adamchainz_flake8-logging_pr4",
+  "f2p": 9,
+  "p2p": 19
+ },
+ {
+  "instance_id": "aspectumapp_osm2geojson_pr55",
+  "family": "aspectumapp/osm2geojson",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:aspectumapp_osm2geojson_pr55",
+  "f2p": 1,
+  "p2p": 25
+ },
+ {
+  "instance_id": "asottile_flake8-typing-imports_pr127",
+  "family": "asottile/flake8-typing-imports",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:asottile_flake8-typing-imports_pr127",
+  "f2p": 2,
+  "p2p": 25
+ },
+ {
+  "instance_id": "best-doctor_flake8-class-attributes-order_pr13",
+  "family": "best-doctor/flake8-class-attributes-order",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:best-doctor_flake8-class-attributes-order_pr13",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "alex_rply_pr101",
+  "family": "alex/rply",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:alex_rply_pr101",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "bellockk_alphashape_pr12",
+  "family": "bellockk/alphashape",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bellockk_alphashape_pr12",
+  "f2p": 3,
+  "p2p": 9
+ },
+ {
+  "instance_id": "bellini666_django-choices-field_pr28",
+  "family": "bellini666/django-choices-field",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bellini666_django-choices-field_pr28",
+  "f2p": 1,
+  "p2p": 27
+ },
+ {
+  "instance_id": "bcwaldon_warlock_pr55",
+  "family": "bcwaldon/warlock",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bcwaldon_warlock_pr55",
+  "f2p": 5,
+  "p2p": 17
+ },
+ {
+  "instance_id": "brentvollebregt_auto-py-to-exe_pr456",
+  "family": "brentvollebregt/auto-py-to-exe",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:brentvollebregt_auto-py-to-exe_pr456",
+  "f2p": 1,
+  "p2p": 4
+ },
+ {
+  "instance_id": "careless25_text2digits_pr28",
+  "family": "careless25/text2digits",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:careless25_text2digits_pr28",
+  "f2p": 24,
+  "p2p": 95
+ },
+ {
+  "instance_id": "c2nes_javalang_pr23",
+  "family": "c2nes/javalang",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:c2nes_javalang_pr23",
+  "f2p": 2,
+  "p2p": 23
+ },
+ {
+  "instance_id": "businho_pytest-ruff_pr25",
+  "family": "businho/pytest-ruff",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:businho_pytest-ruff_pr25",
+  "f2p": 1,
+  "p2p": 7
+ },
+ {
+  "instance_id": "buriy_python-readability_pr190",
+  "family": "buriy/python-readability",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:buriy_python-readability_pr190",
+  "f2p": 3,
+  "p2p": 11
+ },
+ {
+  "instance_id": "capnproto_pycapnp_pr246",
+  "family": "capnproto/pycapnp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:capnproto_pycapnp_pr246",
+  "f2p": 3,
+  "p2p": 3
+ },
+ {
+  "instance_id": "beetbox_audioread_pr126",
+  "family": "beetbox/audioread",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:beetbox_audioread_pr126",
+  "f2p": 5,
+  "p2p": 4
+ },
+ {
+  "instance_id": "blambright_qstylizer_pr5",
+  "family": "blambright/qstylizer",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:blambright_qstylizer_pr5",
+  "f2p": 3,
+  "p2p": 39
+ },
+ {
+  "instance_id": "cevans87_atools_pr7",
+  "family": "cevans87/atools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cevans87_atools_pr7",
+  "f2p": 3,
+  "p2p": 23
+ },
+ {
+  "instance_id": "brightway-lca_brightway2-calc_pr128",
+  "family": "brightway-lca/brightway2-calc",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:brightway-lca_brightway2-calc_pr128",
+  "f2p": 5,
+  "p2p": 26
+ },
+ {
+  "instance_id": "bxparks_bigquery-schema-generator_pr99",
+  "family": "bxparks/bigquery-schema-generator",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:bxparks_bigquery-schema-generator_pr99",
+  "f2p": 4,
+  "p2p": 23
+ },
+ {
+  "instance_id": "chmp_ipytest_pr110",
+  "family": "chmp/ipytest",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:chmp_ipytest_pr110",
+  "f2p": 3,
+  "p2p": 27
+ },
+ {
+  "instance_id": "click-contrib_sphinx-click_pr108",
+  "family": "click-contrib/sphinx-click",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:click-contrib_sphinx-click_pr108",
+  "f2p": 1,
+  "p2p": 19
+ },
+ {
+  "instance_id": "clld_clldutils_pr93",
+  "family": "clld/clldutils",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:clld_clldutils_pr93",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "clarkduvall_serpy_pr15",
+  "family": "clarkduvall/serpy",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:clarkduvall_serpy_pr15",
+  "f2p": 2,
+  "p2p": 22
+ },
+ {
+  "instance_id": "chrisjsewell_pytest-notebook_pr41",
+  "family": "chrisjsewell/pytest-notebook",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:chrisjsewell_pytest-notebook_pr41",
+  "f2p": 7,
+  "p2p": 26
+ },
+ {
+  "instance_id": "cesbit_pyleri_pr24",
+  "family": "cesbit/pyleri",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cesbit_pyleri_pr24",
+  "f2p": 1,
+  "p2p": 21
+ },
+ {
+  "instance_id": "craffel_pretty-midi_pr222",
+  "family": "craffel/pretty-midi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:craffel_pretty-midi_pr222",
+  "f2p": 1,
+  "p2p": 12
+ },
+ {
+  "instance_id": "cuenca-mx_clabe_pr167",
+  "family": "cuenca-mx/clabe",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:cuenca-mx_clabe_pr167",
+  "f2p": 2,
+  "p2p": 18
+ },
+ {
+  "instance_id": "coinbase_coinbase-advanced-py_pr18",
+  "family": "coinbase/coinbase-advanced-py",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:coinbase_coinbase-advanced-py_pr18",
+  "f2p": 5,
+  "p2p": 31
+ },
+ {
+  "instance_id": "dajiaji_pyhpke_pr16",
+  "family": "dajiaji/pyhpke",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dajiaji_pyhpke_pr16",
+  "f2p": 7,
+  "p2p": 39
+ },
+ {
+  "instance_id": "django-commons_django-cookie-consent_pr81",
+  "family": "django-commons/django-cookie-consent",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:django-commons_django-cookie-consent_pr81",
+  "f2p": 6,
+  "p2p": 27
+ },
+ {
+  "instance_id": "disqus_django-bitfield_pr104",
+  "family": "disqus/django-bitfield",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:disqus_django-bitfield_pr104",
+  "f2p": 6,
+  "p2p": 24
+ },
+ {
+  "instance_id": "developmentseed_starlette-cramjam_pr4",
+  "family": "developmentseed/starlette-cramjam",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:developmentseed_starlette-cramjam_pr4",
+  "f2p": 3,
+  "p2p": 14
+ },
+ {
+  "instance_id": "docopt_docopt_pr6",
+  "family": "docopt/docopt",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:docopt_docopt_pr6",
+  "f2p": 7,
+  "p2p": 3
+ },
+ {
+  "instance_id": "di_id_pr149",
+  "family": "di/id",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:di_id_pr149",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "deedy5_primp_pr7",
+  "family": "deedy5/primp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:deedy5_primp_pr7",
+  "f2p": 5,
+  "p2p": 12
+ },
+ {
+  "instance_id": "defnull_multipart_pr30",
+  "family": "defnull/multipart",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:defnull_multipart_pr30",
+  "f2p": 1,
+  "p2p": 35
+ },
+ {
+  "instance_id": "declaresub_abnf_pr20",
+  "family": "declaresub/abnf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:declaresub_abnf_pr20",
+  "f2p": 3,
+  "p2p": 396
+ },
+ {
+  "instance_id": "doloopwhile_pyjq_pr53",
+  "family": "doloopwhile/pyjq",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:doloopwhile_pyjq_pr53",
+  "f2p": 1,
+  "p2p": 10
+ },
+ {
+  "instance_id": "dmlc_decord_pr57",
+  "family": "dmlc/decord",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:dmlc_decord_pr57",
+  "f2p": 1,
+  "p2p": 11
+ },
+ {
+  "instance_id": "ecmwf_pdbufr_pr59",
+  "family": "ecmwf/pdbufr",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ecmwf_pdbufr_pr59",
+  "f2p": 1,
+  "p2p": 35
+ },
+ {
+  "instance_id": "edoburu_sphinxcontrib-django_pr40",
+  "family": "edoburu/sphinxcontrib-django",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:edoburu_sphinxcontrib-django_pr40",
+  "f2p": 2,
+  "p2p": 28
+ },
+ {
+  "instance_id": "erdogant_pca_pr14",
+  "family": "erdogant/pca",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:erdogant_pca_pr14",
+  "f2p": 1,
+  "p2p": 2
+ },
+ {
+  "instance_id": "ethereum_eth-account_pr254",
+  "family": "ethereum/eth-account",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-account_pr254",
+  "f2p": 1,
+  "p2p": 193
+ },
+ {
+  "instance_id": "ethereum_eth-keys_pr74",
+  "family": "ethereum/eth-keys",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-keys_pr74",
+  "f2p": 5,
+  "p2p": 29
+ },
+ {
+  "instance_id": "ethereum_pyrlp_pr117",
+  "family": "ethereum/pyrlp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_pyrlp_pr117",
+  "f2p": 3,
+  "p2p": 145
+ },
+ {
+  "instance_id": "facelessuser_bracex_pr5",
+  "family": "facelessuser/bracex",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facelessuser_bracex_pr5",
+  "f2p": 4,
+  "p2p": 178
+ },
+ {
+  "instance_id": "fake-useragent_fake-useragent_pr216",
+  "family": "fake-useragent/fake-useragent",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fake-useragent_fake-useragent_pr216",
+  "f2p": 2,
+  "p2p": 14
+ },
+ {
+  "instance_id": "ethereum_eth-bloom_pr31",
+  "family": "ethereum/eth-bloom",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ethereum_eth-bloom_pr31",
+  "f2p": 5,
+  "p2p": 6
+ },
+ {
+  "instance_id": "facebookresearch_dora_pr48",
+  "family": "facebookresearch/dora",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:facebookresearch_dora_pr48",
+  "f2p": 1,
+  "p2p": 14
+ },
+ {
+  "instance_id": "explosion_catalogue_pr33",
+  "family": "explosion/catalogue",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:explosion_catalogue_pr33",
+  "f2p": 4,
+  "p2p": 7
+ },
+ {
+  "instance_id": "explosion_confection_pr65",
+  "family": "explosion/confection",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:explosion_confection_pr65",
+  "f2p": 39,
+  "p2p": 116
+ },
+ {
+  "instance_id": "explodinglabs_jsonrpcclient_pr220",
+  "family": "explodinglabs/jsonrpcclient",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:explodinglabs_jsonrpcclient_pr220",
+  "f2p": 4,
+  "p2p": 23
+ },
+ {
+  "instance_id": "frankie567_httpx-oauth_pr328",
+  "family": "frankie567/httpx-oauth",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frankie567_httpx-oauth_pr328",
+  "f2p": 3,
+  "p2p": 33
+ },
+ {
+  "instance_id": "fox-it_dissect.esedb_pr46",
+  "family": "fox-it/dissect.esedb",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:fox-it_dissect.esedb_pr46",
+  "f2p": 1,
+  "p2p": 10
+ },
+ {
+  "instance_id": "geoalchemy_geoalchemy2_pr540",
+  "family": "geoalchemy/geoalchemy2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:geoalchemy_geoalchemy2_pr540",
+  "f2p": 10,
+  "p2p": 63
+ },
+ {
+  "instance_id": "frederickjansen_polyline_pr2",
+  "family": "frederickjansen/polyline",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frederickjansen_polyline_pr2",
+  "f2p": 10,
+  "p2p": 14
+ },
+ {
+  "instance_id": "gahjelle_pyconfs_pr17",
+  "family": "gahjelle/pyconfs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gahjelle_pyconfs_pr17",
+  "f2p": 12,
+  "p2p": 16
+ },
+ {
+  "instance_id": "gb-libs_pydantic-geojson_pr33",
+  "family": "gb-libs/pydantic-geojson",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gb-libs_pydantic-geojson_pr33",
+  "f2p": 2,
+  "p2p": 31
+ },
+ {
+  "instance_id": "frispete_keyrings.cryptfile_pr19",
+  "family": "frispete/keyrings.cryptfile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:frispete_keyrings.cryptfile_pr19",
+  "f2p": 4,
+  "p2p": 42
+ },
+ {
+  "instance_id": "google_or-tools_pr3497",
+  "family": "google/or-tools",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google_or-tools_pr3497",
+  "f2p": 4,
+  "p2p": 53
+ },
+ {
+  "instance_id": "google_pinject_pr49",
+  "family": "google/pinject",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:google_pinject_pr49",
+  "f2p": 1,
+  "p2p": 88
+ },
+ {
+  "instance_id": "golosegor_pyspark-nested-fields-functions_pr7",
+  "family": "golosegor/pyspark-nested-fields-functions",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:golosegor_pyspark-nested-fields-functions_pr7",
+  "f2p": 5,
+  "p2p": 31
+ },
+ {
+  "instance_id": "graphql-python_graphql-server-core_pr37",
+  "family": "graphql-python/graphql-server-core",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:graphql-python_graphql-server-core_pr37",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "gtaylor_python-colormath_pr37",
+  "family": "gtaylor/python-colormath",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:gtaylor_python-colormath_pr37",
+  "f2p": 4,
+  "p2p": 28
+ },
+ {
+  "instance_id": "hightouchio_airflow-provider-hightouch_pr8",
+  "family": "hightouchio/airflow-provider-hightouch",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hightouchio_airflow-provider-hightouch_pr8",
+  "f2p": 4,
+  "p2p": 12
+ },
+ {
+  "instance_id": "graphql-python_graphql-server_pr35",
+  "family": "graphql-python/graphql-server",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:graphql-python_graphql-server_pr35",
+  "f2p": 5,
+  "p2p": 65
+ },
+ {
+  "instance_id": "hackebrot_jinja2-time_pr3",
+  "family": "hackebrot/jinja2-time",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hackebrot_jinja2-time_pr3",
+  "f2p": 3,
+  "p2p": 6
+ },
+ {
+  "instance_id": "hajimes_mmh3_pr79",
+  "family": "hajimes/mmh3",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hajimes_mmh3_pr79",
+  "f2p": 1,
+  "p2p": 28
+ },
+ {
+  "instance_id": "ialbert_plac_pr51",
+  "family": "ialbert/plac",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ialbert_plac_pr51",
+  "f2p": 1,
+  "p2p": 26
+ },
+ {
+  "instance_id": "googleapis_python-runtimeconfig_pr265",
+  "family": "googleapis/python-runtimeconfig",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:googleapis_python-runtimeconfig_pr265",
+  "f2p": 3,
+  "p2p": 29
+ },
+ {
+  "instance_id": "icgood_proxy-protocol_pr53",
+  "family": "icgood/proxy-protocol",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:icgood_proxy-protocol_pr53",
+  "f2p": 2,
+  "p2p": 59
+ },
+ {
+  "instance_id": "iamjackg_md2cf_pr42",
+  "family": "iamjackg/md2cf",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iamjackg_md2cf_pr42",
+  "f2p": 2,
+  "p2p": 37
+ },
+ {
+  "instance_id": "i2mint_dol_pr57",
+  "family": "i2mint/dol",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:i2mint_dol_pr57",
+  "f2p": 6,
+  "p2p": 49
+ },
+ {
+  "instance_id": "hynek_prometheus-async_pr85",
+  "family": "hynek/prometheus-async",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:hynek_prometheus-async_pr85",
+  "f2p": 3,
+  "p2p": 28
+ },
+ {
+  "instance_id": "ionelmc_python-redis-lock_pr75",
+  "family": "ionelmc/python-redis-lock",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ionelmc_python-redis-lock_pr75",
+  "f2p": 5,
+  "p2p": 29
+ },
+ {
+  "instance_id": "i2mint_i2_pr71",
+  "family": "i2mint/i2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:i2mint_i2_pr71",
+  "f2p": 293,
+  "p2p": 45
+ },
+ {
+  "instance_id": "ionelmc_python-manhole_pr3",
+  "family": "ionelmc/python-manhole",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ionelmc_python-manhole_pr3",
+  "f2p": 3,
+  "p2p": 19
+ },
+ {
+  "instance_id": "ikegami-yukino_jaconv_pr15",
+  "family": "ikegami-yukino/jaconv",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ikegami-yukino_jaconv_pr15",
+  "f2p": 1,
+  "p2p": 7
+ },
+ {
+  "instance_id": "jadchaar_sec-edgar-downloader_pr123",
+  "family": "jadchaar/sec-edgar-downloader",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jadchaar_sec-edgar-downloader_pr123",
+  "f2p": 8,
+  "p2p": 30
+ },
+ {
+  "instance_id": "jacebrowning_yorm_pr41",
+  "family": "jacebrowning/yorm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jacebrowning_yorm_pr41",
+  "f2p": 2,
+  "p2p": 36
+ },
+ {
+  "instance_id": "ipython_comm_pr13",
+  "family": "ipython/comm",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:ipython_comm_pr13",
+  "f2p": 4,
+  "p2p": 2
+ },
+ {
+  "instance_id": "iterative_morefs_pr14",
+  "family": "iterative/morefs",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:iterative_morefs_pr14",
+  "f2p": 2,
+  "p2p": 26
+ },
+ {
+  "instance_id": "jborean93_requests-credssp_pr24",
+  "family": "jborean93/requests-credssp",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jborean93_requests-credssp_pr24",
+  "f2p": 1,
+  "p2p": 36
+ },
+ {
+  "instance_id": "jobec_rfc5424-logging-handler_pr14",
+  "family": "jobec/rfc5424-logging-handler",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jobec_rfc5424-logging-handler_pr14",
+  "f2p": 3,
+  "p2p": 38
+ },
+ {
+  "instance_id": "jazzband_docopt-ng_pr28",
+  "family": "jazzband/docopt-ng",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jazzband_docopt-ng_pr28",
+  "f2p": 3,
+  "p2p": 56
+ },
+ {
+  "instance_id": "jcmgray_autoray_pr15",
+  "family": "jcmgray/autoray",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jcmgray_autoray_pr15",
+  "f2p": 36,
+  "p2p": 76
+ },
+ {
+  "instance_id": "jkimbo_graphql-sync-dataloaders_pr2",
+  "family": "jkimbo/graphql-sync-dataloaders",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jkimbo_graphql-sync-dataloaders_pr2",
+  "f2p": 1,
+  "p2p": 9
+ },
+ {
+  "instance_id": "jrief_django-sass-processor_pr147",
+  "family": "jrief/django-sass-processor",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jrief_django-sass-processor_pr147",
+  "f2p": 3,
+  "p2p": 7
+ },
+ {
+  "instance_id": "juftin_hatch-pip-compile_pr60",
+  "family": "juftin/hatch-pip-compile",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:juftin_hatch-pip-compile_pr60",
+  "f2p": 4,
+  "p2p": 29
+ },
+ {
+  "instance_id": "kenkundert_inform_pr3",
+  "family": "kenkundert/inform",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kenkundert_inform_pr3",
+  "f2p": 9,
+  "p2p": 24
+ },
+ {
+  "instance_id": "kiwicom_structlog-sentry_pr74",
+  "family": "kiwicom/structlog-sentry",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kiwicom_structlog-sentry_pr74",
+  "f2p": 1,
+  "p2p": 29
+ },
+ {
+  "instance_id": "josheppinette_python-logfmter_pr55",
+  "family": "josheppinette/python-logfmter",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:josheppinette_python-logfmter_pr55",
+  "f2p": 1,
+  "p2p": 87
+ },
+ {
+  "instance_id": "kuimono_openapi-schema-pydantic_pr11",
+  "family": "kuimono/openapi-schema-pydantic",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:kuimono_openapi-schema-pydantic_pr11",
+  "f2p": 10,
+  "p2p": 19
+ },
+ {
+  "instance_id": "jawah_h2_pr4",
+  "family": "jawah/h2",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:jawah_h2_pr4",
+  "f2p": 8,
+  "p2p": 483
+ },
+ {
+  "instance_id": "lmas_opensimplex_pr31",
+  "family": "lmas/opensimplex",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lmas_opensimplex_pr31",
+  "f2p": 1,
+  "p2p": 3
+ },
+ {
+  "instance_id": "lextudio_pysmi_pr11",
+  "family": "lextudio/pysmi",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lextudio_pysmi_pr11",
+  "f2p": 91,
+  "p2p": 235
+ },
+ {
+  "instance_id": "lmfit_asteval_pr85",
+  "family": "lmfit/asteval",
+  "language": "python",
+  "image": "aweaiteam/scaleswe:lmfit_asteval_pr85",
+  "f2p": 2,
+  "p2p": 61
+ }
+]

@@ -1,0 +1,14 @@
+{
+  "gpu": "NVIDIA GeForce RTX 5090 D",
+  "gpu_total_GiB": 31.8,
+  "precision": "bf16-base + LoRA r32/alpha64, grad-checkpoint, mbs1",
+  "context_share_loss0": 0.72,
+  "trainable_M": 42.5,
+  "results": [
+    {
+      "length": 8192,
+      "oom": true
+    }
+  ],
+  "window_65536_ok": false
+}

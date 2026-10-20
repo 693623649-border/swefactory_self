@@ -63,3 +63,10 @@ results/
 .env
 .env.*
 !.env.example
+# keep raw/derived bulk out of version control
+data/
+results/pool_a_formal/tasks_formal.jsonl
+results/pool_a_formal/batch_*/
+results/pool_a_formal/*.log
+results/pool_a_formal/batch_ledger.jsonl
+results/pool_a_formal/*.ids.json
