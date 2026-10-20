@@ -77,7 +77,24 @@ def main() -> None:
     ]
     for reason, count in reasons.most_common():
         lines.append(f"| {reason} | {count} |")
+    # per-batch timeline from the ledger's batch field
+    by_batch = {}
+    for r in ledger:
+        b = r.get("batch", "?")
+        slot = by_batch.setdefault(b, {"attempted": 0, "passed": 0, "admitted": 0})
+        slot["attempted"] += 1
+        slot["passed"] += bool(r["success"])
+        slot["admitted"] += bool(r["admitted"])
+    lines += ["", "## 2.1 逐批产出", "", "| 批次 | 尝试 | 通过 | 准入 |", "|---|---:|---:|---:|"]
+    for b in sorted(by_batch):
+        s = by_batch[b]
+        lines.append(f"| {b} | {s['attempted']} | {s['passed']} | {s['admitted']} |")
+
+    total_selected = len(json.loads((FORMAL / "selection_ids.json").read_text(encoding="utf-8")))
     lines += [
+        "",
+        f"**完成度：本轮覆盖选题的 {attempted}/{total_selected}（{attempted/total_selected:.1%}）。**"
+        " 编排器按 instance 去重、可断点续跑；未完成部分不进入本报告的任何比率。",
         "",
         "## 3. 目标测试与回归（按声明集合）",
         "",
