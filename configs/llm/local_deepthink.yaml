@@ -1,0 +1,21 @@
+# Low-effort thinking teacher: the student we are training is a thinking model, so
+# the trajectory must show how to think briefly and then act.
+#
+# `thinking` and `reasoning_effort` are sent through extra_body because the client
+# moves `thinking` there automatically; leaving top-level `thinking: false` avoids
+# sending an empty object that the API would reject.
+backend: openai
+base_url: https://api.deepseek.com/v1
+api_key: ${DEEPSEEK_API_KEY}
+model: deepseek-flash
+thinking: false
+params:
+  max_completion_tokens: 8192
+  thinking:
+    type: enabled
+  reasoning_effort: low
+reasoning:
+  # DeepSeek requires the historical reasoning_content to be replayed when tools
+  # are in play; without it the tool-call loop degrades or errors.
+  preserve: true
+  format: reasoning_content

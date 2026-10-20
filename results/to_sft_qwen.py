@@ -36,6 +36,12 @@ class Renderer:
         out = []
         for message in messages:
             copy = dict(message)
+            # The factory stores model reasoning as `reasoning_raw`; the student
+            # template only renders `reasoning_content`. Dropping this mapping
+            # silently trains a non-thinking model.
+            reasoning = copy.pop("reasoning_raw", None) or copy.get("reasoning_content")
+            if reasoning:
+                copy["reasoning_content"] = reasoning
             calls = copy.get("tool_calls")
             if calls:
                 rebuilt = []
