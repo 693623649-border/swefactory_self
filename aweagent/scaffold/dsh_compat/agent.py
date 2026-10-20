@@ -5,6 +5,7 @@ from typing import Any
 
 from aweagent.core.llm.format import get_tool_format
 from aweagent.core.tool.protocol import Tool
+from aweagent.scaffold.dsh_compat.contract_review import CONTRACT_REVIEW
 from aweagent.scaffold.dsh_compat.tools import BASH_TIMEOUT_S, BASH_MAX_TIMEOUT_S, build_tools
 from aweagent.scaffold.search_swe import SearchSWEAgent
 
@@ -35,12 +36,14 @@ class DSHCompatAgent(SearchSWEAgent):
     """SearchSWE with the DSH tool surface, DSH persona, and no finish tool."""
 
     def __init__(self, workdir: str, *, bash_timeout: int = BASH_TIMEOUT_S,
-                 bash_max_timeout: int = BASH_MAX_TIMEOUT_S, **kwargs: Any):
+                 bash_max_timeout: int = BASH_MAX_TIMEOUT_S,
+                 contract_review: bool = False, **kwargs: Any):
         kwargs.setdefault("enable_search", False)
         kwargs.setdefault("enable_think", False)
         kwargs.setdefault("tool_call_format", "openai_function")
         super().__init__(**kwargs)
         self._workdir = workdir
+        self._contract_review = contract_review
         self._tools = build_tools(workdir, bash_timeout=bash_timeout,
                                   bash_max_timeout=bash_max_timeout)
         self._format = get_tool_format("openai_function")
@@ -49,13 +52,14 @@ class DSHCompatAgent(SearchSWEAgent):
         return list(self._tools)
 
     def get_system_prompt(self, task_info: dict[str, Any]) -> str:
-        return DSH_PERSONA + DATA_CONTRACT
+        return DSH_PERSONA + DATA_CONTRACT + (CONTRACT_REVIEW if self._contract_review else "")
 
     @classmethod
     def from_config(cls, config: Any) -> "DSHCompatAgent":
         workdir = (getattr(config.runtime, "workdir", "") or "/workspace").rstrip("/") or "/workspace"
         return cls(workdir, bash_timeout=config.agent.bash_timeout,
-                   bash_max_timeout=config.agent.bash_max_timeout)
+                   bash_max_timeout=config.agent.bash_max_timeout,
+                   contract_review=bool(config.extra.get("dsh_contract_review", False)))
 
     @classmethod
     def from_config_with_constraints(cls, config: Any, instance_constraints: Any) -> "DSHCompatAgent":

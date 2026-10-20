@@ -1,5 +1,9 @@
 # SWE SFT 数据制造规格
 
+> 2026-10-21复核：以下早期pilot描述属于历史记录，当前实验结论见[池A五十题与80K窗口](池A五十题与80K窗口.md)。原25条失败的同条件重采样对照为2/25，通用契约增强为1/25，未观察到提效，`extra.dsh_contract_review`保持默认关闭。长度门为81920，必须按实际模板序列计数。原生工具调用需要带工具schema的学生模板与mask验收，不能仅凭消息级labels声称可训练。
+>
+> 池B约束：彼此独立的旧失败/新成功不能直接拼成纠错对。必须存在同一修正上下文的真实失败反馈与后续成功动作，仅监督成功修正；隐藏判分反馈不应伪装成教师在工具环境中实际看到的观察。
+
 本文件把"从能力缺口反推 SFT 数据规格"的思路落到本工厂上：**要什么数据、怎么用本工厂产、产出来怎么验收**。
 配套阅读：[SWE数据工厂工程总结](SWE数据工厂工程总结.md)（组件与配置）。
 工具面已对齐 DSH 评测端（bash/read/edit、原生 tool calls、自然停止），见 [DSH 工具面对齐工程报告](DSH工具面对齐工程报告.md)。
@@ -42,7 +46,7 @@
 
 - 监督只算修正轮的 assistant 输出；第一轮的错误输出作为上下文，`loss=0`——否则在教模型犯错。
 - 三类必配：① 跑套件发现回归 → 收窄改动；② 端到端验证失败 → 补全功能；③ issue 语义歧义 → 对照测试反馈修正方向。
-- **本工厂怎么产**：同一 `instance_id` 用 `max_retries` 跑多次，把失败轮（`success=false` 且有补丁）与成功轮配对。工厂默认每轮独立保存轨迹，配对在导出侧完成。
+- **本工厂怎么产**：从同一真实轨迹中截取“可见工具反馈暴露错误→教师修正→成功验证”的连续片段；前段与观察loss=0，监督成功修正。`max_retries`只在任务抛异常时重试，`success=false`正常判分失败会直接返回，不是模型纠错循环。多次独立run可用于拒绝采样或失败模式分析，不能直接配对当作教师经历过的修正。池B专用导出尚未验收。
 
 ### 池 C · 行为纪律（目标占比 15–20%）
 
@@ -75,10 +79,9 @@
 | `trajectories.jsonl` | 每题一行：`messages`（扁平 `role`+`content`）、`patch`、`stats`（步数、工具分布、耗时）、`eval_result` |
 | `run_config.json` | 本次配置快照 |
 
-关键点：**`messages` 里的工具调用已经内嵌在 assistant 文本中**（CodeAct-XML），观测在 user 消息里。
-所以 SFT 不需要再套模板转换——`assistant` 即监督段、其余为上下文，与"教师-学生同构"的要求一致。
+旧CodeAct-XML pilot把调用内嵌在assistant文本、观察放在user消息，这不等于兼容学生Qwen模板。当前DSH适配器使用原生assistant.tool_calls和tool角色观察；需解析arguments、保留reasoning_raw并映射reasoning_content，再按学生模板渲染与核验token级mask。工具schema也必须进入实际训练模板。
 
-转换脚本见 `results/to_sft.py`，输出的每条样本形如：
+旧 [to_sft.py](<E:/Deeplearning/local_train/swefactory_self/results/to_sft.py>) 仅为历史消息级导出，`labels`每条消息一个0/1，不是causal-LM token labels；其内容分段token数不含完整模板。当前 [to_sft_qwen.py](<E:/Deeplearning/local_train/swefactory_self/results/to_sft_qwen.py>) 提供候选ids/mask与81920长度门，但工具schema、think监督覆盖及全部质量门仍需单独验收，不能把success直接视作训练成品。旧格式示例如下：
 
 ```json
 {"instance_id": "...", "messages": [{"role": "...", "content": "..."}],
@@ -109,7 +112,7 @@
 | 问题 | 现象 | 处理 |
 |---|---|---|
 | 默认编码 | 读数据文件报 `'gbk' codec can't decode` | 启动前设 `PYTHONUTF8=1`（进程内设无效，必须解释器启动前） |
-| 代理模式 | `httpx.InvalidURL: Invalid port: ':1]'` | 宿主 `NO_PROXY` 含 IPv6 项；在导入 httpx 前把 `NO_PROXY/no_proxy` 改为 `localhost,127.0.0.1`（见 `results/run_factory.py` 包装层） |
+| 代理模式 | `httpx.InvalidURL: Invalid port: ':1]'` | 宿主 `NO_PROXY` 含 IPv6 项；在导入 httpx 前把 `NO_PROXY/no_proxy` 改为 `localhost,127.0.0.1`（见 [run_factory.py](<E:/Deeplearning/local_train/swefactory_self/results/run_factory.py>) 包装层） |
 | 数据尾部 | 样本最后一行 JSON 被截断，加载即崩 | 先剔除非法行生成干净 JSONL（158 行） |
 | LLM 配置 | 默认走 `gpt-5.4` | 用 `--llm-config configs/llm/local_deepseek.yaml`（本仓库新增，`deepseek-chat`、非思考） |
 
@@ -137,17 +140,17 @@ python results/to_sft.py --run results/pilot/<run_dir> --out results/pilot/sft.j
 
 原分析的建议是"每池都过全部验收门"再凑 1,000–2,000 条，pilot 用 A 500 / B 400 / C 300。落到本工厂：
 
-1. **先定长度门与窗口**（第 5 节第 2 点），否则采完才发现要重切；
-2. **先冻结工具面**：本工厂是 `codeact_xml` + `execute_bash`/`str_replace_editor`/`finish`，学生服务端必须用同一套 schema 与模板；
-3. **池 A 先行**：`--mode batch` 直接产；验收用 `results.jsonl` 的 `success/score` + 第 3 节的门；
-4. **池 B 靠同题重试配对**：失败轮与成功轮成对导出，失败轮 `labels=0`；
-5. **池 C 靠轨迹筛选**：不新增采集，只按规则选。
+1. **先定长度门与窗口**：当前候选导出门81920；这不代表训练已验证支持80K；
+2. **先冻结工具面**：当前为DSH适配器的bash/read/edit与原生tool_calls，具体schema和执行语义都需对齐；旧CodeAct/finish轨迹分开保存；
+3. **池 A 先行**：`--mode batch`生成候选；独立判分通过后仍须过内容diff、后置验证、mask、去重与隔离等全部门；
+4. **池 B 从真实连续修正截取**：不能拼接独立重试，也不能把隐藏判分失败伪装成已见观察；
+5. **池 C 按目标分支验收**：诚实失败与验证成功分开计数，不能对诚实失败套“全门通过且非空补丁”。
 
-按 pilot 的 2/5 = 40% 通过率粗算，凑 500 条池 A 约需 1,250 次尝试；这是**单批粗估**，未计入难度分层与去重。
+历史pilot的2/5不能外推量产成品率。本次25条失败的对照与契约增强分别为2/25、1/25，仅支持保留旧默认提示，不支持扩大通用增强采集。
 
 ## 8. 未验证与限制
 
-- pilot 只有 5 题、单模型（`deepseek-chat` 非思考）、单次运行；40% 不能当题库成品率。
-- 池 B 的配对导出尚未实现（本文件给的是可行做法，不是已跑通的结果）。
-- 工厂的 `training.py`（token 级 loss mask + logprob）只在 SGLang 训练模式下生效；本次批量产出的轨迹**不含** loss mask，mask 由 `to_sft.py` 在导出侧重建。
-- `str_replace_editor` 与 `finish` 是本工厂脚手架的工具名；若换成我们评测端的 `bash/read/edit`，必须重新采集——**不要混用两套工具面的轨迹训练**。
+- 历史pilot只有5题；当前50题也是本地头部样本顺序选择，不能代表全库。
+- 池B连续修正专用导出尚未实现并验收。
+- API教师轨迹不自动带学生token级mask；当前导出器的工具schema、think覆盖、边界和质量门均需专项验收。
+- 此次新增契约提示只作默认关闭的实验选项；不据独立重试结果伪造纠错示范，也不改变DSH评测配置。
