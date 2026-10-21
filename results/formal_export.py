@@ -167,11 +167,15 @@ def main() -> None:
                    "completion_tokens": (record.get("stats") or {}).get("total_completion_tokens", 0),
                    "duration": record.get("duration")}
         reject = []
-        if not record.get("success"):
+        infra = record.get("finish_reason") in ("error", "timeout") or bool(details.get("error"))
+        if infra:
+            # Auth/network/timeout failures are infrastructure, not model shortfalls.
+            reject.append("infra_error")
+        elif not record.get("success"):
             reject.append("not_passed")
-        if not record.get("success") and (f2p_status.get("failed") or f2p_status.get("unmatched")):
+        if not record.get("success") and not infra and (f2p_status.get("failed") or f2p_status.get("unmatched")):
             reject.append("f2p_incomplete")
-        if not record.get("success") and (p2p_status.get("failed") or p2p_status.get("unmatched")):
+        if not record.get("success") and not infra and (p2p_status.get("failed") or p2p_status.get("unmatched")):
             reject.append("p2p_incomplete")
         if test_paths:
             reject.append("test_paths_edited")
