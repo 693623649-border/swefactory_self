@@ -79,12 +79,22 @@ def tool_sequence(messages) -> tuple[list[str], list[int]]:
 
 def load_records() -> list[dict]:
     rows = []
+    skipped = []
     for shard in sorted(FORMAL.glob("batch_*/**/trajectories.jsonl")):
-        for line in shard.read_text(encoding="utf-8").splitlines():
-            if line.strip():
+        for number, line in enumerate(shard.read_text(encoding="utf-8").splitlines(), 1):
+            if not line.strip():
+                continue
+            try:
                 record = json.loads(line)
-                record["_batch"] = shard.parts[-3]
-                rows.append(record)
+            except json.JSONDecodeError:
+                # A killed run can leave a half-written line; never let one truncated
+                # record block the whole export.
+                skipped.append(f"{shard}:{number}")
+                continue
+            record["_batch"] = shard.parts[-3]
+            rows.append(record)
+    if skipped:
+        print(f"skipped {len(skipped)} malformed trajectory lines: {skipped[:5]}", flush=True)
     return rows
 
 
