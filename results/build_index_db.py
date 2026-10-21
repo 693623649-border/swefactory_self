@@ -42,10 +42,14 @@ CREATE TABLE samples (
     steps           INTEGER,
     finish_reason   TEXT,
     seq_tokens      INTEGER,           -- rendered student-template length
+    supervised_tokens INTEGER,         -- supervised assistant tokens
     length_gate     INTEGER,           -- 65536 at admission time
     prompt_tokens   INTEGER,
     completion_tokens INTEGER,
     duration_s      REAL,
+    tool_bash       INTEGER,
+    tool_read       INTEGER,
+    tool_edit       INTEGER,
     traj_path       TEXT,
     traj_sha256     TEXT
 );
@@ -81,6 +85,45 @@ SELECT s.instance_id, s.family, s.batch, s.rejected
 FROM samples s
 WHERE s.admitted = 0
   AND s.rejected NOT LIKE '%infra_error%';
+
+CREATE VIEW v_tool_usage AS
+SELECT
+    COUNT(*) AS total_samples,
+    SUM(CASE WHEN admitted=1 THEN 1 ELSE 0 END) AS admitted_samples,
+    SUM(tool_bash) AS total_bash,
+    ROUND(AVG(tool_bash), 2) AS avg_bash_all,
+    ROUND(AVG(CASE WHEN admitted=1 THEN tool_bash END), 2) AS avg_bash_adm,
+    SUM(tool_read) AS total_read,
+    ROUND(AVG(tool_read), 2) AS avg_read_all,
+    ROUND(AVG(CASE WHEN admitted=1 THEN tool_read END), 2) AS avg_read_adm,
+    SUM(tool_edit) AS total_edit,
+    ROUND(AVG(tool_edit), 2) AS avg_edit_all,
+    ROUND(AVG(CASE WHEN admitted=1 THEN tool_edit END), 2) AS avg_edit_adm
+FROM samples;
+
+CREATE VIEW v_step_brackets AS
+SELECT
+    CASE
+        WHEN steps <= 10 THEN '00-10'
+        WHEN steps <= 20 THEN '11-20'
+        WHEN steps <= 30 THEN '21-30'
+        WHEN steps <= 40 THEN '31-40'
+        WHEN steps <= 50 THEN '41-50'
+        ELSE '51-60'
+    END AS bracket,
+    COUNT(*) AS attempted,
+    SUM(CASE WHEN admitted=1 THEN 1 ELSE 0 END) AS admitted,
+    ROUND(100.0 * SUM(CASE WHEN admitted=1 THEN 1 ELSE 0 END) / COUNT(*), 1) AS adm_pct,
+    ROUND(AVG(prompt_tokens), 0) AS avg_prompt_tokens,
+    ROUND(AVG(completion_tokens), 0) AS avg_completion_tokens,
+    ROUND(AVG(CASE WHEN admitted=1 THEN seq_tokens END), 0) AS avg_adm_seq_tokens,
+    ROUND(AVG(CASE WHEN admitted=1 THEN supervised_tokens END), 0) AS avg_adm_sup_tokens,
+    SUM(CASE WHEN admitted=1 THEN tool_bash ELSE 0 END) AS adm_bash,
+    SUM(CASE WHEN admitted=1 THEN tool_read ELSE 0 END) AS adm_read,
+    SUM(CASE WHEN admitted=1 THEN tool_edit ELSE 0 END) AS adm_edit
+FROM samples
+GROUP BY bracket
+ORDER BY bracket;
 """
 
 GATE_NAMES = ("not_passed", "f2p_incomplete", "p2p_incomplete", "over_length",
@@ -126,6 +169,8 @@ def build() -> dict:
     db = sqlite3.connect(DB)
     db.executescript("DROP VIEW IF EXISTS v_reject_reasons;"
                      "DROP VIEW IF EXISTS v_needs_rerun;"
+                     "DROP VIEW IF EXISTS v_tool_usage;"
+                     "DROP VIEW IF EXISTS v_step_brackets;"
                      "DROP TABLE IF EXISTS gates;"
                      "DROP TABLE IF EXISTS samples;"
                      "DROP TABLE IF EXISTS batches;")
@@ -142,15 +187,17 @@ def build() -> dict:
         path = traj.get(record["instance_id"])
         db.execute(
             "INSERT OR REPLACE INTO samples VALUES ("
-            "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (record["instance_id"], record.get("family", ""), record.get("batch"),
              int(admitted), json.dumps(gates, ensure_ascii=False), int(bool(record.get("success"))),
              f2p.get("passed"), f2p.get("total"), p2p.get("passed"), p2p.get("total"),
              record.get("node_evidence"), record.get("patch_chars"), record.get("files"),
              json.dumps(record.get("test_paths") or []), record.get("test_runs"),
              record.get("mutations"), int(bool(record.get("verified_after_last_edit"))),
-             record.get("steps"), record.get("finish_reason"), record.get("length"), 65536,
+             record.get("steps"), record.get("finish_reason"), record.get("length"),
+             record.get("supervised_tokens", 0), 65536,
              record.get("prompt_tokens"), record.get("completion_tokens"), record.get("duration"),
+             record.get("tool_bash", 0), record.get("tool_read", 0), record.get("tool_edit", 0),
              str(path) if path else None,
              sha256_file(path) if path else None))
         for name, ok in passed.items():
@@ -194,6 +241,20 @@ def report() -> None:
         n = db.execute("SELECT COUNT(*) FROM samples WHERE admitted=1 AND seq_tokens<=?",
                        (bound,)).fetchone()[0]
         print(f"  <= {bound:6}: {n}")
+    print("-- tool usage summary (v_tool_usage) --")
+    u = db.execute("SELECT total_bash, avg_bash_all, avg_bash_adm, "
+                   "total_read, avg_read_all, avg_read_adm, "
+                   "total_edit, avg_edit_all, avg_edit_adm FROM v_tool_usage").fetchone()
+    if u:
+        print(f"  bash: total={u[0]}, avg_all={u[1]}, avg_adm={u[2]}")
+        print(f"  read: total={u[3]}, avg_all={u[4]}, avg_adm={u[5]}")
+        print(f"  edit: total={u[6]}, avg_all={u[7]}, avg_adm={u[8]}")
+    print("-- step brackets (v_step_brackets) --")
+    print("  bracket | att | adm | adm% | avg_prompt | avg_comp | avg_adm_seq | avg_adm_sup | adm_bash | read | edit")
+    for row in db.execute("SELECT bracket, attempted, admitted, adm_pct, avg_prompt_tokens, "
+                          "avg_completion_tokens, avg_adm_seq_tokens, avg_adm_sup_tokens, "
+                          "adm_bash, adm_read, adm_edit FROM v_step_brackets"):
+        print(f"  {row[0]:7} | {row[1]:3} | {row[2]:3} | {row[3]:4.1f}% | {row[4]:10.0f} | {row[5]:8.0f} | {row[6] or 0:11.0f} | {row[7] or 0:11.0f} | {row[8]:8} | {row[9]:4} | {row[10]:4}")
     print("-- top families by attempts --")
     for family, n in db.execute(
             "SELECT family, COUNT(*) c FROM samples GROUP BY family ORDER BY c DESC LIMIT 5"):
@@ -221,6 +282,14 @@ def check() -> int:
         "gate_rows": (db.execute("SELECT COUNT(*) FROM gates").fetchone()[0], len(ledger) * len(GATE_NAMES)),
         "seq_tokens": (db.execute("SELECT COALESCE(SUM(seq_tokens),0) FROM samples WHERE admitted=1").fetchone()[0],
                        sum(r.get("length") or 0 for r in ledger if r.get("admitted"))),
+        "supervised_tokens": (db.execute("SELECT COALESCE(SUM(supervised_tokens),0) FROM samples WHERE admitted=1").fetchone()[0],
+                              sum(r.get("supervised_tokens") or 0 for r in ledger if r.get("admitted"))),
+        "tool_bash": (db.execute("SELECT COALESCE(SUM(tool_bash),0) FROM samples").fetchone()[0],
+                      sum(r.get("tool_bash") or 0 for r in ledger)),
+        "tool_read": (db.execute("SELECT COALESCE(SUM(tool_read),0) FROM samples").fetchone()[0],
+                      sum(r.get("tool_read") or 0 for r in ledger)),
+        "tool_edit": (db.execute("SELECT COALESCE(SUM(tool_edit),0) FROM samples").fetchone()[0],
+                      sum(r.get("tool_edit") or 0 for r in ledger)),
     }
     for name, (got, want) in expected.items():
         if got != want:

@@ -167,14 +167,23 @@ def main() -> None:
         last_edit = max(edit_positions, default=-1)
         verified_after_edit = any(idx > last_edit for idx in test_runs)
 
+        stats = record.get("stats") or {}
+        tool_usage = stats.get("tool_usage") or {}
+        tool_bash = int(tool_usage.get("bash", 0))
+        tool_read = int(tool_usage.get("read", 0))
+        tool_edit = int(tool_usage.get("edit", 0))
+
         verdict = {"instance_id": iid, "family": family, "batch": record["_batch"],
                    "success": bool(record.get("success")),
                    "f2p": dict(f2p_status), "p2p": dict(p2p_status),
                    "patch_chars": len(patch), "files": len(files),
-                   "test_paths": test_paths, "node_evidence": node_evidence, "test_runs": len(test_runs), "mutations": len(edit_positions), "verified_after_last_edit": verified_after_edit, "steps": (record.get("stats") or {}).get("steps"),
+                   "test_paths": test_paths, "node_evidence": node_evidence,
+                   "test_runs": len(test_runs), "mutations": len(edit_positions),
+                   "verified_after_last_edit": verified_after_edit, "steps": stats.get("steps"),
+                   "tool_usage": tool_usage, "tool_bash": tool_bash, "tool_read": tool_read, "tool_edit": tool_edit,
                    "finish_reason": record.get("finish_reason"),
-                   "prompt_tokens": (record.get("stats") or {}).get("total_prompt_tokens", 0),
-                   "completion_tokens": (record.get("stats") or {}).get("total_completion_tokens", 0),
+                   "prompt_tokens": stats.get("total_prompt_tokens", 0),
+                   "completion_tokens": stats.get("total_completion_tokens", 0),
                    "duration": record.get("duration")}
         reject = []
         infra = record.get("finish_reason") in ("error", "timeout") or bool(details.get("error"))
@@ -205,9 +214,11 @@ def main() -> None:
 
         length = None
         think_ok = None
+        sup_tokens = 0
         if not reject:
             ids, mask, _ = build(renderer, record["messages"])
             length = len(ids)
+            sup_tokens = sum(mask)
             empty = renderer.render(record["messages"]).count("<think>\n\n</think>")
             non_empty = renderer.render(record["messages"]).count("<think>") - empty
             think_ok = non_empty > 0
@@ -225,6 +236,7 @@ def main() -> None:
         verdict["rejected"] = reject
         verdict["admitted"] = not reject
         verdict["length"] = length
+        verdict["supervised_tokens"] = sup_tokens if not reject else 0
         ledger.append(verdict)
         totals["attempted"] += 1
         totals["admitted"] += not reject
@@ -237,6 +249,15 @@ def main() -> None:
     with (FORMAL / "sft_admitted.jsonl").open("w", encoding="utf-8") as f:
         for row in admitted:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    tool_usage_att = Counter()
+    tool_usage_adm = Counter()
+    for row in ledger:
+        for t_name in ("bash", "read", "edit"):
+            tool_usage_att[t_name] += row.get(f"tool_{t_name}", 0)
+            if row.get("admitted"):
+                tool_usage_adm[t_name] += row.get(f"tool_{t_name}", 0)
+
     summary = {
         "attempted": totals["attempted"], "admitted": totals["admitted"],
         "rejections": {k[7:]: v for k, v in totals.items()
@@ -246,6 +267,8 @@ def main() -> None:
         "per_sample_tokens": round(tokens / len(admitted), 1) if admitted else None,
         "max_tokens": MAX_TOKENS,
         "batches_seen": sorted({r["_batch"] for r in records}),
+        "tool_usage_attempted": dict(tool_usage_att),
+        "tool_usage_admitted": dict(tool_usage_adm),
     }
     (FORMAL / "export_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2),
                                                encoding="utf-8")

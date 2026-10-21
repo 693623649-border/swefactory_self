@@ -79,5 +79,15 @@
     "batch_029_1792575082",
     "batch_030",
     "batch_030_1792575626"
-  ]
+  ],
+  "tool_usage_attempted": {
+    "bash": 20684,
+    "read": 316,
+    "edit": 224
+  },
+  "tool_usage_admitted": {
+    "bash": 7799,
+    "read": 224,
+    "edit": 119
+  }
 }
