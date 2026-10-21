@@ -91,9 +91,16 @@ def main() -> None:
         lines.append(f"| {b} | {s['attempted']} | {s['passed']} | {s['admitted']} |")
 
     total_selected = len(json.loads((FORMAL / "selection_ids.json").read_text(encoding="utf-8")))
+    missing_images = json.loads((FORMAL / "missing_images.json").read_text(encoding="utf-8")) \
+        if (FORMAL / "missing_images.json").exists() else []
+    infra_excluded = json.loads((FORMAL / "infra_excluded.json").read_text(encoding="utf-8")) \
+        if (FORMAL / "infra_excluded.json").exists() else []
     lines += [
         "",
         f"**完成度：本轮覆盖选题的 {attempted}/{total_selected}（{attempted/total_selected:.1%}）。**"
+        f" 未覆盖部分：{len(missing_images)} 题镜像在注册表永久缺失、"
+        f"{len(infra_excluded)} 题连续两次运行以 infra 错误结束（非模型失败），"
+        "两项均已记录、不计入任何比率。"
         " 编排器按 instance 去重、可断点续跑；未完成部分不进入本报告的任何比率。",
         "",
         "## 3. 目标测试与回归（按声明集合）",
