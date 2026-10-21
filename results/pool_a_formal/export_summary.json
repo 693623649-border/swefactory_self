@@ -1,0 +1,38 @@
+{
+  "attempted": 245,
+  "admitted": 131,
+  "rejections": {
+    "not_passed": 86,
+    "f2p_incomplete": 79,
+    "p2p_incomplete": 14,
+    "over_length": 22,
+    "test_paths_edited": 11,
+    "no_test_at_all": 5,
+    "empty_patch": 3,
+    "duplicate_patch": 2
+  },
+  "sequences": 131,
+  "total_tokens": 3074528,
+  "supervised_tokens": 983133,
+  "supervised_fraction": 0.3198,
+  "per_sample_tokens": 23469.7,
+  "max_tokens": 65536,
+  "batches_seen": [
+    "batch_001",
+    "batch_002",
+    "batch_003",
+    "batch_004",
+    "batch_005",
+    "batch_006",
+    "batch_007",
+    "batch_008",
+    "batch_009",
+    "batch_010",
+    "batch_011",
+    "batch_012",
+    "batch_013",
+    "batch_014",
+    "batch_015",
+    "batch_016"
+  ]
+}

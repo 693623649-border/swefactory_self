@@ -70,3 +70,5 @@ results/pool_a_formal/batch_*/
 results/pool_a_formal/*.log
 results/pool_a_formal/batch_ledger.jsonl
 results/pool_a_formal/*.ids.json
+# large per-sample payloads stay local
+results/pool_a_formal/sft_admitted.jsonl

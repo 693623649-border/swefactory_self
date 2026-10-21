@@ -2,24 +2,11 @@
   "gpu": "NVIDIA GeForce RTX 5090 D",
   "gpu_total_GiB": 31.8,
   "precision": "bf16 + LoRA r32/a64, grad-ckpt, chunked-CE(chunk=1024, checkpointed)",
+  "fla": "on",
   "architecture_note": "hybrid: 24/32 linear_attention, vocab 248320, mamba fp32 states",
   "results": [
     {
-      "length": 8192,
-      "steps": 3,
-      "supervised_tokens": 2294,
-      "loss_first_last": [
-        12.6251,
-        12.6251
-      ],
-      "peak_alloc_GiB": 26.35,
-      "peak_reserved_GiB": 29.18,
-      "total_s": 12.6,
-      "tokens_per_s": 1948.0,
-      "s_per_step": 4.2
-    },
-    {
-      "length": 32768,
+      "length": 16384,
       "oom": true
     }
   ],
