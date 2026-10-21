@@ -205,10 +205,57 @@ def report() -> None:
     db.close()
 
 
+def check() -> int:
+    """Fail when the index disagrees with the ledgers it claims to describe.
+
+    This is the enforcement hook for the registration rule: a report whose numbers
+    cannot be reproduced from the index is not allowed to ship.
+    """
+    ledger = load_jsonl(FORMAL / "admission_ledger.jsonl")
+    db = sqlite3.connect(f"file:{DB.as_posix()}?mode=ro", uri=True)
+    problems: list[str] = []
+    expected = {
+        "samples": (db.execute("SELECT COUNT(*) FROM samples").fetchone()[0], len(ledger)),
+        "admitted": (db.execute("SELECT COUNT(*) FROM samples WHERE admitted=1").fetchone()[0],
+                     sum(1 for r in ledger if r.get("admitted"))),
+        "gate_rows": (db.execute("SELECT COUNT(*) FROM gates").fetchone()[0], len(ledger) * len(GATE_NAMES)),
+        "seq_tokens": (db.execute("SELECT COALESCE(SUM(seq_tokens),0) FROM samples WHERE admitted=1").fetchone()[0],
+                       sum(r.get("length") or 0 for r in ledger if r.get("admitted"))),
+    }
+    for name, (got, want) in expected.items():
+        if got != want:
+            problems.append(f"{name}: index={got} ledger={want}")
+    stored = {g: n for g, n in db.execute("SELECT gate, instances FROM v_reject_reasons")}
+    counted = Counter(x for r in ledger for x in (r.get("rejected") or []))
+    for gate in set(stored) | set(counted):
+        if stored.get(gate, 0) != counted.get(gate, 0):
+            problems.append(f"reject[{gate}]: index={stored.get(gate, 0)} ledger={counted.get(gate, 0)}")
+    orphans = [p for (p,) in db.execute("SELECT traj_path FROM samples") if not p or not Path(p).exists()]
+    if orphans:
+        problems.append(f"trajectories missing on disk: {len(orphans)}")
+    dupes = db.execute("SELECT COUNT(*) FROM (SELECT instance_id FROM samples "
+                       "GROUP BY instance_id HAVING COUNT(*) > 1)").fetchone()[0]
+    if dupes:
+        problems.append(f"duplicate instance ids: {dupes}")
+    db.close()
+    if problems:
+        print("INDEX OUT OF DATE — rebuild with: python results/build_index_db.py")
+        for problem in problems:
+            print("  -", problem)
+        return 1
+    print(f"OK: index matches ledger ({len(ledger)} samples, "
+          f"{expected['admitted'][0]} admitted, {expected['seq_tokens'][0]} tokens)")
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", action="store_true")
+    parser.add_argument("--check", action="store_true",
+                        help="exit 1 when the index disagrees with the ledgers")
     args = parser.parse_args()
+    if args.check:
+        raise SystemExit(check())
     if args.report:
         report()
         return
