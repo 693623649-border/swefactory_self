@@ -131,6 +131,20 @@ def main() -> None:
         "4. 训练窗口：smoke 实测 ≤8K 可训练，32K/64K 被线性注意力 triton 路径的 64GiB 分配阻塞；"
         "导出按 64K 门，但训练端窗口需另行解决（见 smoke 纪要）。",
         "",
+        "## 6.1 停止原因与续跑",
+        "",
+        "本轮受限于镜像拉取吞吐而不是模型：单批 15 张镜像需 330–1300 秒（注册表限速/层解压），"
+        "8 路并行也无法压缩到线性，导致 903 题全量的预计墙钟约 20 小时以上。因此报告只覆盖"
+        f"实际完成的 {attempted} 题，未完成部分**不进入任何比率**。",
+        "",
+        "续跑方式（幂等，按 instance 去重）：",
+        "",
+        "```bash",
+        "powershell -File results/run_formal.ps1   # 自动跳过已完成题，继续拉取-运行-清理",
+        "python results/formal_export.py            # 重算准入与 64K 门导出",
+        "python results/formal_report.py            # 刷新本报告",
+        "```",
+        "",
         "## 7. 证据",
         "",
         "- `results/pool_a_formal/admission_ledger.jsonl`（逐题八门判定与成本）",
