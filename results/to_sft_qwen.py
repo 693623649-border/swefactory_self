@@ -8,6 +8,7 @@ merge into one block and BPE merges can cross boundaries.
 """
 from __future__ import annotations
 import argparse
+import bisect
 import glob
 import json
 import os
@@ -82,31 +83,84 @@ def blocks(messages):
     return out
 
 
-def build(renderer: Renderer, messages):
-    grouped = blocks(messages)
-    last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"), default=-1)
-    starts, previous = [], ""
-    for block in grouped:
-        end = block["indices"][-1] + 1
-        text = renderer.prefix_text(messages[:end], before_last_query=end - 1 <= last_user)
-        if not text.startswith(previous):
-            raise ValueError(f"not prefix-stable at block ending {end}")
-        starts.append(len(previous))
-        previous = text
-    full = previous
-    bounds = starts + [len(full)]
-    ids, offsets = renderer.tokenizer.encode(full, add_special_tokens=False).ids, None
-    encoding = renderer.tokenizer.encode(full, add_special_tokens=False)
-    ids, offsets = encoding.ids, encoding.offsets
-    mask, supervision = [], [1 if b["role"] == "assistant" else 0 for b in grouped]
-    for start, end in offsets:
-        owner, best = 0, -1
-        for position in range(len(grouped)):
-            overlap = min(end, bounds[position + 1]) - max(start, bounds[position])
-            if overlap > best:
-                owner, best = position, overlap
-        mask.append(supervision[owner])
-    return ids, mask, len(grouped)
+class Rendered:
+    """One rendering of a trajectory, reusable for several supervision plans.
+
+    Pool B/C export renders the same instance for more than one pool, so the
+    template walk and tokenisation happen once per instance and only the mask is
+    recomputed per plan. ``owners[token]`` is the message block a token belongs to.
+    """
+
+    def __init__(self, renderer: Renderer, messages) -> None:
+        self.messages = messages
+        self.grouped = blocks(messages)
+        last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"),
+                        default=-1)
+        starts, previous = [], ""
+        for block in self.grouped:
+            end = block["indices"][-1] + 1
+            text = renderer.prefix_text(messages[:end], before_last_query=end - 1 <= last_user)
+            if not text.startswith(previous):
+                raise ValueError(f"not prefix-stable at block ending {end}")
+            starts.append(len(previous))
+            previous = text
+        self.text = previous
+        self.bounds = starts + [len(previous)]
+        encoding = renderer.tokenizer.encode(self.text, add_special_tokens=False)
+        self.ids = encoding.ids
+        self.owners: list[int] = []
+        bounds = self.bounds
+        count = len(self.grouped)
+        for start, end in encoding.offsets:
+            # block intervals are contiguous and sorted, so only blocks intersecting
+            # [start, end) can win; scanning them is exact and avoids the O(n) walk
+            first = bisect.bisect_right(bounds, start) - 1
+            last = bisect.bisect_right(bounds, end) - 1
+            first = min(max(first, 0), count - 1)
+            last = min(max(last, first), count - 1)
+            owner, best = first, -1
+            for position in range(first, last + 1):
+                overlap = min(end, bounds[position + 1]) - max(start, bounds[position])
+                if overlap > best:
+                    owner, best = position, overlap
+            self.owners.append(owner)
+
+    def mask(self, keep=None) -> list[int]:
+        keep_set = set(keep) if keep is not None else None
+        supervision = []
+        for block in self.grouped:
+            allowed = block["role"] == "assistant"
+            if allowed and keep_set is not None:
+                allowed = len(block["indices"]) == 1 and block["indices"][0] in keep_set
+            supervision.append(1 if allowed else 0)
+        return [supervision[owner] for owner in self.owners]
+
+    def spans(self, mask=None) -> dict:
+        """``{message_index: (first_token, last_token)}`` for supervised blocks."""
+        values = self.mask() if mask is None else mask
+        spans: dict[int, tuple[int, int]] = {}
+        for token, (owner, value) in enumerate(zip(self.owners, values)):
+            if not value:
+                continue
+            message_index = self.grouped[owner]["indices"][0]
+            first, last = spans.get(message_index, (token, token))
+            spans[message_index] = (min(first, token), max(last, token))
+        return spans
+
+
+def build(renderer: Renderer, messages, keep=None, with_spans: bool = False):
+    """Render a trajectory and return ``(ids, mask, blocks)``.
+
+    ``keep`` optionally restricts supervision to the given message indices; only
+    assistant blocks can ever be supervised, so any other index is ignored.
+    ``with_spans`` additionally returns the per-message token spans, which lets a
+    pool exporter prove the mask covers exactly the intended messages.
+    """
+    rendered = Rendered(renderer, messages)
+    mask = rendered.mask(keep)
+    if with_spans:
+        return rendered.ids, mask, len(rendered.grouped), rendered.spans(mask)
+    return rendered.ids, mask, len(rendered.grouped)
 
 
 def main() -> None:
