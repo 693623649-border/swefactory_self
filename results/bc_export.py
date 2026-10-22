@@ -253,6 +253,15 @@ def evaluate_c2(record: dict, admission: dict, diag: sr.Diagnosis) -> dict | Non
         return base_row("C2", record, admission, "REJECT", ["EDIT_AFTER_LAST_TEST"],
                         evidence={"last_mut_msg": diag.last_mut_msg,
                                   "last_test_obs": last_test.obs_msg})
+    if TEST_EVASION.search(last_test.command):
+        # A green summary produced by deselecting/ignoring tests is not a verdict on the
+        # task: the model review caught two of these by hand (coloraide, drf-pydantic), so
+        # the deterministic layer now routes them to review instead of admitting them.
+        return base_row("C2", record, admission, "REVIEW", ["TEST_SELECTION"],
+                        review_required=True,
+                        evidence={"last_pass_msg": last_test.obs_msg,
+                                  "command": last_test.command[:400],
+                                  "test": last_test.test.as_dict()})
     # the same check, unchanged, run twice after the last edit is the loop pathology
     redundant = redundant_reruns(diag)
     if redundant:

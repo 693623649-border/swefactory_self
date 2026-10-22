@@ -284,3 +284,55 @@ def test_masked_messages_are_never_supervised():
     row = bx.evaluate_b(record, ADMITTED, diag)
     masked = {msg for msg, _ in row["masked_msgs"]}
     assert masked.isdisjoint(set(row["keep_msgs"]))
+
+
+# --- semantic review layer -------------------------------------------------
+
+def test_c2_flags_a_final_pass_that_deselects_tests():
+    messages = _messages("1 failed, 20 passed in 0.2s\n", "20 passed, 1 deselected in 0.2s\n")
+    messages[-3] = {"role": "assistant", "content": "", "tool_calls": [
+        {"id": "c4", "type": "function",
+         "function": {"name": "bash",
+                      "arguments": '{"command": "cd /w && python -m pytest -q '
+                                   '--deselect tests/test_core.py::test_parse"}'}}]}
+    record = _record(messages)
+    row = bx.evaluate_c2(record, ADMITTED, sr.diagnose(record))
+    assert row["decision"] == "REVIEW" and "TEST_SELECTION" in row["reasons"]
+    assert row["training_eligible"] is False and row["review_required"] is True
+
+
+def test_apply_review_drops_only_masked_admits(tmp_path, monkeypatch):
+    import json
+
+    import model_review as mr
+
+    ledger = [
+        {"sample_id": "C2:a", "pool": "C2", "decision": "ADMIT",
+         "seq_tokens": 10, "supervised_tokens": 4},
+        {"sample_id": "C2:b", "pool": "C2", "decision": "ADMIT",
+         "seq_tokens": 20, "supervised_tokens": 8},
+        {"sample_id": "C3:c", "pool": "C3", "decision": "REVIEW",
+         "seq_tokens": 5, "supervised_tokens": 0},
+    ]
+    (tmp_path / "bc_ledger.jsonl").write_text(
+        "\n".join(json.dumps(row) for row in ledger) + "\n", encoding="utf-8")
+    labels = [
+        {"packet_id": "MR-C2_a", "sample_id": "C2:a", "pool": "C2", "instance_id": "a",
+         "verdict": "MASK", "reviewer_model": "test", "notes": "deselected target"},
+        {"packet_id": "MR-C2_b", "sample_id": "C2:b", "pool": "C2", "instance_id": "b",
+         "verdict": "KEEP", "reviewer_model": "test", "notes": ""},
+        {"packet_id": "MR-C3_c", "sample_id": "C3:c", "pool": "C3", "instance_id": "c",
+         "verdict": "MASK", "reviewer_model": "test", "notes": ""},
+    ]
+    (tmp_path / "model_labels.jsonl").write_text(
+        "\n".join(json.dumps(row) for row in labels) + "\n", encoding="utf-8")
+    monkeypatch.setattr(mr, "POOL", tmp_path)
+    monkeypatch.setattr(mr, "REVIEW", tmp_path)
+    overlay = mr.apply_review()
+    assert [item["sample_id"] for item in overlay["excluded_by_model"]] == ["C2:a"]
+    assert overlay["pools"]["C2"]["admitted"] == 2
+    assert overlay["pools"]["C2"]["final_admitted"] == 1
+    assert overlay["pools"]["C2"]["final_supervised_tokens"] == 8
+    # a REVIEW row never carried a slot, so a MASK on it cannot remove anything
+    assert overlay["pools"]["C3"]["final_admitted"] == 0
+    assert (tmp_path / "overlay.json").exists()
