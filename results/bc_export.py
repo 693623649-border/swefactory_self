@@ -47,6 +47,7 @@ RESULTS = Path(__file__).resolve().parent
 FORMAL = RESULTS / "pool_a_formal"
 OUT = RESULTS / "pool_bc"
 DB = FORMAL / "index.sqlite3"
+MASK_OVERLAY = OUT / "review" / "overlay.json"
 sys.path.insert(0, str(RESULTS))
 import segment_review as sr  # noqa: E402
 from to_sft_qwen import Renderer, Rendered  # noqa: E402
@@ -121,7 +122,7 @@ FROM pool_samples WHERE pool = 'B' AND decision = 'ADMIT';
 def load_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n")
             if line.strip()]
 
 
@@ -129,7 +130,7 @@ def load_records() -> list[dict]:
     """Dedup exactly like formal_export: first record per instance wins."""
     records, seen = [], set()
     for shard in sorted(FORMAL.glob("batch_*/**/trajectories.jsonl")):
-        for number, line in enumerate(shard.read_text(encoding="utf-8").splitlines(), 1):
+        for number, line in enumerate(shard.read_text(encoding="utf-8").split("\n"), 1):
             if not line.strip():
                 continue
             try:
@@ -147,6 +148,50 @@ def load_records() -> list[dict]:
 def load_admission() -> dict[str, dict]:
     return {row["instance_id"]: row
             for row in load_jsonl(FORMAL / "admission_ledger.jsonl")}
+
+
+def load_overlay(path: Path) -> dict | None:
+    """Read the model-review overlay written by ``model_review.py --apply``.
+
+    Two verdicts travel through it: a sample-level QUARANTINE drops the trajectory, and
+    a per-message MASK narrows the supervised messages. Returning ``None`` for a missing
+    file keeps the plain export path unchanged.
+    """
+    if not path.exists():
+        return None
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    quarantine = {item["sample_id"] for item in raw.get("excluded_by_model") or []}
+    masks = {sample: {int(msg) for msg in msgs}
+             for sample, msgs in (raw.get("sample_masks") or {}).items()}
+    return {"path": str(path), "sha256": sha256(path.read_bytes()).hexdigest(),
+            "quarantine": quarantine, "masks": masks, "receipt": raw}
+
+
+def apply_overlay_row(row: dict, overlay: dict) -> dict:
+    """Narrow one ADMIT row by the review overlay, before it is rendered."""
+    sample = row["sample_id"]
+    receipt = overlay.get("receipt") or {}
+    if (row.get("pool") == "C3" and receipt.get("complete_review_required")
+            and sample in receipt.get("reviewed_sample_ids", [])):
+        row = {**row, "training_eligible": True, "review_required": False}
+    if sample in overlay["quarantine"]:
+        return {**row, "decision": "REJECT", "training_eligible": False,
+                "reasons": list(row["reasons"]) + ["MODEL_QUARANTINE"],
+                "reasons_by_model": ["QUARANTINE"]}
+    dropped = overlay["masks"].get(sample) or set()
+    keep = [int(msg) for msg in row["keep_msgs"]]
+    kept = [msg for msg in keep if msg not in dropped]
+    if not dropped:
+        return row
+    row = {**row, "keep_msgs": kept,
+           "model_masked": len(keep) - len(kept),
+           "masked_msgs": list(row.get("masked_msgs") or []) +
+                          [[msg, "MODEL_REVIEW"] for msg in keep if msg in dropped],
+           "reasons_by_model": ["MASK"]}
+    if not kept:
+        row.update({"decision": "REJECT", "training_eligible": False,
+                    "reasons": list(row["reasons"]) + ["MODEL_EMPTY_MASK"]})
+    return row
 
 
 # --- shared evidence helpers ----------------------------------------------
@@ -305,7 +350,7 @@ def redundant_reruns(diag: sr.Diagnosis) -> list[list[int]]:
 
 
 def evaluate_c3(record: dict, admission: dict, diag: sr.Diagnosis) -> dict | None:
-    if admission.get("admitted"):
+    if admission.get("admitted") or record.get("success"):
         return None
     rejected = admission.get("rejected") or []
     if "infra_error" in rejected:
@@ -431,7 +476,7 @@ def evaluate_b(record: dict, admission: dict, diag: sr.Diagnosis) -> dict | None
 
 def evaluate_b_seeds(record: dict, admission: dict, diag: sr.Diagnosis) -> dict | None:
     """Near-miss failures that still need a real teacher continuation (counted 0)."""
-    if admission.get("admitted"):
+    if admission.get("admitted") or record.get("success"):
         return None
     if "infra_error" in (admission.get("rejected") or []):
         return None
@@ -498,12 +543,17 @@ def render_row(row: dict, record: dict, renderer: Renderer, cache: dict) -> dict
     return {"row": row, "payload": payload}
 
 
-def export() -> dict:
+def export(mask_overlay: Path | None = None) -> dict:
     records = load_records()
     admission = load_admission()
     renderer = Renderer()
+    overlay = load_overlay(mask_overlay) if mask_overlay is not None else None
+    if mask_overlay is not None and overlay is None:
+        raise SystemExit(f"overlay not found: {mask_overlay}")
     cache: dict = {}
     rows, payloads, seeds = [], {pool: [] for pool in POOLS}, []
+    rule_rows = []
+    a_rows = []
     diagnostics: dict[str, sr.Diagnosis] = {}
 
     for record in records:
@@ -516,11 +566,21 @@ def export() -> dict:
                                  evidence={"error": repr(error)[:300]}))
             continue
         diagnostics[iid] = diag
+        if adm.get("admitted"):
+            a_rows.append(base_row("A", record, adm, "ADMIT", ["A_VERIFIED_SOURCE"],
+                                   keep_msgs=assistant_msgs(diag.messages), masked_msgs=[],
+                                   evidence={"content_lines": diag.patch.content_lines}))
         for pool, rule in (("C1", evaluate_c1), ("C2", evaluate_c2),
                            ("C3", evaluate_c3), ("B", evaluate_b)):
             row = rule(record, adm, diag)
             if row is None:
                 continue
+            if row["decision"] == "ADMIT":
+                result = render_row(row, record, renderer, cache)
+                row = result["row"]
+            rule_rows.append(dict(row))
+            if row["decision"] == "ADMIT" and overlay is not None:
+                row = apply_overlay_row(row, overlay)
             if row["decision"] == "ADMIT":
                 result = render_row(row, record, renderer, cache)
                 row = result["row"]
@@ -531,6 +591,15 @@ def export() -> dict:
         if seed is not None:
             seeds.append(seed)
 
+    if overlay is not None and overlay.get("receipt", {}).get("complete_review_required"):
+        receipt = overlay["receipt"]
+        for name, values in (("bc", rule_rows), ("a", a_rows)):
+            digest = sha256("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in values).encode()).hexdigest()
+            if receipt.get(f"{name}_rule_ledger_sha256") != digest:
+                raise SystemExit(f"{name} rule ledger changed after model review; rebuild review snapshot")
+        label_path = Path(receipt["labels"])
+        if sha256(label_path.read_bytes()).hexdigest() != receipt["labels_sha256"]:
+            raise SystemExit("model labels changed after overlay composition")
     OUT.mkdir(parents=True, exist_ok=True)
     created = datetime.now(timezone.utc).isoformat(timespec="seconds")
     hashes = {}
@@ -540,6 +609,12 @@ def export() -> dict:
             for payload in payloads[pool]:
                 handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
         hashes[pool] = sha256(path.read_bytes()).hexdigest() if path.exists() else None
+    with (OUT / "a_rule_ledger.jsonl").open("w", encoding="utf-8") as handle:
+        for row in a_rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+    with (OUT / "bc_rule_ledger.jsonl").open("w", encoding="utf-8") as handle:
+        for row in rule_rows:
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     with (OUT / "bc_ledger.jsonl").open("w", encoding="utf-8") as handle:
         for row in rows:
             handle.write(json.dumps({**row, "created_at": created}, ensure_ascii=False) + "\n")
@@ -547,14 +622,21 @@ def export() -> dict:
         for seed in seeds:
             handle.write(json.dumps(seed, ensure_ascii=False) + "\n")
 
-    summary = summarize(rows, payloads, seeds, hashes, created)
+    summary = summarize(rows, payloads, seeds, hashes, created, overlay)
     (OUT / "bc_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2),
                                          encoding="utf-8")
     register(rows, {pool: payload_path(pool) for pool in POOLS}, hashes, created)
+    db = sqlite3.connect(DB)
+    db.execute("CREATE TABLE IF NOT EXISTS pool_rule_samples (sample_id TEXT PRIMARY KEY, pool TEXT, decision TEXT, row_json TEXT)")
+    db.execute("DELETE FROM pool_rule_samples")
+    db.executemany("INSERT INTO pool_rule_samples VALUES (?,?,?,?)",
+                   [(r["sample_id"], r["pool"], r["decision"], json.dumps(r, ensure_ascii=False)) for r in rule_rows + a_rows])
+    db.commit()
+    db.close()
     return summary
 
 
-def summarize(rows, payloads, seeds, hashes, created) -> dict:
+def summarize(rows, payloads, seeds, hashes, created, overlay: dict | None = None) -> dict:
     by_pool = {}
     for pool in POOLS:
         pool_rows = [r for r in rows if r["pool"] == pool]
@@ -569,12 +651,21 @@ def summarize(rows, payloads, seeds, hashes, created) -> dict:
             "sequences": len(payloads[pool]),
             "seq_tokens": sum(r["seq_tokens"] or 0 for r in admitted),
             "supervised_tokens": sum(r["supervised_tokens"] or 0 for r in admitted),
+            "model_masked_messages": sum(r.get("model_masked") or 0 for r in pool_rows),
             "payload_sha256": hashes.get(pool),
         }
-    return {"created_at": created, "pools": by_pool,
-            "b_teacher_seeds": len(seeds),
-            "ledger": str(OUT / "bc_ledger.jsonl"),
-            "index": str(DB)}
+    result = {"created_at": created, "pools": by_pool,
+              "b_teacher_seeds": len(seeds),
+              "ledger": str(OUT / "bc_ledger.jsonl"),
+              "index": str(DB)}
+    if overlay is not None:
+        result["model_overlay"] = {
+            "path": overlay["path"], "sha256": overlay["sha256"],
+            "quarantine": len(overlay["quarantine"]),
+            "masked_samples": len(overlay["masks"]),
+            "masked_messages": sum(len(msgs) for msgs in overlay["masks"].values()),
+        }
+    return result
 
 
 def register(rows, paths, hashes, created) -> None:
@@ -664,7 +755,7 @@ def check() -> int:
                 problems.append(f"{column}: db={got} ledger={want}")
         eligible = db.execute("SELECT COUNT(*) FROM pool_samples WHERE training_eligible=1"
                               ).fetchone()[0]
-        want_eligible = sum(1 for r in rows if r["decision"] == "ADMIT" and r["pool"] != "C3")
+        want_eligible = sum(1 for r in rows if r["decision"] == "ADMIT" and r["training_eligible"])
         if eligible != want_eligible:
             problems.append(f"training_eligible rows {eligible} != trainable ADMIT rows {want_eligible}")
     finally:
@@ -673,6 +764,18 @@ def check() -> int:
     # re-derive every decision from the raw trajectories (no tokenizer needed)
     records = load_records()
     admission = load_admission()
+    summary_path = OUT / "bc_summary.json"
+    overlay_meta = {}
+    if summary_path.exists():
+        overlay_meta = (json.loads(summary_path.read_text(encoding="utf-8"))
+                        .get("model_overlay") or {})
+    overlay = None
+    if overlay_meta:
+        overlay = load_overlay(Path(overlay_meta["path"]))
+        if overlay is None:
+            problems.append("summary records a model overlay that is missing")
+        elif overlay["sha256"] != overlay_meta.get("sha256"):
+            problems.append("model overlay changed since the export — rerun with --mask-overlay")
     derived: dict[str, tuple[str, tuple]] = {}
     for record in records:
         adm = admission.get(record["instance_id"]) or {}
@@ -684,7 +787,7 @@ def check() -> int:
             row = rule(record, adm, diag)
             if row is not None:
                 derived[row["sample_id"]] = (row["decision"], tuple(row["keep_msgs"]))
-    render_rejects = {"OVER_LENGTH", "EMPTY_MASK"}
+    gate_rejects = {"OVER_LENGTH", "EMPTY_MASK", "MODEL_QUARANTINE", "MODEL_EMPTY_MASK"}
     for row in rows:
         sample = row["sample_id"]
         expected = derived.get(sample)
@@ -692,12 +795,22 @@ def check() -> int:
             problems.append(f"{sample}: ledger row is no longer derivable from the data")
             continue
         decision, keep = expected
-        if render_rejects & set(row["reasons"]):
-            decision = "ADMIT"          # the rule admitted it; the render gate rejected it
+        if overlay is not None and decision == "ADMIT":
+            if sample in overlay["quarantine"]:
+                decision = "REJECT"
+            else:
+                dropped = overlay["masks"].get(sample) or set()
+                keep = tuple(msg for msg in keep if msg not in dropped)
+                if not keep:
+                    decision = "REJECT"
+        if decision == "ADMIT" and ({"OVER_LENGTH", "EMPTY_MASK"} & set(row["reasons"])):
+            decision = "REJECT"         # the rule admitted it; the render gate rejected it
         if row["decision"] != decision:
             problems.append(f"{sample}: decision {row['decision']} != rule {decision}")
         if tuple(row["keep_msgs"]) != keep:
             problems.append(f"{sample}: keep_msgs drifted from the rule")
+        elif gate_rejects & set(row["reasons"]) and row["decision"] != "REJECT":
+            problems.append(f"{sample}: gate reason without a REJECT decision")
     for sample in set(derived) - {row["sample_id"] for row in rows}:
         problems.append(f"{sample}: rule produces a row that the ledger lost")
 
@@ -730,8 +843,10 @@ def summary() -> None:
         if admitted:
             tokens = [r["seq_tokens"] for r in admitted]
             supervised = [r["supervised_tokens"] for r in admitted]
+            masked = sum(r.get("model_masked") or 0 for r in pool_rows)
             print(f"   tokens: total={sum(tokens)}, supervised={sum(supervised)}, "
-                  f"max_len={max(tokens)}, mean_len={sum(tokens)//len(tokens)}")
+                  f"max_len={max(tokens)}, mean_len={sum(tokens)//len(tokens)}, "
+                  f"model_masked_msgs={masked}")
             print(f"   supervised fraction mean="
                   f"{sum(supervised)/sum(tokens):.4f}")
 
@@ -740,13 +855,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build pool B and pool C from recorded runs")
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--summary", action="store_true")
+    parser.add_argument("--mask-overlay", type=Path, default=None,
+                        help="model_review.py overlay.json: quarantine samples, mask messages")
     args = parser.parse_args()
     if args.check:
         raise SystemExit(check())
     if args.summary:
         summary()
         return
-    print(json.dumps(export(), ensure_ascii=False, indent=2))
+    print(json.dumps(export(args.mask_overlay), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

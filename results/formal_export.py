@@ -81,7 +81,7 @@ def load_records() -> list[dict]:
     rows = []
     skipped = []
     for shard in sorted(FORMAL.glob("batch_*/**/trajectories.jsonl")):
-        for number, line in enumerate(shard.read_text(encoding="utf-8").splitlines(), 1):
+        for number, line in enumerate(shard.read_text(encoding="utf-8").split("\n"), 1):
             if not line.strip():
                 continue
             try:
@@ -100,7 +100,7 @@ def load_records() -> list[dict]:
 
 def main() -> None:
     raw = {json.loads(l)["instance_id"]: json.loads(l)
-           for l in (FORMAL / "tasks_formal.jsonl").read_text(encoding="utf-8").splitlines()}
+           for l in (FORMAL / "tasks_formal.jsonl").read_text(encoding="utf-8").split("\n") if l.strip()}
     qualification = json.loads((FORMAL / "qualification.json").read_text(encoding="utf-8"))
     validation_families = set(qualification.get("validation_families", []))
 
@@ -118,6 +118,7 @@ def main() -> None:
         print(f"deduped {len(records)-len(deduped)} duplicate records across run dirs", flush=True)
         records = deduped
     seen_patch: dict[str, str] = {}
+    admitted_families: set[str] = set()
     ledger = []
     admitted = []
     totals = Counter()
@@ -205,6 +206,10 @@ def main() -> None:
             reject.append("no_test_at_all")
         if family in validation_families:
             reject.append("validation_family")
+        if not task or not family.strip("/"):
+            reject.append("unknown_task")
+        if family in admitted_families:
+            reject.append("family_duplicate")
         if not patch.strip():
             reject.append("empty_patch")
         digest = sha256(re.sub(r"\s+", "", patch).encode()).hexdigest()[:16]
@@ -229,6 +234,7 @@ def main() -> None:
             if sum(mask) == 0:
                 reject.append("empty_mask")
             if not reject:
+                admitted_families.add(family)
                 admitted.append({"instance_id": iid, "ids": ids, "mask": mask})
                 tokens += len(ids)
                 supervised += sum(mask)
@@ -259,6 +265,8 @@ def main() -> None:
                 tool_usage_adm[t_name] += row.get(f"tool_{t_name}", 0)
 
     summary = {
+        "admission_protocol": "formal-v2-family-cap-one",
+        "exporter_sha256": sha256(Path(__file__).read_bytes()).hexdigest(),
         "attempted": totals["attempted"], "admitted": totals["admitted"],
         "rejections": {k[7:]: v for k, v in totals.items()
                        if k.startswith("reject_") and v},

@@ -128,7 +128,8 @@ ORDER BY bracket;
 
 GATE_NAMES = ("not_passed", "f2p_incomplete", "p2p_incomplete", "over_length",
               "test_paths_edited", "no_test_at_all", "empty_patch", "duplicate_patch",
-              "infra_error")
+              "infra_error", "validation_family", "family_duplicate", "unknown_task",
+              "no_think", "empty_mask")
 
 
 def sha256_file(path: Path) -> str | None:
@@ -148,7 +149,7 @@ def trajectory_index() -> dict[str, Path]:
                     if not line:
                         continue
                     try:
-                        found[json.loads(line)["instance_id"]] = traj
+                        found.setdefault(json.loads(line)["instance_id"], traj)
                     except (json.JSONDecodeError, KeyError):
                         continue
         except OSError:
@@ -159,7 +160,7 @@ def trajectory_index() -> dict[str, Path]:
 def load_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
-    return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    return [json.loads(l) for l in path.read_text(encoding="utf-8").split("\n") if l.strip()]
 
 
 def build() -> dict:
@@ -210,7 +211,9 @@ def build() -> dict:
             "SELECT COUNT(*) FROM samples WHERE batch = ? AND admitted = 1",
             (f"batch_{row['batch']:03d}" if isinstance(row.get("batch"), int) else row.get("batch"),)
         ).fetchone()[0]
-        name = f"batch_{row['batch']:03d}" if isinstance(row.get("batch"), int) else str(row.get("batch"))
+        name = Path(row["run_dir"]).name if row.get("run_dir") else (
+            f"batch_{row['batch']:03d}" if isinstance(row.get("batch"), int) else str(row.get("batch")))
+        admitted_n = db.execute("SELECT COUNT(*) FROM samples WHERE batch=? AND admitted=1", (name,)).fetchone()[0]
         db.execute("INSERT OR REPLACE INTO batches VALUES (?,?,?,?,?)",
                    (name, len(ids), row.get("accepted"), admitted_n, row.get("run_dir")))
     db.commit()
@@ -306,6 +309,10 @@ def check() -> int:
                        "GROUP BY instance_id HAVING COUNT(*) > 1)").fetchone()[0]
     if dupes:
         problems.append(f"duplicate instance ids: {dupes}")
+    family_dupes = db.execute("SELECT family, COUNT(*) FROM samples WHERE admitted=1 "
+                              "GROUP BY family HAVING COUNT(*) > 1").fetchall()
+    if family_dupes:
+        problems.append(f"admitted families repeated: {family_dupes[:5]}")
     db.close()
     if problems:
         print("INDEX OUT OF DATE — rebuild with: python results/build_index_db.py")

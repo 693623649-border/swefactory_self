@@ -263,6 +263,7 @@ def test_c2_flags_an_edit_after_the_passing_run():
 
 def test_c3_needs_a_real_failing_run_and_stays_untrainable():
     passing = _record(_messages("21 passed in 0.2s\n", "21 passed in 0.2s\n"))
+    passing["success"] = False
     rejected = bx.evaluate_c3(passing, {"admitted": False, "rejected": ["not_passed"]},
                               sr.diagnose(passing))
     assert rejected["decision"] == "REJECT"
@@ -271,6 +272,7 @@ def test_c3_needs_a_real_failing_run_and_stays_untrainable():
     failing = _record(_messages("1 failed, 20 passed in 0.2s\n", "1 failed, 20 passed in 0.2s\n",
                                 edit_between=False,
                                 report="I could not fix the parser; one test still fails."))
+    failing["success"] = False
     row = bx.evaluate_c3(failing, {"admitted": False, "rejected": ["not_passed"]},
                          sr.diagnose(failing))
     assert row is not None
@@ -301,38 +303,80 @@ def test_c2_flags_a_final_pass_that_deselects_tests():
     assert row["training_eligible"] is False and row["review_required"] is True
 
 
-def test_apply_review_drops_only_masked_admits(tmp_path, monkeypatch):
+def test_apply_review_quarantines_samples_and_masks_messages(tmp_path, monkeypatch):
     import json
 
     import model_review as mr
 
     ledger = [
-        {"sample_id": "C2:a", "pool": "C2", "decision": "ADMIT",
-         "seq_tokens": 10, "supervised_tokens": 4},
-        {"sample_id": "C2:b", "pool": "C2", "decision": "ADMIT",
-         "seq_tokens": 20, "supervised_tokens": 8},
-        {"sample_id": "C3:c", "pool": "C3", "decision": "REVIEW",
-         "seq_tokens": 5, "supervised_tokens": 0},
+        {"sample_id": "C2:a", "pool": "C2", "decision": "ADMIT", "keep_msgs": [3, 4, 5]},
+        {"sample_id": "C2:b", "pool": "C2", "decision": "ADMIT", "keep_msgs": [7]},
+        {"sample_id": "C3:c", "pool": "C3", "decision": "REVIEW", "keep_msgs": []},
+        {"sample_id": "B:d", "pool": "B", "decision": "ADMIT", "keep_msgs": [9]},
     ]
     (tmp_path / "bc_ledger.jsonl").write_text(
         "\n".join(json.dumps(row) for row in ledger) + "\n", encoding="utf-8")
     labels = [
         {"packet_id": "MR-C2_a", "sample_id": "C2:a", "pool": "C2", "instance_id": "a",
-         "verdict": "MASK", "reviewer_model": "test", "notes": "deselected target"},
+         "verdict": "MASK", "reviewer_model": "test", "notes": "deselected target",
+         "label_json": json.dumps([{"msg": 3, "label": "KEEP"},
+                                   {"msg": 4, "label": "MASK"},
+                                   {"msg": 5, "label": "KEEP"}])},
         {"packet_id": "MR-C2_b", "sample_id": "C2:b", "pool": "C2", "instance_id": "b",
-         "verdict": "KEEP", "reviewer_model": "test", "notes": ""},
+         "verdict": "KEEP", "reviewer_model": "test", "notes": "", "label_json": "[]"},
         {"packet_id": "MR-C3_c", "sample_id": "C3:c", "pool": "C3", "instance_id": "c",
-         "verdict": "MASK", "reviewer_model": "test", "notes": ""},
+         "verdict": "MASK", "reviewer_model": "test", "notes": "", "label_json": "[]"},
+        {"packet_id": "MR-B_d", "sample_id": "B:d", "pool": "B", "instance_id": "d",
+         "verdict": "QUARANTINE", "reviewer_model": "test", "notes": "leaked tests",
+         "label_json": "[]"},
     ]
     (tmp_path / "model_labels.jsonl").write_text(
         "\n".join(json.dumps(row) for row in labels) + "\n", encoding="utf-8")
     monkeypatch.setattr(mr, "POOL", tmp_path)
     monkeypatch.setattr(mr, "REVIEW", tmp_path)
     overlay = mr.apply_review()
-    assert [item["sample_id"] for item in overlay["excluded_by_model"]] == ["C2:a"]
+    # a sample verdict QUARANTINE removes the trajectory; message MASK only narrows it
+    assert [item["sample_id"] for item in overlay["excluded_by_model"]] == ["B:d"]
+    assert overlay["sample_masks"] == {"C2:a": [4]}
     assert overlay["pools"]["C2"]["admitted"] == 2
-    assert overlay["pools"]["C2"]["final_admitted"] == 1
-    assert overlay["pools"]["C2"]["final_supervised_tokens"] == 8
-    # a REVIEW row never carried a slot, so a MASK on it cannot remove anything
+    assert overlay["pools"]["C2"]["final_admitted"] == 2
+    assert overlay["pools"]["C2"]["model_masked_messages"] == 1
+    assert overlay["pools"]["B"]["final_admitted"] == 0
+    # a REVIEW row never carried a slot, so its labels cannot remove anything
     assert overlay["pools"]["C3"]["final_admitted"] == 0
     assert (tmp_path / "overlay.json").exists()
+
+
+def test_apply_overlay_row_quarantines_and_narrows(tmp_path):
+    import json
+
+    import bc_export as bx
+
+    overlay_path = tmp_path / "overlay.json"
+    overlay_path.write_text(json.dumps({
+        "excluded_by_model": [{"sample_id": "B:x"}],
+        "sample_masks": {"C2:y": [4, 5]},
+    }), encoding="utf-8")
+    overlay = bx.load_overlay(overlay_path)
+    assert overlay["quarantine"] == {"B:x"}
+    assert overlay["masks"] == {"C2:y": {4, 5}}
+
+    base = {"sample_id": "C2:y", "pool": "C2", "decision": "ADMIT",
+            "training_eligible": True, "reasons": ["REAL_FAILURE_THEN_CORRECTION"],
+            "keep_msgs": [3, 4, 5], "masked_msgs": []}
+    narrowed = bx.apply_overlay_row(base, overlay)
+    assert narrowed["keep_msgs"] == [3]
+    assert narrowed["model_masked"] == 2
+    assert narrowed["masked_msgs"] == [[4, "MODEL_REVIEW"], [5, "MODEL_REVIEW"]]
+    assert narrowed["decision"] == "ADMIT"
+
+    all_masked = bx.apply_overlay_row({**base, "keep_msgs": [4]}, overlay)
+    assert all_masked["decision"] == "REJECT"
+    assert all_masked["training_eligible"] is False
+    assert all_masked["reasons"][-1] == "MODEL_EMPTY_MASK"
+
+    quarantined = bx.apply_overlay_row({**base, "sample_id": "B:x"}, overlay)
+    assert quarantined["decision"] == "REJECT"
+    assert quarantined["reasons"][-1] == "MODEL_QUARANTINE"
+    assert quarantined["keep_msgs"] == [3, 4, 5]
+    assert bx.load_overlay(tmp_path / "missing.json") is None

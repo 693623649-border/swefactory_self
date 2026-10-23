@@ -45,7 +45,7 @@ DB = FORMAL / "index.sqlite3"
 sys.path.insert(0, str(RESULTS))
 import segment_review as sr  # noqa: E402
 
-REVIEW_VERSION = "v1"
+REVIEW_VERSION = "v2-full-assistant"
 ISSUE_CHARS = 4000
 SYSTEM_CHARS = 700
 CONTEXT_OBS_CHARS = 240
@@ -101,7 +101,7 @@ FROM pool_model_review GROUP BY pool, verdict ORDER BY pool, verdict;
 def load_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n")
             if line.strip()]
 
 
@@ -115,7 +115,11 @@ def bc_records() -> list[dict]:
 
 
 def load_ledger() -> dict[str, dict]:
-    return {row["sample_id"]: row for row in load_jsonl(POOL / "bc_ledger.jsonl")}
+    path = POOL / "bc_rule_ledger.jsonl"
+    if not path.exists():
+        path = POOL / "bc_ledger.jsonl"
+    rows = load_jsonl(path) + load_jsonl(POOL / "a_rule_ledger.jsonl")
+    return {row["sample_id"]: row for row in rows}
 
 
 # --- packet building -------------------------------------------------------
@@ -195,30 +199,36 @@ def packet_for(sample_id: str, ledger_row: dict, record: dict) -> dict:
     pool = ledger_row["pool"]
     keep = [int(item) for item in ledger_row.get("keep_msgs") or []]
     masked = [int(item[0]) for item in ledger_row.get("masked_msgs") or []]
-    if pool == "B":
-        start = max(0, int(evidence.get("fail_obs_msg", 0)) - 4)
-        end = int(evidence.get("pass_obs_msg", len(messages))) + 8
-    elif pool == "C2":
-        start = max(0, int(evidence.get("last_pass_msg", len(messages))) - 24)
-        end = None
-    elif pool == "C1":
-        start, end = 0, 40          # the landing decision window
-    else:                                  # C3: the failure evidence and the report
-        start = max(0, len(messages) - 14)
-        end = None
-
-    window = pick_window(record, ledger_row, start, end)
-    while window and sum(len(json.dumps(entry, ensure_ascii=False)) for entry in window) \
-            > WINDOW_CHAR_BUDGET:
-        window.pop(0)
-    window_msgs = {entry["msg"] for entry in window}
-    candidates = [msg for msg in sorted(set(keep) | set(masked))
-                  if msg in window_msgs]
-    first_window_msg = window[0]["msg"] if window else 0
-    context = [{"msg": index, "line": compact_line(messages, index)}
-               for index in range(0, first_window_msg)]
-    visible = {entry["msg"] for entry in window} | set(range(0, first_window_msg))
-    visible |= {entry["observation_msg"] for entry in window if "observation_msg" in entry}
+    # Every supervised assistant target remains visible in full, including reasoning
+    # and native tool arguments. Tool observations are bounded and explicitly marked.
+    window = []
+    for index, message in enumerate(messages):
+        role = message.get("role")
+        if role == "system":
+            continue
+        entry = {"msg": index, "role": role}
+        content = message.get("content") or ""
+        entry["content"] = content if role in ("assistant", "user") else clip(content, WINDOW_OBS_CHARS)
+        if role == "assistant":
+            for key in ("reasoning_raw", "reasoning_content", "reasoning_text", "tool_calls"):
+                if message.get(key):
+                    entry[key] = message[key]
+        elif role == "tool":
+            entry["content_chars"] = len(content)
+            entry["content_sha256"] = sha256(content.encode()).hexdigest()
+            entry["content_truncated"] = len(content) > WINDOW_OBS_CHARS
+            if entry["content_truncated"]:
+                half = WINDOW_OBS_CHARS // 2
+                entry["content"] = content[:half] + "\n[tool observation middle omitted]\n" + content[-half:]
+            entry["tool_call_id"] = message.get("tool_call_id")
+            entry["name"] = message.get("name")
+        window.append(entry)
+    visible = {item["msg"] for item in window}
+    candidates = sorted(set(keep) | set(masked))
+    if any(m not in visible or messages[m].get("role") != "assistant" for m in candidates):
+        raise ValueError(f"{sample_id}: supervision target is not a visible assistant")
+    context = []
+    trajectory_hash = sha256(json.dumps(messages, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
 
     patch = record.get("patch") or ""
     patch_files = [line.split(" b/", 1)[-1] for line in patch.splitlines()
@@ -230,12 +240,15 @@ def packet_for(sample_id: str, ledger_row: dict, record: dict) -> dict:
 
     packet = {
         "review_version": REVIEW_VERSION,
+        "trajectory_sha256": trajectory_hash,
+        "supervised_msgs": keep,
+        "coverage": "all supervised assistant messages; tool observations clipped to 2500 characters",
         "packet_id": f"MR-{sample_id}",
         "sample_id": sample_id,
         "pool": pool,
         "instance_id": ledger_row["instance_id"],
         "review_kind": review_kind(pool),
-        "task": {"issue": clip(user, ISSUE_CHARS), "system_head": clip(system, SYSTEM_CHARS)},
+        "task": {"issue": user, "system_head": clip(system, SYSTEM_CHARS)},
         "your_own_patch": {"files": patch_files,
                            "added_or_removed_lines": int(evidence.get("content_lines", 0))},
         "context_log": context,
@@ -260,7 +273,10 @@ def packet_for(sample_id: str, ledger_row: dict, record: dict) -> dict:
     elif pool == "B":
         packet["question"] = (
             "只依据可见材料判断：候选 assistant 动作里，哪些是「从真实失败观察读出错因并做出最小有效修改/验证」，"
-            "哪些是机械重复、盲改、改测试、绕过测试或未验证就宣称完成？")
+            "哪些是机械重复、盲改、改测试、绕过测试或未验证就宣称完成？"
+            "必须从命令和观察确认原先失败的测试在源码修改后被重新执行并通过；"
+            "测试数量不减不能证明覆盖同一失败。影子测试副本、跳过失败节点、只更换运行目录/导入方式"
+            "不能证明源码纠错；若无法确认原失败被修复并复验，整包 verdict 必须 REVIEW 或 QUARANTINE。")
     elif pool == "C2":
         packet["question"] = (
             "只依据可见材料判断：最后一次修改之后是否真的验证过、之后是否还有无效重复动作？"
@@ -314,6 +330,23 @@ def packet_path(packet_id: str) -> Path:
     Replace the unsafe characters instead of relying on the platform.
     """
     return PACKETS / f"{packet_id.translate(FILE_UNSAFE)}.json"
+
+
+def packet_index_paths() -> dict[str, Path]:
+    """Every packet a label may reference: the sampled set plus the bulk full-pool set.
+
+    The two indexes are written by different commands (``--build`` here,
+    ``model_review_bulk.py --build`` for the whole pool); ingest and check must accept
+    labels against either one, otherwise every bulk label looks orphaned.
+    """
+    paths: dict[str, Path] = {}
+    for index_path in (REVIEW / "packet_index.json", REVIEW / "bulk" / "bulk_index.json"):
+        if not index_path.exists():
+            continue
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        for entry in index.get("packets") or []:
+            paths[entry["packet_id"]] = Path(entry["path"])
+    return paths
 
 
 def build(pools: dict[str, int], seed: int) -> dict:
@@ -402,11 +435,9 @@ def validate_submission(submission: dict, packet: dict) -> list[str]:
 
 def ingest(path: Path) -> dict:
     ledger = load_ledger()
-    packet_index = json.loads((REVIEW / "packet_index.json").read_text(encoding="utf-8"))
-    packet_paths = {entry["packet_id"]: Path(entry["path"])
-                    for entry in packet_index["packets"]}
+    packet_paths = packet_index_paths()
     accepted, rejected = [], []
-    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").split("\n"), 1):
         if not line.strip():
             continue
         try:
@@ -421,6 +452,8 @@ def ingest(path: Path) -> dict:
             continue
         packet = json.loads(path_for_packet.read_text(encoding="utf-8"))
         problems = validate_submission(submission, packet)
+        if submission.get("packet_sha256") != packet["packet_sha256"]:
+            problems.append("submission packet_sha256 missing or stale")
         if problems:
             rejected.append({"line": line_number, "packet_id": packet_id,
                              "problems": problems})
@@ -448,11 +481,28 @@ def ingest(path: Path) -> dict:
             "notes": clip(submission.get("notes") or "", 600),
             "submission_sha256": sha256(line.strip().encode()).hexdigest()[:16],
             "packet_sha256": packet["packet_sha256"],
+            "trajectory_sha256": packet.get("trajectory_sha256"),
+            "review_config_sha256": submission.get("review_config_sha256"),
+            "review_config": submission.get("review_config"),
             "dropped_labels": dropped,
             "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         })
     labels_path = REVIEW / "model_labels.jsonl"
-    existing = {row["packet_id"]: row for row in load_jsonl(labels_path)}
+    # Archive the previous label snapshot; only labels for current packet bytes stay active.
+    old_rows = load_jsonl(labels_path)
+    if labels_path.exists():
+        archive = REVIEW / "history"
+        archive.mkdir(parents=True, exist_ok=True)
+        (archive / (sha256(labels_path.read_bytes()).hexdigest() + ".jsonl")).write_bytes(labels_path.read_bytes())
+    existing = {}
+    for row in old_rows:
+        if ledger.get(row["sample_id"], {}).get("decision") != "ADMIT":
+            continue
+        current = packet_paths.get(row["packet_id"])
+        if current and current.exists():
+            packet_now = json.loads(current.read_text(encoding="utf-8"))
+            if row.get("packet_sha256") == packet_now["packet_sha256"]:
+                existing[row["packet_id"]] = row
     for row in accepted:
         existing[row["packet_id"]] = row
     with labels_path.open("w", encoding="utf-8") as handle:
@@ -467,15 +517,18 @@ def ingest(path: Path) -> dict:
 def register(rows: list[dict]) -> None:
     db = sqlite3.connect(DB)
     db.executescript(SCHEMA)
+    for name in ("review_config_sha256", "trajectory_sha256"):
+        if name not in {column[1] for column in db.execute("PRAGMA table_info(pool_model_review)")}:
+            db.execute(f"ALTER TABLE pool_model_review ADD COLUMN {name} TEXT")
     db.execute("DELETE FROM pool_model_review")
     for row in rows:
         db.execute(
-            "INSERT OR REPLACE INTO pool_model_review VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT OR REPLACE INTO pool_model_review (packet_id,sample_id,pool,instance_id,review_kind,reviewer_model,reviewer_provider,reviewer_effort,verdict,label_json,notes,submission_sha256,packet_sha256,dropped_labels,created_at,review_config_sha256,trajectory_sha256) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             (row["packet_id"], row["sample_id"], row["pool"], row["instance_id"],
              row["review_kind"], row["reviewer_model"], row["reviewer_provider"],
              row["reviewer_effort"], row["verdict"], row["label_json"], row["notes"],
              row["submission_sha256"], row["packet_sha256"],
-             row.get("dropped_labels", 0), row["created_at"]))
+             row.get("dropped_labels", 0), row["created_at"], row.get("review_config_sha256"), row.get("trajectory_sha256")))
     db.commit()
     db.close()
 
@@ -500,7 +553,7 @@ def report() -> None:
     by_pool = Counter(row["pool"] for row in rows)
     verdicts = Counter((row["pool"], row["verdict"]) for row in rows)
     print(f"packets reviewed: {len(rows)}  {dict(by_pool)}")
-    for pool in ("C1", "C2", "C3", "B"):
+    for pool in ("A", "C1", "C2", "C3", "B"):
         counts = {verdict: verdicts.get((pool, verdict), 0) for verdict in VERDICTS}
         if any(counts.values()):
             print(f"  {pool}: {counts}")
@@ -531,59 +584,131 @@ def report() -> None:
         print("  disagree:", item)
 
 
-def apply_review() -> dict:
-    """Compose deterministic admission with the semantic verdicts into a final set.
+def apply_review(require_complete: bool = False) -> dict:
+    """Compose deterministic admission with the semantic verdicts into a final view.
 
-    Only the sampled packets carry a verdict, so an unreviewed ADMIT row stays as the
-    machine left it; the overlay records that coverage explicitly instead of pretending
-    every row was read by a model.
+    Two different things hide behind one ``MASK``:
+
+      * a *sample* verdict QUARANTINE means the trajectory itself is poisoned (judge
+        leakage, fabricated evidence, wrong task). Narrowing supervision cannot repair
+        that, so the whole sample leaves the set;
+      * a *message* label MASK/REVIEW is the normal case — this action should not be
+        imitated. Dropping the whole sample for one repeated command threw away the
+        good edits around it, so the mask is composed at message level: those messages
+        leave ``keep_msgs`` and everything else still trains.
+
+    Unreviewed rows keep exactly what the machine decided; coverage is recorded, never
+    implied. Token-level numbers come from re-exporting the pools with this overlay
+    (``bc_export.py --mask-overlay``), because only the renderer knows token counts.
     """
     ledger = load_ledger()
     labels_path = REVIEW / "model_labels.jsonl"
     labels = load_jsonl(labels_path)
     if not labels:
         raise SystemExit("no model labels — run --ingest first")
+    if require_complete:
+        packet_paths = packet_index_paths()
+        records = load_records()
+        active = []
+        problems = []
+        by_id = {label["sample_id"]: label for label in labels}
+        for sample, row in ledger.items():
+            if row["decision"] != "ADMIT":
+                continue
+            label = by_id.get(sample)
+            packet_file = packet_paths.get(f"MR-{sample}")
+            if label is None or packet_file is None:
+                problems.append(f"{sample}: missing model review")
+                continue
+            packet = json.loads(packet_file.read_text(encoding="utf-8"))
+            current = packet_for(sample, row, records[row["instance_id"]])
+            if (current["packet_sha256"] != packet["packet_sha256"]
+                    or label.get("packet_sha256") != packet["packet_sha256"]
+                    or not label.get("review_config_sha256")):
+                problems.append(f"{sample}: stale packet or review configuration")
+                continue
+            submission = {"packet_id": label["packet_id"], "verdict": label["verdict"],
+                          "labels": json.loads(label["label_json"])}
+            issues = validate_submission(submission, packet)
+            if issues:
+                problems.append(f"{sample}: {issues}")
+            else:
+                from model_review_bulk import make_review_config, compute_review_config_sha256
+                expected_config = make_review_config()
+                if (label.get("review_config") != expected_config or
+                        label.get("review_config_sha256") != compute_review_config_sha256(expected_config)):
+                    problems.append(f"{sample}: reviewer request does not match frozen max configuration")
+                else:
+                    active.append(label)
+        if problems:
+            raise SystemExit("incomplete model review: " + "; ".join(problems[:10]))
+        labels = active
     by_sample = {label["sample_id"]: label for label in labels}
-    excluded = []
-    for sample_id, label in sorted(by_sample.items()):
-        row = ledger.get(sample_id) or {}
-        if row.get("decision") == "ADMIT" and label["verdict"] in ("MASK", "QUARANTINE"):
-            excluded.append({"sample_id": sample_id, "pool": label["pool"],
-                             "instance_id": label["instance_id"],
-                             "verdict": label["verdict"],
-                             "reviewer_model": label["reviewer_model"],
-                             "notes": label["notes"]})
+    # Negative supervision is a property of the source action, shared by all views.
+    source_masks = defaultdict(set)
+    sample_holds = defaultdict(set)
+    source_quarantine = {}
+    for label in labels:
+        sample = label["sample_id"]
+        row = ledger.get(sample) or {}
+        if row.get("decision") != "ADMIT":
+            continue
+        iid = label["instance_id"]
+        if label["verdict"] == "QUARANTINE":
+            source_quarantine[iid] = label
+            continue
+        if label["verdict"] == "REVIEW":
+            sample_holds[sample].update(row.get("keep_msgs") or [])
+        source_masks[iid].update(int(item["msg"]) for item in json.loads(label["label_json"])
+                                 if item["label"] == "MASK")
+        sample_holds[sample].update(int(item["msg"]) for item in json.loads(label["label_json"])
+                                    if item["label"] == "REVIEW")
+    excluded, sample_masks = [], {}
+    for sample_id, row in sorted(ledger.items()):
+        if row.get("decision") != "ADMIT":
+            continue
+        iid = row.get("instance_id") or sample_id.split(":", 1)[-1]
+        if iid in source_quarantine:
+            label = source_quarantine[iid]
+            excluded.append({"sample_id": sample_id, "pool": row["pool"],
+                             "instance_id": iid, "verdict": "QUARANTINE",
+                             "reviewer_model": label["reviewer_model"], "notes": label["notes"]})
+        else:
+            dropped = sorted(set(row.get("keep_msgs") or []) & (source_masks.get(iid, set()) | sample_holds.get(sample_id, set())))
+            if dropped:
+                sample_masks[sample_id] = dropped
     excluded_ids = {item["sample_id"] for item in excluded}
-    pools = {}
+    pools: dict[str, dict] = {}
     verdicts: dict[str, Counter] = {}
     for label in labels:
         verdicts.setdefault(label["pool"], Counter())[label["verdict"]] += 1
     for row in ledger.values():
         entry = pools.setdefault(row["pool"], {
-            "admitted": 0, "reviewed": 0, "reviewed_admitted": 0, "excluded_by_model": 0,
-            "final_admitted": 0, "seq_tokens": 0, "supervised_tokens": 0,
-            "final_seq_tokens": 0, "final_supervised_tokens": 0})
+            "admitted": 0, "reviewed": 0, "reviewed_admitted": 0, "quarantined": 0,
+            "keep_messages": 0, "model_masked_messages": 0, "final_admitted": 0})
         label = by_sample.get(row["sample_id"])
         if label is not None:
             entry["reviewed"] += 1
         if row["decision"] != "ADMIT":
             continue
         entry["admitted"] += 1
-        entry["seq_tokens"] += row.get("seq_tokens") or 0
-        entry["supervised_tokens"] += row.get("supervised_tokens") or 0
+        entry["keep_messages"] += len(row.get("keep_msgs") or [])
         if label is not None:
             entry["reviewed_admitted"] += 1
         if row["sample_id"] in excluded_ids:
-            entry["excluded_by_model"] += 1
+            entry["quarantined"] += 1
             continue
-        entry["final_admitted"] += 1
-        entry["final_seq_tokens"] += row.get("seq_tokens") or 0
-        entry["final_supervised_tokens"] += row.get("supervised_tokens") or 0
+        if set(row.get("keep_msgs") or []) - set(sample_masks.get(row["sample_id"], [])):
+            entry["final_admitted"] += 1
+        entry["model_masked_messages"] += len(sample_masks.get(row["sample_id"], []))
     for entry in pools.values():
-        # coverage is about admitted rows that a model actually read; REVIEW rows never
+        # coverage is about admitted rows a model actually read; REVIEW rows never
         # carried a slot, so counting them here would inflate C3 to over 100%.
         entry["review_coverage"] = (round(entry["reviewed_admitted"] / entry["admitted"], 4)
                                     if entry["admitted"] else 0.0)
+        entry["masked_fraction"] = (round(entry["model_masked_messages"] /
+                                         entry["keep_messages"], 4)
+                                    if entry["keep_messages"] else 0.0)
     overlay = {
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "labels": str(labels_path),
@@ -592,10 +717,17 @@ def apply_review() -> dict:
         "verdicts": {pool: dict(counts) for pool, counts in sorted(verdicts.items())},
         "pools": {pool: pools[pool] for pool in sorted(pools)},
         "excluded_by_model": excluded,
-        "note": ("ADMIT rows inside the reviewed 50-packet sample lose their slot when the "
-                 "reviewer said MASK/QUARANTINE; every other ADMIT row is still machine-only. "
-                 "Pools C1/C2/B/C3 totals here are the composed view, not the deterministic "
-                 "ledger, which stays unchanged and checkable."),
+        "sample_masks": dict(sorted(sample_masks.items())),
+        "complete_review_required": require_complete,
+        "reviewed_sample_ids": sorted(by_sample),
+        "source_masks": {iid: sorted(msgs) for iid, msgs in sorted(source_masks.items())},
+        "source_quarantine": sorted(source_quarantine),
+        "bc_rule_ledger_sha256": sha256((POOL / "bc_rule_ledger.jsonl").read_bytes()).hexdigest() if (POOL / "bc_rule_ledger.jsonl").exists() else None,
+        "a_rule_ledger_sha256": sha256((POOL / "a_rule_ledger.jsonl").read_bytes()).hexdigest() if (POOL / "a_rule_ledger.jsonl").exists() else None,
+        "note": ("QUARANTINE removes the sample; per-message MASK/REVIEW removes only "
+                 "those messages from keep_msgs. bc_export.py --mask-overlay applies "
+                 "this file to the payloads and recomputes supervised tokens; the "
+                 "deterministic ledger stays unchanged and checkable."),
     }
     (REVIEW / "overlay.json").write_text(
         json.dumps(overlay, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -604,13 +736,10 @@ def apply_review() -> dict:
 
 def check() -> int:
     problems = []
-    index = REVIEW / "packet_index.json"
-    if not index.exists():
+    packet_paths = packet_index_paths()
+    if not packet_paths:
         print("no packet index — run: python results/model_review.py --build")
         return 1
-    packet_index = json.loads(index.read_text(encoding="utf-8"))
-    packet_paths = {entry["packet_id"]: Path(entry["path"])
-                    for entry in packet_index["packets"]}
     for packet_id, path in packet_paths.items():
         if not path.exists():
             problems.append(f"{packet_id}: packet file missing")
@@ -621,11 +750,19 @@ def check() -> int:
                                    ensure_ascii=False, sort_keys=True).encode()).hexdigest()
         if digest != packet["packet_sha256"]:
             problems.append(f"{packet_id}: packet was edited after hashing")
-        # redaction invariants
-        blob = json.dumps(packet, ensure_ascii=False)
-        for forbidden in ("eval_result", "FAIL_TO_PASS", "PASS_TO_PASS", "gold patch"):
-            if forbidden in blob:
-                problems.append(f"{packet_id}: packet contains judge material {forbidden!r}")
+        # Check copied judge fields, not words in agent-visible evidence (a model
+        # mentioning a gold search is evidence to quarantine, not proof of copied metadata).
+        def judge_keys(value):
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    if key in {"eval_result", "FAIL_TO_PASS", "PASS_TO_PASS", "gold_patch"}:
+                        yield key
+                    yield from judge_keys(child)
+            elif isinstance(value, list):
+                for child in value:
+                    yield from judge_keys(child)
+        for forbidden in judge_keys(packet):
+            problems.append(f"{packet_id}: packet contains copied judge field {forbidden!r}")
     rows = load_jsonl(REVIEW / "model_labels.jsonl")
     for row in rows:
         path = packet_paths.get(row["packet_id"])
@@ -661,9 +798,25 @@ def check() -> int:
             row = ledger.get(item.get("sample_id")) or {}
             if not row:
                 problems.append(f"overlay excludes unknown sample {item.get('sample_id')}")
-            elif row.get("decision") != "ADMIT":
+            elif row.get("decision") == "ADMIT":
+                continue
+            elif row.get("decision") == "REJECT" and "MODEL_QUARANTINE" in (
+                    row.get("reasons") or []):
+                continue   # bc_export already composed the overlay into the ledger
+            else:
                 problems.append(f"overlay excludes {item.get('sample_id')}, ledger says "
                                 f"{row.get('decision')}")
+        for sample, messages in (overlay.get("sample_masks") or {}).items():
+            row = ledger.get(sample) or {}
+            if not row:
+                problems.append(f"overlay masks unknown sample {sample}")
+                continue
+            known = {int(m) for m in row.get("keep_msgs") or []}
+            known |= {int(msg) for msg, reason in row.get("masked_msgs") or []
+                      if reason == "MODEL_REVIEW"}
+            outside = [msg for msg in messages if msg not in known]
+            if outside:
+                problems.append(f"overlay masks {outside} that {sample} never supervised")
     if problems:
         print("MODEL REVIEW OUT OF DATE")
         for problem in problems[:30]:
@@ -694,12 +847,14 @@ def main() -> None:
         report()
         return
     if args.apply:
-        overlay = apply_review()
+        overlay = apply_review(require_complete=True)
         brief = {"reviewed_samples": overlay["reviewed_samples"],
                  "pools": {pool: {key: entry[key] for key in
-                                  ("admitted", "reviewed", "excluded_by_model",
-                                   "final_admitted", "final_supervised_tokens")}
+                                  ("admitted", "reviewed", "reviewed_admitted",
+                                   "quarantined", "masked_fraction", "final_admitted")}
                            for pool, entry in overlay["pools"].items()},
+                 "masked_samples": len(overlay["sample_masks"]),
+                 "masked_messages": sum(len(msgs) for msgs in overlay["sample_masks"].values()),
                  "overlay": str(REVIEW / "overlay.json")}
         print(json.dumps(brief, ensure_ascii=False, indent=2))
         return
