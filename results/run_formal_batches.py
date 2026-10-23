@@ -29,7 +29,7 @@ FORMAL = ROOT / "results" / "pool_a_formal"
 TASKS = FORMAL / "tasks_formal.jsonl"
 REPO = "aweaiteam/scaleswe"
 MISSING_FILE = FORMAL / "missing_images.json"
-RESERVE_GB = 20.0
+RESERVE_GB = 5.0  # lowered 8.0 -> 5.0 after pruning 29 GB of finished-task images (2026-10-23)
 EST_IMAGE_GB = 0.85  # measured median 0.50 GB, mean 0.85 GB over 20 samples
 
 
@@ -95,14 +95,15 @@ def prune(baseline: set[str], keep: set[str]) -> None:
             sh(["docker", "rmi", "-f", f"{REPO}:{tag}"], timeout=180)
 
 
-def run_batch(ids: list[str], index: int) -> tuple[int, str]:
+def run_batch(ids: list[str], index: int, max_concurrent: int = 6) -> tuple[int, str]:
     out_dir = FORMAL / f"batch_{index:03d}_{int(time.time())}"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_dir.with_suffix(".ids.json").write_text(json.dumps(ids, indent=2), encoding="utf-8")
     cmd = [sys.executable, "-X", "utf8", str(ROOT / "results" / "run_factory.py"),
            "--data-file", str(TASKS), "--config", "configs/tasks/dsh_scaleswe.yaml",
            "--llm-config", "configs/llm/local_deepthink.yaml", "--mode", "batch",
-           "--instance-ids", *ids, "--max-steps", "60", "--max-concurrent", "6",
+           "--instance-ids", *ids, "--max-steps", "60",
+           "--max-concurrent", str(max_concurrent),
            "--output", str(out_dir)]
     started = time.time()
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
@@ -123,14 +124,18 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch", type=int, default=15)
     parser.add_argument("--max-batches", type=int, default=0)
-    parser.add_argument("--pull-parallel", type=int, default=8)
+    parser.add_argument("--pull-parallel", type=int, default=15)
+    parser.add_argument("--max-concurrent", type=int, default=6,
+                        help="instances the factory executes at once (peak RAM/CPU knob)")
     args = parser.parse_args()
 
     all_ids = [json.loads(l)["instance_id"]
                for l in TASKS.read_text(encoding="utf-8").splitlines()]
     missing = load_missing()
     done = done_ids()
-    pending = [i for i in all_ids if i not in done]
+    # Permanently missing registry tags stay out of the queue: they used to sit at the
+    # head of `pending` and turn a smoke batch into a no-op.
+    pending = [i for i in all_ids if i not in done and i not in missing]
     print(f"selection={len(all_ids)} done={len(done)} pending={len(pending)} "
           f"known_missing={len(missing)} free={free_gb():.1f} GB", flush=True)
     batches = [pending[i:i + args.batch] for i in range(0, len(pending), args.batch)]
@@ -177,7 +182,7 @@ def main() -> None:
 
             prefetch = threading.Thread(target=_prefetch, daemon=True)
             prefetch.start()
-        accepted, run_dir = run_batch(available, index)
+        accepted, run_dir = run_batch(available, index, args.max_concurrent)
         with ledger.open("a", encoding="utf-8") as f:
             f.write(json.dumps({"batch": index, "attempted": available,
                                 "skipped": [i for i in ids if i not in available],
