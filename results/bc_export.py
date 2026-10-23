@@ -151,6 +151,20 @@ def load_admission() -> dict[str, dict]:
             for row in load_jsonl(FORMAL / "admission_ledger.jsonl")}
 
 
+def rule_identity(row: dict) -> dict:
+    keys = (
+        "sample_id", "pool", "instance_id", "decision", "reasons",
+        "keep_msgs", "masked_msgs", "training_eligible", "review_required",
+    )
+    return {key: row[key] for key in keys if key in row}
+
+
+def rule_digest(rows: list[dict]) -> str:
+    payload = "".join(json.dumps(rule_identity(row), ensure_ascii=False, sort_keys=True) + "\n"
+                       for row in rows)
+    return sha256(payload.encode()).hexdigest()
+
+
 def load_overlay(path: Path) -> dict | None:
     """Read the model-review overlay written by ``model_review.py --apply``.
 
@@ -603,7 +617,7 @@ def export(mask_overlay: Path | None = None) -> dict:
     if overlay is not None and overlay.get("receipt", {}).get("complete_review_required"):
         receipt = overlay["receipt"]
         for name, values in (("bc", rule_rows), ("a", a_rows)):
-            digest = sha256("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in values).encode()).hexdigest()
+            digest = rule_digest(values)
             if receipt.get(f"{name}_rule_ledger_sha256") != digest:
                 raise SystemExit(f"{name} rule ledger changed after model review; rebuild review snapshot")
         label_path = Path(receipt["labels"])

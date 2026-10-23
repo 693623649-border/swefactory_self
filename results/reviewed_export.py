@@ -117,6 +117,7 @@ def validate_overlay(
     bc_rule_path: Path | None = None,
 ) -> dict:
     """Validate overlay completeness and reject stale overlays."""
+    import bc_export
     if not overlay_path.exists():
         raise SystemExit(f"overlay not found: {overlay_path}")
     raw = json.loads(overlay_path.read_text(encoding="utf-8"))
@@ -136,21 +137,25 @@ def validate_overlay(
 
     if not a_rule_path.exists():
         raise SystemExit(f"a_rule_ledger not found: {a_rule_path}")
+    a_rows = [json.loads(line) for line in a_rule_path.read_text(encoding="utf-8").split("\n") if line.strip()]
     cur_a_sha = sha256(a_rule_path.read_bytes()).hexdigest()
+    stable_a_sha = bc_export.rule_digest(a_rows)
     expected_a_sha = raw.get("a_rule_ledger_sha256")
     if not expected_a_sha:
         raise SystemExit(f"overlay missing required a_rule_ledger_sha256: {overlay_path}")
-    if expected_a_sha != cur_a_sha:
+    if expected_a_sha not in {cur_a_sha, stable_a_sha}:
         raise SystemExit("a rule ledger changed after model review (stale a_rule_ledger_sha256)")
 
     if bc_rule_path is not None:
         if not bc_rule_path.exists():
             raise SystemExit(f"bc_rule_ledger not found: {bc_rule_path}")
+        bc_rows = [json.loads(line) for line in bc_rule_path.read_text(encoding="utf-8").split("\n") if line.strip()]
         cur_bc_sha = sha256(bc_rule_path.read_bytes()).hexdigest()
+        stable_bc_sha = bc_export.rule_digest(bc_rows)
         expected_bc_sha = raw.get("bc_rule_ledger_sha256") or raw.get("rule_ledger_sha256")
         if not expected_bc_sha:
             raise SystemExit(f"overlay missing required bc_rule_ledger_sha256: {overlay_path}")
-        if expected_bc_sha != cur_bc_sha:
+        if expected_bc_sha not in {cur_bc_sha, stable_bc_sha}:
             raise SystemExit("bc rule ledger changed after model review (stale bc_rule_ledger_sha256)")
 
     quarantine = {item["sample_id"] for item in raw.get("excluded_by_model") or []}

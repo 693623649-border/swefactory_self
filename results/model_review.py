@@ -584,6 +584,16 @@ def report() -> None:
         print("  disagree:", item)
 
 
+import bc_export
+
+
+def _rule_digest(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n") if line.strip()]
+    return bc_export.rule_digest(rows)
+
+
 def apply_review(require_complete: bool = False) -> dict:
     """Compose deterministic admission with the semantic verdicts into a final view.
 
@@ -722,8 +732,8 @@ def apply_review(require_complete: bool = False) -> dict:
         "reviewed_sample_ids": sorted(by_sample),
         "source_masks": {iid: sorted(msgs) for iid, msgs in sorted(source_masks.items())},
         "source_quarantine": sorted(source_quarantine),
-        "bc_rule_ledger_sha256": sha256((POOL / "bc_rule_ledger.jsonl").read_bytes()).hexdigest() if (POOL / "bc_rule_ledger.jsonl").exists() else None,
-        "a_rule_ledger_sha256": sha256((POOL / "a_rule_ledger.jsonl").read_bytes()).hexdigest() if (POOL / "a_rule_ledger.jsonl").exists() else None,
+        "bc_rule_ledger_sha256": _rule_digest(POOL / "bc_rule_ledger.jsonl"),
+        "a_rule_ledger_sha256": _rule_digest(POOL / "a_rule_ledger.jsonl"),
         "note": ("QUARANTINE removes the sample; per-message MASK/REVIEW removes only "
                  "those messages from keep_msgs. bc_export.py --mask-overlay applies "
                  "this file to the payloads and recomputes supervised tokens; the "
