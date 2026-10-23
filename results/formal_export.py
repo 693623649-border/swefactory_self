@@ -24,6 +24,11 @@ from pathlib import Path
 FORMAL = Path(__file__).resolve().parents[1] / "results" / "pool_a_formal"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from to_sft_qwen import Renderer, build  # noqa: E402
+from split_isolation import (  # noqa: E402
+    evaluate_benchmark_gate,
+    load_protected_families,
+    normalize_family,
+)
 
 MAX_TOKENS = 65536
 TEST_PATH = re.compile(r"(^|/)(tests?|testing)/|(^|/)test_[\w./-]+\.py$|conftest\.py$|_test\.py$")
@@ -102,7 +107,9 @@ def main() -> None:
     raw = {json.loads(l)["instance_id"]: json.loads(l)
            for l in (FORMAL / "tasks_formal.jsonl").read_text(encoding="utf-8").split("\n") if l.strip()}
     qualification = json.loads((FORMAL / "qualification.json").read_text(encoding="utf-8"))
-    validation_families = set(qualification.get("validation_families", []))
+    validation_families = {normalize_family(f) for f in qualification.get("validation_families", [])}
+    protected_cfg = load_protected_families()
+    protected_families = protected_cfg.families
 
     renderer = Renderer()
     records = load_records()
@@ -204,11 +211,14 @@ def main() -> None:
             # after the *last* mutation is reported as a statistic because command-level
             # detection is imperfect for heredoc/native-binary workflows.
             reject.append("no_test_at_all")
-        if family in validation_families:
+        bench_ok, bench_reason = evaluate_benchmark_gate(family, protected_families)
+        if not bench_ok and bench_reason:
+            reject.append(bench_reason)
+        if normalize_family(family) in validation_families:
             reject.append("validation_family")
-        if not task or not family.strip("/"):
+        if not task or not re.fullmatch(r"[^/\s]+/[^/\s]+", normalize_family(family)):
             reject.append("unknown_task")
-        if family in admitted_families:
+        if normalize_family(family) in admitted_families:
             reject.append("family_duplicate")
         if not patch.strip():
             reject.append("empty_patch")
@@ -234,7 +244,7 @@ def main() -> None:
             if sum(mask) == 0:
                 reject.append("empty_mask")
             if not reject:
-                admitted_families.add(family)
+                admitted_families.add(normalize_family(family))
                 admitted.append({"instance_id": iid, "ids": ids, "mask": mask})
                 tokens += len(ids)
                 supervised += sum(mask)
@@ -265,8 +275,10 @@ def main() -> None:
                 tool_usage_adm[t_name] += row.get(f"tool_{t_name}", 0)
 
     summary = {
-        "admission_protocol": "formal-v2-family-cap-one",
+        "admission_protocol": "formal-v3-benchmark-isolated-cap-one",
         "exporter_sha256": sha256(Path(__file__).read_bytes()).hexdigest(),
+        "protected_families_sha256": protected_cfg.raw_sha256,
+        "protected_families_path": protected_cfg.path,
         "attempted": totals["attempted"], "admitted": totals["admitted"],
         "rejections": {k[7:]: v for k, v in totals.items()
                        if k.startswith("reject_") and v},

@@ -50,6 +50,7 @@ DB = FORMAL / "index.sqlite3"
 MASK_OVERLAY = OUT / "review" / "overlay.json"
 sys.path.insert(0, str(RESULTS))
 import segment_review as sr  # noqa: E402
+from split_isolation import is_split_quarantined  # noqa: E402
 from to_sft_qwen import Renderer, Rendered  # noqa: E402
 
 MAX_TOKENS = 65536
@@ -353,6 +354,10 @@ def evaluate_c3(record: dict, admission: dict, diag: sr.Diagnosis) -> dict | Non
     if admission.get("admitted") or record.get("success"):
         return None
     rejected = admission.get("rejected") or []
+    family = admission.get("family", "")
+    if is_split_quarantined(family, rejected):
+        return base_row("C3", record, admission, "REJECT", ["SPLIT_ISOLATION_EXCLUDED"],
+                        evidence={"family": family, "admission_rejected": rejected})
     if "infra_error" in rejected:
         return base_row("C3", record, admission, "REJECT", ["INFRA_INVALID"])
     if record.get("finish_reason") != "finish":
@@ -478,7 +483,11 @@ def evaluate_b_seeds(record: dict, admission: dict, diag: sr.Diagnosis) -> dict 
     """Near-miss failures that still need a real teacher continuation (counted 0)."""
     if admission.get("admitted") or record.get("success"):
         return None
-    if "infra_error" in (admission.get("rejected") or []):
+    rejected = admission.get("rejected") or []
+    family = admission.get("family", "")
+    if is_split_quarantined(family, rejected):
+        return None
+    if "infra_error" in rejected:
         return None
     if diag.patch.content_lines == 0 or diag.patch.test_files:
         return None

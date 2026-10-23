@@ -13,9 +13,16 @@ from __future__ import annotations
 import argparse
 import json
 import sqlite3
+import sys
 from collections import Counter
 from hashlib import sha256
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from split_isolation import (  # noqa: E402
+    is_benchmark_family,
+    load_protected_families,
+)
 
 FORMAL = Path(__file__).resolve().parents[1] / "results" / "pool_a_formal"
 DB = FORMAL / "index.sqlite3"
@@ -128,7 +135,7 @@ ORDER BY bracket;
 
 GATE_NAMES = ("not_passed", "f2p_incomplete", "p2p_incomplete", "over_length",
               "test_paths_edited", "no_test_at_all", "empty_patch", "duplicate_patch",
-              "infra_error", "validation_family", "family_duplicate", "unknown_task",
+              "infra_error", "validation_family", "benchmark_family", "family_duplicate", "unknown_task",
               "no_think", "empty_mask")
 
 
@@ -309,10 +316,26 @@ def check() -> int:
                        "GROUP BY instance_id HAVING COUNT(*) > 1)").fetchone()[0]
     if dupes:
         problems.append(f"duplicate instance ids: {dupes}")
-    family_dupes = db.execute("SELECT family, COUNT(*) FROM samples WHERE admitted=1 "
-                              "GROUP BY family HAVING COUNT(*) > 1").fetchall()
+    family_dupes = db.execute("SELECT lower(trim(family)), COUNT(*) FROM samples WHERE admitted=1 "
+                              "GROUP BY lower(trim(family)) HAVING COUNT(*) > 1").fetchall()
     if family_dupes:
         problems.append(f"admitted families repeated: {family_dupes[:5]}")
+
+    try:
+        protected_cfg = load_protected_families()
+        protected_families = protected_cfg.families
+    except Exception as exc:
+        problems.append(f"protected families config error: {exc}")
+        protected_families = frozenset()
+
+    benchmark_admitted = [
+        (iid, fam)
+        for (iid, fam) in db.execute("SELECT instance_id, family FROM samples WHERE admitted=1").fetchall()
+        if is_benchmark_family(fam, protected_families)
+    ]
+    if benchmark_admitted:
+        problems.append(f"admitted benchmark families detected in index: {benchmark_admitted[:5]}")
+
     db.close()
     if problems:
         print("INDEX OUT OF DATE — rebuild with: python results/build_index_db.py")

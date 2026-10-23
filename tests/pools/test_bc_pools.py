@@ -264,7 +264,7 @@ def test_c2_flags_an_edit_after_the_passing_run():
 def test_c3_needs_a_real_failing_run_and_stays_untrainable():
     passing = _record(_messages("21 passed in 0.2s\n", "21 passed in 0.2s\n"))
     passing["success"] = False
-    rejected = bx.evaluate_c3(passing, {"admitted": False, "rejected": ["not_passed"]},
+    rejected = bx.evaluate_c3(passing, {"instance_id": "owner_repo_pr1", "family": "owner/repo", "admitted": False, "rejected": ["not_passed"]},
                               sr.diagnose(passing))
     assert rejected["decision"] == "REJECT"
     assert "NO_VISIBLE_FAILURE_EVIDENCE" in rejected["reasons"]
@@ -273,7 +273,7 @@ def test_c3_needs_a_real_failing_run_and_stays_untrainable():
                                 edit_between=False,
                                 report="I could not fix the parser; one test still fails."))
     failing["success"] = False
-    row = bx.evaluate_c3(failing, {"admitted": False, "rejected": ["not_passed"]},
+    row = bx.evaluate_c3(failing, {"instance_id": "owner_repo_pr1", "family": "owner/repo", "admitted": False, "rejected": ["not_passed"]},
                          sr.diagnose(failing))
     assert row is not None
     assert row["decision"] == "ADMIT"

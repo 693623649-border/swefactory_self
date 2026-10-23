@@ -1,0 +1,21 @@
+{
+  "dataset": "SWE-bench/SWE-bench_Verified",
+  "split": "test",
+  "source_count": 500,
+  "source_agent_view_sha256": "7fc3c8e1d9ae2e701e16b4d9439dbcbb0a541c2cdfc1ef2d5cb9a2f1a4e712fe",
+  "source_path": "../eval/data/swe-verified/agent_view.jsonl",
+  "protected_families": [
+    "astropy/astropy",
+    "django/django",
+    "matplotlib/matplotlib",
+    "mwaskom/seaborn",
+    "pallets/flask",
+    "psf/requests",
+    "pydata/xarray",
+    "pylint-dev/pylint",
+    "pytest-dev/pytest",
+    "scikit-learn/scikit-learn",
+    "sphinx-doc/sphinx",
+    "sympy/sympy"
+  ]
+}
