@@ -487,5 +487,85 @@ class IngestFreshSelectionTest(unittest.TestCase):
             self.assertEqual(ingested_records[0]["verdict"], "MASK")
 
 
+class LeakGuardTest(unittest.TestCase):
+    """A leak code is a sample-level finding: masking messages leaves the leak in context."""
+
+    def setUp(self) -> None:
+        self.packet = {
+            "packet_id": "MR-A:leak",
+            "sample_id": "A:leak",
+            "pool": "A",
+            "packet_sha256": "sha_leak",
+            "candidate_msgs": [1, 3],
+            "visible_msgs": [0, 1, 2, 3],
+        }
+
+    def answer(self, verdict: str, code: str = "QUARANTINE_LEAK") -> dict:
+        return {"packet_id": "MR-A:leak", "verdict": verdict,
+                "labels": [{"msg": 1, "label": "MASK", "reason_codes": [code],
+                            "evidence_msgs": [2]},
+                           {"msg": 3, "label": "KEEP", "reason_codes": ["KEEP_EFFECTIVE_EDIT"],
+                            "evidence_msgs": [2]}],
+                "notes": "upstream release copied"}
+
+    def test_quarantine_code_requires_quarantine_verdict(self) -> None:
+        for verdict in ("KEEP", "MASK", "REVIEW"):
+            with self.subTest(verdict=verdict):
+                problems = model_review.validate_submission(self.answer(verdict), self.packet)
+                self.assertIn("msg 1: QUARANTINE_LEAK requires sample verdict QUARANTINE", problems)
+        self.assertEqual(model_review.validate_submission(self.answer("QUARANTINE"), self.packet), [])
+
+    def test_future_commit_probe_is_a_mask_code(self) -> None:
+        self.assertIn("MASK_FUTURE_COMMIT_PROBE", model_review.REASON_VOCAB)
+        answer = self.answer("MASK", code="MASK_FUTURE_COMMIT_PROBE")
+        self.assertEqual(model_review.validate_submission(answer, self.packet), [])
+
+    def test_inconsistent_old_label_is_not_fresh(self) -> None:
+        config_sha = model_review_bulk.compute_review_config_sha256(
+            model_review_bulk.make_review_config())
+        answer = {**self.answer("MASK"), "packet_sha256": "sha_leak",
+                  "review_config_sha256": config_sha}
+        self.assertFalse(model_review_bulk.is_submission_fresh(answer, self.packet, config_sha))
+
+    def test_review_one_sends_leak_verdict_back_for_retry(self) -> None:
+        replies = [self.answer("MASK"), self.answer("QUARANTINE")]
+        sent = []
+
+        def mock_post(payload: dict, api_key: str, base_url: str = "", timeout: float = 0.0) -> dict:
+            sent.append(list(payload["messages"]))
+            return {"choices": [{"message": {"content": json.dumps(replies[len(sent) - 1])},
+                                 "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 10, "completion_tokens": 5}}
+
+        with tempfile.TemporaryDirectory() as tmp, \
+                patch.object(model_review_bulk, "_post", side_effect=mock_post):
+            answer = model_review_bulk.review_one(
+                self.packet, "fake-key", usage_path=Path(tmp) / "usage.jsonl",
+                sleep_fn=lambda _: None)
+        self.assertEqual(len(sent), 2)
+        self.assertIn("requires sample verdict QUARANTINE", sent[1][-1]["content"])
+        self.assertEqual(answer["verdict"], "QUARANTINE")
+
+    def test_rubric_names_the_probe_and_the_quarantine_rule(self) -> None:
+        self.assertIn("MASK_FUTURE_COMMIT_PROBE", model_review_bulk.SYSTEM_PROMPT)
+        self.assertIn("sample verdict MUST be QUARANTINE", model_review_bulk.SYSTEM_PROMPT)
+        record = {"messages": [
+            {"role": "system", "content": "sys"},
+            {"role": "user", "content": "fix the bug"},
+            {"role": "assistant", "content": "", "tool_calls": [
+                {"id": "c1", "function": {"name": "bash",
+                                          "arguments": "git fsck --unreachable"}}]},
+            {"role": "tool", "tool_call_id": "c1", "content": "[no output]"},
+            {"role": "assistant", "content": "done"},
+        ], "patch": ""}
+        row = {"pool": "A", "instance_id": "leak", "keep_msgs": [2, 4], "masked_msgs": []}
+        packet = model_review.packet_for("A:leak", row, record)
+        self.assertEqual(packet["review_version"], model_review.REVIEW_VERSION)
+        self.assertIn("MASK_FUTURE_COMMIT_PROBE", packet["reason_vocab"])
+        self.assertTrue(any("MASK_FUTURE_COMMIT_PROBE" in line for line in packet["instructions"]))
+        self.assertTrue(any("整包 verdict 必须是 QUARANTINE" in line
+                            for line in packet["instructions"]))
+
+
 if __name__ == "__main__":
     unittest.main()

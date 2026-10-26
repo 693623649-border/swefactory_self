@@ -13,7 +13,8 @@ and nothing else:
                   material into a reviewer.
   * ``--ingest``  validate a reviewer's JSONL submission deterministically: packet ids
                   exist, every labelled message is a candidate, every cited evidence
-                  message is visible, reason codes come from the fixed vocabulary.
+                  message is visible, reason codes come from the fixed vocabulary, and
+                  any QUARANTINE_* code forces a QUARANTINE sample verdict.
   * ``--report``  compare model labels with the deterministic ones.
   * ``--apply``   compose admission with the verdicts: a reviewed ADMIT row whose
                   reviewer said MASK/QUARANTINE leaves the final set. Unreviewed rows
@@ -45,7 +46,7 @@ DB = FORMAL / "index.sqlite3"
 sys.path.insert(0, str(RESULTS))
 import segment_review as sr  # noqa: E402
 
-REVIEW_VERSION = "v2-full-assistant"
+REVIEW_VERSION = "v3-leak-guard"
 ISSUE_CHARS = 4000
 SYSTEM_CHARS = 700
 CONTEXT_OBS_CHARS = 240
@@ -62,7 +63,7 @@ REASON_VOCAB = (
     "KEEP_HONEST_INCOMPLETE", "KEEP_RELEVANT_EXPLORATION",
     "MASK_MECHANICAL_REPEAT", "MASK_UNGROUNDED_EDIT", "MASK_TEST_EVASION",
     "MASK_TEST_FILE_EDIT", "MASK_FALSE_CLAIM", "MASK_NO_PROGRESS",
-    "MASK_UNVERIFIED_SUCCESS", "MASK_PREMATURE_STOP",
+    "MASK_UNVERIFIED_SUCCESS", "MASK_PREMATURE_STOP", "MASK_FUTURE_COMMIT_PROBE",
     "QUARANTINE_LEAK", "QUARANTINE_FABRICATED", "QUARANTINE_WRONG_TASK",
     "REVIEW_INSUFFICIENT_CONTEXT", "REVIEW_CONFLICTING_EVIDENCE",
 )
@@ -292,6 +293,13 @@ def packet_for(sample_id: str, ledger_row: dict, record: dict) -> dict:
         "reason_codes 只能取自 reason_vocab；一条消息 1-3 个。",
         "整包给一个 verdict：KEEP 表示这条样本按当前方式入训是可接受的，MASK 表示部分动作要屏蔽才可用，"
         "QUARANTINE 表示整条不能用（泄漏/伪造/任务不符），REVIEW 表示材料不足。",
+        "试图从任务之外拿答案的动作不算探索：为找未来提交翻 git 不可达对象或其他引用"
+        "（如 git fsck --unreachable/--lost-found、git log --all 找新提交），读取或下载同一项目的"
+        "已安装/更新版本或缓存里的实现。没拿到可用内容的标 MASK 并用 MASK_FUTURE_COMMIT_PROBE；"
+        "一旦参考实现或未来修复出现在工具观察里并被后续动作采用，用 QUARANTINE_LEAK。"
+        "查看当前仓库已有历史、读取第三方依赖不在此列。",
+        "任何一条消息用了 QUARANTINE_* 原因码，整包 verdict 必须是 QUARANTINE；只屏蔽单条消息去不掉"
+        "上下文里的泄漏，这样的答案会被打回。",
         "在 notes 里说明你最容易判错的一条，并指出如果有更宽的材料你会想看什么。",
     ]
     packet["packet_sha256"] = sha256(
@@ -424,6 +432,10 @@ def validate_submission(submission: dict, packet: dict) -> list[str]:
             for code in codes:
                 if code not in REASON_VOCAB:
                     problems.append(f"msg {msg}: unknown reason code {code!r}")
+                elif code.startswith("QUARANTINE_") and submission.get("verdict") != "QUARANTINE":
+                    # Masking one message leaves the leaked observation in context and
+                    # later actions that used it still train; only the verdict removes it.
+                    problems.append(f"msg {msg}: {code} requires sample verdict QUARANTINE")
         for ref in label.get("evidence_msgs") or []:
             if not isinstance(ref, int) or ref not in visible:
                 problems.append(f"msg {msg}: evidence {ref!r} not visible")
