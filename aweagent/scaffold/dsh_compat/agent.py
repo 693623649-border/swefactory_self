@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from aweagent.core.agent.context import AgentContext
 from aweagent.core.llm.format import get_tool_format
 from aweagent.core.tool.protocol import Tool
 from aweagent.scaffold.dsh_compat.contract_review import CONTRACT_REVIEW
@@ -43,6 +44,8 @@ class DSHCompatAgent(SearchSWEAgent):
         kwargs.setdefault("tool_call_format", "openai_function")
         super().__init__(**kwargs)
         self._workdir = workdir
+        self._bash_timeout = bash_timeout
+        self._bash_max_timeout = bash_max_timeout
         self._contract_review = contract_review
         self._tools = build_tools(workdir, bash_timeout=bash_timeout,
                                   bash_max_timeout=bash_max_timeout)
@@ -52,7 +55,25 @@ class DSHCompatAgent(SearchSWEAgent):
         return list(self._tools)
 
     def get_system_prompt(self, task_info: dict[str, Any]) -> str:
-        return DSH_PERSONA + DATA_CONTRACT + (CONTRACT_REVIEW if self._contract_review else "")
+        persona = DSH_PERSONA
+        if task_info.get("workdir"):
+            # Scale-SWE images need not have eval's /testbed alias.
+            persona = persona.replace(
+                "The workspace is the same tree as /testbed inside the task container; "
+                "both the host path and /testbed are valid for every tool, and every "
+                "bash command runs in that same tree.",
+                f"The workspace is {task_info['workdir']} inside the task container. "
+                "Absolute paths under that directory and paths relative to it are "
+                "valid for every tool; every bash command starts in that directory.")
+        return persona + DATA_CONTRACT + (CONTRACT_REVIEW if self._contract_review else "")
+
+    def create_loop(self, context: AgentContext):
+        # The runner knows the instance root only after constructing the agent.
+        # Bind a fresh tool set to this context, never mutate tools of other runs.
+        workdir = context.task_info.get("workdir") or self._workdir
+        context.tools = build_tools(workdir, bash_timeout=self._bash_timeout,
+                                    bash_max_timeout=self._bash_max_timeout)
+        return super().create_loop(context)
 
     @classmethod
     def from_config(cls, config: Any) -> "DSHCompatAgent":

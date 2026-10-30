@@ -247,6 +247,11 @@ def render_a_row(row: dict, record: dict, renderer, cache: dict | None = None) -
         cache[iid] = rendered
 
     keep = [int(msg) for msg in row["keep_msgs"]]
+    # Reject stale rule ledgers rather than producing ids/mask that contradict them.
+    from segment_review import tool_error_messages
+    invalid = set(keep) & tool_error_messages(record["messages"]).keys()
+    if invalid:
+        raise ValueError(f"{iid}: supervised tool errors at {sorted(invalid)}; rebuild rule ledger")
     mask = rendered.mask(keep)
     spans = rendered.spans(mask)
 

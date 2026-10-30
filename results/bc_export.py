@@ -237,7 +237,7 @@ def mutates_test_file(event: sr.ToolEvent) -> bool:
 
 
 def is_source_edit(event: sr.ToolEvent) -> bool:
-    return (event.name == "edit" or event.mutates) and not mutates_test_file(event)
+    return event.mutation_candidate and not mutates_test_file(event)
 
 
 def last_test(diag: sr.Diagnosis):
@@ -540,6 +540,8 @@ def render_row(row: dict, record: dict, renderer: Renderer, cache: dict) -> dict
     keep = [int(msg) for msg in row["keep_msgs"]]
     mask = rendered.mask(keep)
     spans = rendered.spans(mask)
+    if set(spans) != set(keep):
+        raise ValueError(f"{record['instance_id']}: mask differs from keep_msgs; rebuild rule ledger")
     row["seq_tokens"] = len(rendered.ids)
     row["supervised_tokens"] = sum(mask)
     row["supervised_fraction"] = round(sum(mask) / len(mask), 4) if mask else 0.0
@@ -591,7 +593,9 @@ def export(mask_overlay: Path | None = None) -> dict:
         diagnostics[iid] = diag
         if adm.get("admitted"):
             a_rows.append(base_row("A", record, adm, "ADMIT", ["A_VERIFIED_SOURCE"],
-                                   keep_msgs=assistant_msgs(diag.messages), masked_msgs=[],
+                                   keep_msgs=[m for m in assistant_msgs(diag.messages)
+                                              if m not in diag.duplicate_msg],
+                                   masked_msgs=sorted(diag.duplicate_msg.items()),
                                    evidence={"content_lines": diag.patch.content_lines}))
         for pool, rule in (("C1", evaluate_c1), ("C2", evaluate_c2),
                            ("C3", evaluate_c3), ("B", evaluate_b)):

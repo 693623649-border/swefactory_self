@@ -1,13 +1,12 @@
-"""Prove the DSH scaffold matches the evaluation tool surface. No teacher, no container.
+"""Compare factory tool schemas with an actual eval request receipt.
 
-Two checks:
-1. schema parity - names, parameters, required lists and defaults against the DSH
-   sources (packages/fs/tool-fs/src/{read,edit}.ts and packages/shell/tool-bash/src/index.ts);
-2. format round-trip - a native tool_calls message rendered through the student's
-   Qwen template must parse back to the same names and arguments, with no DSML left.
+No teacher or container is started. A static list of parameter names cannot
+establish parity. The optional Qwen marker check is a serialization smoke only.
 """
 from __future__ import annotations
+import argparse
 import json
+from hashlib import sha256
 import sys
 from pathlib import Path
 
@@ -18,38 +17,25 @@ from aweagent.scaffold.dsh_compat import DSHCompatAgent  # noqa: E402
 
 MODEL = Path(r"E:\Deeplearning\local_train\model\Qwen3.5-4B")
 
-EXPECTED = {
-    "bash": {"required": ["command", "description"],
-             "properties": ["command", "description"]},
-    "read": {"required": ["file_path"], "properties": ["file_path", "offset", "limit"]},
-    "edit": {"required": ["file_path", "old_string", "new_string"],
-             "properties": ["file_path", "old_string", "new_string", "replace_all"]},
-}
-
-
-def check_schema() -> dict:
-    agent = DSHCompatAgent("/workspace/demo")
-    tools = agent.get_tools()
-    names = [tool.name for tool in tools]
-    assert names == ["bash", "read", "edit"], f"tool set must be bash/read/edit, got {names}"
-    report = {}
-    for tool in tools:
-        schema = tool.schema["function"]
-        params = schema["parameters"]
-        expected = EXPECTED[tool.name]
-        assert sorted(params["properties"]) == sorted(expected["properties"]), (tool.name, params["properties"])
-        assert sorted(params.get("required", [])) == sorted(expected["required"]), (tool.name, params.get("required"))
-        report[tool.name] = {"properties": sorted(params["properties"]),
-                             "required": params.get("required", []),
-                             "description_len": len(schema["description"])}
-    # Defaults that the DSH side fixes
-    read = next(t for t in tools if t.name == "read")
-    assert "400" in read.parameters["properties"]["limit"]["description"]
-    assert "2000" in read.parameters["properties"]["limit"]["description"]
-    assert "false" in next(t for t in tools if t.name == "edit").parameters["properties"]["replace_all"]["description"]
-    # Forbidden actions must not exist
-    assert all(tool.name not in ("finish", "think", "str_replace_editor", "execute_bash") for tool in tools)
-    return report
+def check_schema(eval_tools: list[dict]) -> dict:
+    """Compare the full model-visible schemas from a captured eval request."""
+    if not eval_tools:
+        raise ValueError("eval request contains no tool schemas")
+    factory_tools = [tool.schema for tool in DSHCompatAgent("/workspace/demo").get_tools()]
+    factory = {tool["function"]["name"]: tool for tool in factory_tools}
+    actual = {tool["function"]["name"]: tool for tool in eval_tools}
+    differences = []
+    if list(factory) != list(actual):
+        differences.append("tool_order_or_names")
+    for name in sorted(set(factory) | set(actual)):
+        if factory.get(name) != actual.get(name):
+            differences.append(name)
+    def digest(value):
+        return sha256(json.dumps(value, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    return {"schema_equal": not differences, "differences": differences,
+            "factory_schema_sha256": digest(factory_tools),
+            "eval_schema_sha256": digest(eval_tools),
+            "scope": "Tool schemas only; does not prove tool execution, prompts, or token parity"}
 
 
 def check_round_trip() -> dict:
@@ -91,9 +77,22 @@ def check_round_trip() -> dict:
 
 
 def main() -> None:
-    print(json.dumps({"schema": check_schema(), "round_trip": check_round_trip()},
-                     ensure_ascii=False, indent=2))
-    print("PASS: tool surface matches DSH and survives the student template round-trip")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--eval-request", required=True, type=Path,
+                        help="Raw chat request, or requests.json from the DSH contract smoke")
+    parser.add_argument("--round-trip", action="store_true",
+                        help="Also run the local Qwen serialization smoke (not token parity)")
+    args = parser.parse_args()
+    raw = args.eval_request.read_bytes()
+    request = json.loads(raw)
+    if isinstance(request, list):
+        request = request[0]
+    report = check_schema(request.get("tools") or request.get("toolSchemas") or [])
+    report["eval_request_sha256"] = sha256(raw).hexdigest()
+    if args.round_trip:
+        report["serialization_smoke"] = check_round_trip()
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    raise SystemExit(0 if report["schema_equal"] else 1)
 
 
 if __name__ == "__main__":

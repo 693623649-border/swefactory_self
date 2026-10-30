@@ -414,6 +414,19 @@ class ToolEvent:
     mutates: bool = False     # the command can write to the workspace
     runs_test: bool = False   # the command mentions a test runner
 
+    @property
+    def supervision_error(self) -> str | None:
+        if self.obs_msg is None:
+            return "MISSING_TOOL_RESULT"
+        # A failing test is useful evidence, not a malformed tool invocation.
+        if self.name in {"read", "edit"} and self.observation.lstrip().startswith("Error:"):
+            return "TOOL_CONTRACT_ERROR"
+        return None
+
+    @property
+    def mutation_candidate(self) -> bool:
+        return self.supervision_error is None and (self.name == "edit" or self.mutates)
+
     def as_dict(self) -> dict:
         return {"msg": self.msg, "call_id": self.call_id, "name": self.name,
                 "kind": self.kind, "obs_msg": self.obs_msg,
@@ -425,15 +438,22 @@ class ToolEvent:
 
 def events(messages) -> list[ToolEvent]:
     """Flatten the trajectory into tool events, keeping message indices intact."""
-    by_call = {m.get("tool_call_id"): i for i, m in enumerate(messages)
-               if m.get("role") == "tool"}
+    by_call: dict[str, list[int]] = {}
+    for i, message in enumerate(messages):
+        if message.get("role") == "tool" and message.get("tool_call_id"):
+            by_call.setdefault(message["tool_call_id"], []).append(i)
     out: list[ToolEvent] = []
     for index, message in enumerate(messages):
         for call in message.get("tool_calls") or []:
             function = call.get("function") or {}
             name = function.get("name") or call.get("name") or ""
             args = normalize_args(function.get("arguments"))
-            obs_msg = by_call.get(call.get("id"))
+            # A duplicate/misordered ID must not borrow another call's success.
+            matches = by_call.get(call.get("id"), [])
+            obs_msg = matches[0] if len(matches) == 1 and matches[0] > index else None
+            if obs_msg is not None and any(m.get("role") != "tool"
+                                           for m in messages[index + 1:obs_msg]):
+                obs_msg = None
             observation = strip_ansi((messages[obs_msg].get("content") or "")
                                      if obs_msg is not None else "")
             command = str(args.get("command", "")) if name == "bash" else ""
@@ -460,6 +480,12 @@ def events(messages) -> list[ToolEvent]:
                                  kind, command, observed_exit(observation), test, signature,
                                  mutates, runs_test))
     return out
+
+
+def tool_error_messages(messages) -> dict[int, str]:
+    """Mask whole assistant calls with explicit contract failures or no receipt."""
+    return {event.msg: event.supervision_error for event in events(messages)
+            if event.supervision_error is not None}
 
 
 @dataclass
@@ -567,7 +593,7 @@ def diagnose(record: dict) -> Diagnosis:
     patch = patch_info(record.get("patch") or "")
     assistant_msgs = [i for i, m in enumerate(messages) if m.get("role") == "assistant"]
 
-    mutations = [e for e in evs if e.name == "edit" or e.mutates]
+    mutations = [e for e in evs if e.mutation_candidate]
     first_mut = mutations[0] if mutations else None
     last_mut = mutations[-1] if mutations else None
     first_step = None
@@ -620,6 +646,9 @@ def diagnose(record: dict) -> Diagnosis:
             masked[index] = "REPEAT_TEXT"
         else:
             seen_text[key] = index
+
+    # Retain failed calls/observations in context, but never teach the bad call.
+    masked.update({e.msg: e.supervision_error for e in evs if e.supervision_error})
 
     final_index = None
     final_text = ""

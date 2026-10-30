@@ -24,6 +24,7 @@ from pathlib import Path
 FORMAL = Path(__file__).resolve().parents[1] / "results" / "pool_a_formal"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from to_sft_qwen import Renderer, build  # noqa: E402
+from segment_review import tool_error_messages  # noqa: E402
 from split_isolation import (  # noqa: E402
     evaluate_benchmark_gate,
     load_protected_families,
@@ -157,7 +158,10 @@ def main() -> None:
         names, test_runs = tool_sequence(record.get("messages") or [])
         # Mutation = edit tool OR a bash command that writes files.
         edit_positions = []
+        tool_errors = tool_error_messages(record.get("messages") or [])
         for pos, message in enumerate(record.get("messages") or []):
+            if pos in tool_errors:
+                continue
             for call in message.get("tool_calls") or []:
                 function = call.get("function") or {}
                 name = function.get("name") or call.get("name") or ""
@@ -250,6 +254,7 @@ def main() -> None:
                 supervised += sum(mask)
 
         verdict["rejected"] = reject
+        verdict["masked_tool_messages"] = sorted(tool_errors.items())
         verdict["admitted"] = not reject
         verdict["length"] = length
         verdict["supervised_tokens"] = sup_tokens if not reject else 0
@@ -275,7 +280,7 @@ def main() -> None:
                 tool_usage_adm[t_name] += row.get(f"tool_{t_name}", 0)
 
     summary = {
-        "admission_protocol": "formal-v3-benchmark-isolated-cap-one",
+        "admission_protocol": "formal-v4-benchmark-isolated-cap-one-tool-result-masked",
         "exporter_sha256": sha256(Path(__file__).read_bytes()).hexdigest(),
         "protected_families_sha256": protected_cfg.raw_sha256,
         "protected_families_path": protected_cfg.path,

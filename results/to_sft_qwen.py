@@ -14,6 +14,8 @@ import json
 import os
 from pathlib import Path
 
+from segment_review import tool_error_messages
+
 MODEL = Path(r"E:\Deeplearning\local_train\model\Qwen3.5-4B")
 
 
@@ -93,6 +95,7 @@ class Rendered:
 
     def __init__(self, renderer: Renderer, messages) -> None:
         self.messages = messages
+        self.tool_errors = tool_error_messages(messages)
         self.grouped = blocks(messages)
         last_user = max((i for i, m in enumerate(messages) if m.get("role") == "user"),
                         default=-1)
@@ -130,6 +133,8 @@ class Rendered:
         supervision = []
         for block in self.grouped:
             allowed = block["role"] == "assistant"
+            if allowed and block["indices"][0] in self.tool_errors:
+                allowed = False
             if allowed and keep_set is not None:
                 allowed = len(block["indices"]) == 1 and block["indices"][0] in keep_set
             supervision.append(1 if allowed else 0)

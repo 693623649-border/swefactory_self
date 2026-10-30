@@ -24,10 +24,7 @@ BASH_MAX_TIMEOUT_S = 600
 def _confine(path: str, workdir: str) -> str:
     """Confine file tools to the session workspace.
 
-    Batch runs create one agent before the per-instance workdir is known, so the
-    guard accepts any absolute path under the Scale-SWE workspace root
-    (``/workspace``) and rejects traversal. When a concrete workdir is supplied
-    (single-instance runs) the tighter prefix check applies.
+    The agent binds the concrete instance root when it creates the loop.
     """
     if not path:
         raise ValueError("file_path must be a non-empty string")
@@ -37,8 +34,6 @@ def _confine(path: str, workdir: str) -> str:
     absolute = path if path.startswith("/") else posixpath.join(root, path)
     normalized = posixpath.normpath(absolute)
     if normalized == root or normalized.startswith(root + "/"):
-        return normalized
-    if root == "/workspace" and normalized.startswith("/workspace/"):
         return normalized
     raise ValueError(f"path is outside the session workspace: {path}")
 
@@ -165,6 +160,8 @@ class DshEditTool(Tool):
         replace_all = bool(params.get("replace_all") or False)
         if not old:
             return "Error: old_string must not be empty"
+        if old == new:
+            return "Error: old_string and new_string must differ"
         try:
             path = _confine(str(params.get("file_path") or ""), self._workdir)
             data = await session.download_file(path)
