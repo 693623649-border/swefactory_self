@@ -2,6 +2,8 @@ llm: "!include ${LLM_CONFIG:-../llm/local_deepseek.yaml}"
 runtime:
   backend: docker
   timeout: 14400
+  docker:
+    network: none
   resource_limits:
     cpu: "4"
     memory: "8Gi"

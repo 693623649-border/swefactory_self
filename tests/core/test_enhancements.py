@@ -910,13 +910,22 @@ def test_task_metadata_has_test_suite_num():
 # ═══════════════════════════════════════════════════════════════════════
 
 
+def _setup_session(sha):
+    session = MockRuntimeSession()
+    async def execute(command, cwd=None, timeout=None, env=None):
+        session.commands.append(command)
+        output = '{"git_passed": true, "repositories": []}' if '--sanitize-git' in command else sha + '\n'
+        return ExecutionResult(stdout=output, exit_code=0)
+    session.execute = execute
+    return session
+
+
 @pytest.mark.asyncio
 async def test_pre_agent_setup_prepare():
     """PreAgentSetup.prepare() executes setup_commands, commit, rev-parse, then remove_future_commits."""
     from aweagent.core.eval.setup import PreAgentSetup
 
-    session = MockRuntimeSession()
-    session._default_result = ExecutionResult(stdout="abc123\n", exit_code=0)
+    session = _setup_session('abc123')
 
     instance = Instance(
         id="setup_test",
@@ -938,8 +947,8 @@ async def test_pre_agent_setup_prepare():
     # Fourth command: git rev-parse HEAD
     assert "git rev-parse HEAD" in session.commands[3]
     # Fifth command: remove_future_commits
-    assert "git for-each-ref" in session.commands[4]
-    assert "git stash clear" in session.commands[4]
+    assert "--sanitize-git" in session.commands[4]
+    assert setup.hardening_receipt['git_passed']
     # Returns the commit SHA
     assert commit_id == "abc123"
 
@@ -949,18 +958,15 @@ async def test_pre_agent_setup_remove_future_commits():
     """PreAgentSetup.remove_future_commits() runs the correct git commands."""
     from aweagent.core.eval.setup import PreAgentSetup
 
-    session = MockRuntimeSession()
-    session._default_result = ExecutionResult(stdout="", exit_code=0)
+    session = _setup_session('unused')
 
     setup = PreAgentSetup(session, "/workspace")
     await setup.remove_future_commits()
 
     assert len(session.commands) == 1
     cmd = session.commands[0]
-    assert "git rev-parse --abbrev-ref HEAD" in cmd
-    assert "git for-each-ref" in cmd
-    assert "git branch -f" in cmd
-    assert "git stash clear" in cmd
+    assert "--root /workspace --sanitize-git" in cmd
+    assert setup.hardening_receipt['git_passed']
 
 
 @pytest.mark.asyncio
@@ -968,8 +974,7 @@ async def test_pre_agent_setup_empty_commands():
     """PreAgentSetup.prepare() with no setup_commands runs commit + rev-parse + remove_future_commits."""
     from aweagent.core.eval.setup import PreAgentSetup
 
-    session = MockRuntimeSession()
-    session._default_result = ExecutionResult(stdout="def456\n", exit_code=0)
+    session = _setup_session('def456')
 
     instance = Instance(
         id="empty_setup",
@@ -984,7 +989,7 @@ async def test_pre_agent_setup_empty_commands():
     assert len(session.commands) == 3
     assert "git add -A" in session.commands[0]
     assert "git rev-parse HEAD" in session.commands[1]
-    assert "git for-each-ref" in session.commands[2]
+    assert "--sanitize-git" in session.commands[2]
     assert commit_id == "def456"
 
 

@@ -14,6 +14,9 @@ Usage::
 from __future__ import annotations
 
 import logging
+import json
+from pathlib import Path
+import shlex
 from typing import TYPE_CHECKING
 
 from aweagent.core.task.types import Instance
@@ -25,27 +28,17 @@ logger = logging.getLogger(__name__)
 
 # Shell snippet that commits all current changes as a "pre-agent" snapshot.
 _GIT_COMMIT_PRE_AGENT = (
+    'git submodule update --recursive --no-fetch && '
     'git config user.email "pre-agent@awe-agent.local" && '
     'git config user.name "Pre-Agent" && '
     'git add -A && '
     'git commit -m "pre-agent commit"'
 )
 
-# Shell snippet that resets all git refs to HEAD and clears the stash.
-# Prevents the agent from seeing future commits (data leakage).
-_REMOVE_FUTURE_COMMITS = (
-    'current_branch=$(git rev-parse --abbrev-ref HEAD) && '
-    'git for-each-ref --format="%(refname)" | while read ref; do '
-    'if [[ "$ref" == refs/heads/* ]]; then '
-    'branch_name="${ref#refs/heads/}"; '
-    'if [[ "$branch_name" != "$current_branch" ]]; then '
-    'git branch -f "$branch_name" HEAD; '
-    'fi; '
-    'else git update-ref "$ref" HEAD 2>/dev/null || true; fi; done && '
-    'git stash clear 2>/dev/null || true && '
-    'git reflog expire --expire=now --all 2>/dev/null || true && '
-    'git gc --prune=now 2>/dev/null || true'
-)
+def hardening_command(workdir: str, *, audit_copies: bool = False) -> str:
+    source = Path(__file__).with_name('workspace_hardening.py').read_text(encoding='utf-8')
+    return ('python -c ' + shlex.quote(source) + ' --root ' + shlex.quote(workdir)
+            + ' --sanitize-git' + (' --audit-copies' if audit_copies else ''))
 
 
 class PreAgentSetup:
@@ -60,6 +53,7 @@ class PreAgentSetup:
     def __init__(self, session: RuntimeSession, workdir: str) -> None:
         self.session = session
         self.workdir = workdir
+        self.hardening_receipt = None
 
     async def run_setup_commands(self, commands: list[str]) -> None:
         """Execute setup commands (from ``instance.setup_commands``)."""
@@ -86,10 +80,15 @@ class PreAgentSetup:
         return None
 
     async def remove_future_commits(self) -> None:
-        """Reset all git refs to HEAD, clear stash.  Prevents data leakage."""
-        await self.session.execute(
-            _REMOVE_FUTURE_COMMITS, cwd=self.workdir,
-        )
+        """Remove future refs/objects recursively, and require a successful audit."""
+        result = await self.session.execute(hardening_command(self.workdir),
+                                            cwd=self.workdir, timeout=300)
+        if not result.success:
+            raise RuntimeError('pre-solver Git hardening failed: ' + result.output[-1500:])
+        receipt = json.loads(result.stdout)
+        if receipt.get('git_passed') is not True:
+            raise RuntimeError('pre-solver Git hardening did not pass')
+        self.hardening_receipt = receipt
 
     async def prepare(self, instance: Instance) -> str | None:
         """Full pre-agent preparation: setup → commit snapshot → remove future commits.
