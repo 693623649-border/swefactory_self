@@ -53,7 +53,8 @@ class NativeDshAgent(Agent):
         args = self.args
         result = await asyncio.to_thread(
             self.driver.solve, args.task_file, args.instance_id, args.run_dir,
-            "production", args.dsh_repo,
+            "production", args.dsh_repo, args.upstream, profile_name=args.profile,
+            model=args.model, budget_path=args.budget, api_key_file=args.api_key_file,
         )
         if result["terminal_status"] == "infrastructure_failure":
             raise RuntimeError("DSH infrastructure failure; inspect isolated run receipts")
@@ -85,6 +86,11 @@ async def main():
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--eval-root", type=Path, required=True)
     parser.add_argument("--dsh-repo", type=Path, required=True)
+    parser.add_argument("--upstream", default="http://127.0.0.1:3425/v1")
+    parser.add_argument("--profile", default="swe-agent-v3-terra-smoke")
+    parser.add_argument("--model", default="codex/gpt-6.1-terra")
+    parser.add_argument("--budget", type=Path)
+    parser.add_argument("--api-key-file", type=Path)
     args = parser.parse_args()
     for key in ("task_file", "run_dir", "eval_root", "dsh_repo"):
         setattr(args, key, getattr(args, key).resolve())
@@ -100,8 +106,7 @@ async def main():
     }])
     runner = TaskRunner(
         task=task, agent_factory=lambda **_: NativeDshAgent(native_task, args),
-        llm_config=LLMConfig(model="codex/gpt-6.1-terra", api_key="local-smoke",
-                             base_url="http://127.0.0.1:3425/v1"),
+        llm_config=LLMConfig(model=args.model, api_key="local-smoke", base_url=args.upstream),
         runtime_config=RuntimeConfig(), evaluator=None,
         output_path=args.run_dir.parent / "factory-output",
         max_concurrent=1, max_retries=1, max_steps=60,
