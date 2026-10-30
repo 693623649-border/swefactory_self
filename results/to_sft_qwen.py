@@ -97,10 +97,21 @@ def build_decision(renderer: Renderer, request_view: dict, assistant: dict,
     """Freeze the serving prefix; supervise only one verified new response."""
     messages, tools = request_view["messages"], request_view["tools"]
     prefix = renderer.render_request(messages, tools)
+    prefix_ids = renderer.tokenizer.encode(prefix, add_special_tokens=False).ids
+    for call in assistant.get("tool_calls") or []:
+        arguments = (call.get("function") or {}).get("arguments")
+        if isinstance(arguments, str):
+            try:
+                json.loads(arguments)
+            except ValueError:
+                return {"sample_id": sample_id, "ids": prefix_ids, "mask": [0] * len(prefix_ids),
+                        "keep_msgs": [], "spans": {}, "prompt_tokens": len(prefix_ids),
+                        "response_tokens": 0, "target_span": [len(prefix_ids), len(prefix_ids)],
+                        "masked_response_reason": "INVALID_TOOL_CALL", "target_unrepresentable": True,
+                        "training_eligible": False}
     full = renderer.render_request(messages + [assistant], tools, add_generation_prompt=False)
     if not full.startswith(prefix):
         raise ValueError("assistant rendering changed the serving prefix")
-    prefix_ids = renderer.tokenizer.encode(prefix, add_special_tokens=False).ids
     target_ids = renderer.tokenizer.encode(full[len(prefix):], add_special_tokens=False).ids
     # BPE may merge across the generation boundary when a whole transcript is
     # tokenized again. Actual generation keeps the existing prefix immutable.

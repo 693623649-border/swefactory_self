@@ -109,6 +109,19 @@ class RequestDecisionTests(unittest.TestCase):
         self.assertEqual(sample["masked_response_reason"], "INVALID_TOOL_CALL")
         self.assertFalse(any(sample["mask"]))
 
+    def test_malformed_tool_arguments_rejected_without_losing_prefix(self):
+        view = self.view()
+        assistant = {"role": "assistant", "content": "", "tool_calls": [{"id": "broken",
+                     "type": "function", "function": {"name": "read", "arguments": '{"file_path":'}}]}
+        sample = build_decision(self.renderer, view, assistant, sample_id="case:malformed",
+                                response_status="completed")
+        expected = self.renderer.tokenizer.encode(
+            self.renderer.render_request(view["messages"], view["tools"]), add_special_tokens=False).ids
+        self.assertEqual(sample["ids"], expected)
+        self.assertEqual(sample["masked_response_reason"], "INVALID_TOOL_CALL")
+        self.assertFalse(any(sample["mask"]))
+        self.assertEqual(sample["keep_msgs"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
