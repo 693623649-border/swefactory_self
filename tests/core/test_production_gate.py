@@ -44,3 +44,16 @@ def test_modified_evidence_is_not_accepted(tmp_path):
     (tmp_path / 'evidence.json').write_text('{"verified":false}')
     with pytest.raises(ValueError, match='evidence or source changed'):
         require_acceptance(path, solver_id='dsh-native-v1', project_root=tmp_path)
+
+
+def test_official_low_v1_receipt_never_unlocks_the_schema2_high_chain(tmp_path):
+    path, receipt = accepted_receipt(tmp_path)
+    with pytest.raises(ValueError, match='entrypoint'):
+        require_acceptance(path, solver_id='dsh-native-v2', project_root=tmp_path, schema_version=2)
+    receipt['solver_id'] = 'dsh-native-v2'
+    path.write_text(json.dumps(receipt))
+    with pytest.raises(ValueError, match='entrypoint'):
+        require_acceptance(path, solver_id='dsh-native-v2', project_root=tmp_path, schema_version=2)
+    receipt['schema_version'] = 2
+    path.write_text(json.dumps(receipt))
+    assert require_acceptance(path, solver_id='dsh-native-v2', project_root=tmp_path, schema_version=2)

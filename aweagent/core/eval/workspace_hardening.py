@@ -9,10 +9,25 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
+import shutil
+import stat
 import subprocess
 import tarfile
 import time
 import zipfile
+
+# Files outside refs/ that can name or retain objects beyond the frozen base.
+PSEUDO_REFS = ('FETCH_HEAD', 'ORIG_HEAD', 'MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD',
+               'REBASE_HEAD', 'AUTO_MERGE', 'BISECT_HEAD', 'BISECT_EXPECTED_REV', 'MERGE_AUTOSTASH')
+# Legacy object-format findings in permitted history (e.g. an old commit with a
+# malformed timezone). They are reported as warnings, never as a pass for
+# missing, corrupt or unreachable objects, which stay fatal.
+BROKEN_REF = re.compile(r'error: (refs/\S+): invalid sha1 pointer ')
+FSCK_LEGACY_FORMAT = ('badTimezone', 'badDate', 'badDateOverflow', 'missingSpaceBeforeDate',
+                      'zeroPaddedDate', 'zeroPaddedFilemode')
+STATE_PATHS = ('rebase-merge', 'rebase-apply', 'sequencer', 'BISECT_LOG', 'BISECT_START',
+               'BISECT_TERMS', 'BISECT_NAMES', 'lost-found', 'worktrees')
 
 
 def git(root, *args, check=True):
@@ -55,6 +70,27 @@ def repositories(root):
     return result
 
 
+def common_dir(root):
+    common = Path(text(git(root, 'rev-parse', '--git-common-dir')))
+    return common if common.is_absolute() else Path(root) / common
+
+
+def leftover_modules(root, repos):
+    """Module Git dirs under .git/modules that no initialized submodule uses."""
+    modules = common_dir(root) / 'modules'
+    if not modules.is_dir():
+        return []
+    used = {common_dir(repo).resolve() for repo in repos}
+    found = []
+    for directory, dirs, _ in os.walk(modules):
+        path = Path(directory)
+        if (path / 'HEAD').is_file() and (path / 'objects').is_dir():
+            if path.resolve() not in used:
+                found.append(path)
+            dirs[:] = [d for d in dirs if d == 'modules']
+    return found
+
+
 def inspect_git(root, cutoff_commit=None):
     head = text(git(root, 'rev-parse', 'HEAD'))
     index = git(root, 'diff-index', '--cached', '--quiet', 'HEAD', '--', check=False)
@@ -63,13 +99,23 @@ def inspect_git(root, cutoff_commit=None):
     if cutoff_commit is None:
         saved = git(root, 'rev-parse', '--verify', 'refs/aweagent/pre-solver-base^{commit}', check=False)
         cutoff_commit = text(saved) if saved.returncode == 0 else head
+    resolved = git(root, 'rev-parse', '--verify', '--quiet', cutoff_commit + '^{commit}', check=False)
+    if resolved.returncode:
+        raise RuntimeError('pre-solver base is not a commit in this repository: {}'.format(cutoff_commit))
+    cutoff_commit = text(resolved)
     if git(root, 'merge-base', '--is-ancestor', cutoff_commit, head, check=False).returncode:
         raise RuntimeError('pre-solver base is not an ancestor of HEAD')
     cutoff_time = int(text(git(root, 'show', '-s', '--format=%ct', cutoff_commit)))
     branch = text(git(root, 'symbolic-ref', '-q', 'HEAD', check=False))
-    refs = []
-    forbidden = []
-    for entry in text(git(root, 'for-each-ref', '--format=%(refname)%09%(taggerdate:unix)')).splitlines():
+    listed = git(root, 'for-each-ref', '--format=%(refname)%09%(taggerdate:unix)')
+    legacy = [arg for name in FSCK_LEGACY_FORMAT for arg in ('-c', 'fsck.{}=warn'.format(name))]
+    fsck = git(root, *legacy, 'fsck', '--unreachable', '--no-reflogs', check=False)
+    fsck_stderr = fsck.stderr.decode('utf-8', errors='replace').splitlines()
+    # for-each-ref silently skips refs that resolve to nothing (e.g. a dangling origin/HEAD symref); fsck names them.
+    broken = sorted({m.group(1) for m in map(BROKEN_REF.match, fsck_stderr) if m})
+    refs = list(broken)
+    forbidden = list(broken)
+    for entry in text(listed).splitlines():
         ref, _, tag_time = entry.partition('\t')
         target = git(root, 'rev-parse', ref + '^{commit}', check=False)
         ancestor = target.returncode == 0 and git(
@@ -79,44 +125,89 @@ def inspect_git(root, cutoff_commit=None):
         refs.append(ref)
         if not allowed:
             forbidden.append(ref)
-    fsck = git(root, 'fsck', '--unreachable', '--no-reflogs', check=False)
     unreachable = [line for line in text(fsck).splitlines() if line.startswith(('unreachable ', 'dangling '))]
-    common = Path(text(git(root, 'rev-parse', '--git-common-dir')))
-    if not common.is_absolute():
-        common = Path(root) / common
+    fsck_warnings = [line for line in fsck_stderr if line.startswith('warning in ')]
+    common = common_dir(root)
     grafts = common / 'info' / 'grafts'
     if grafts.is_file():
         lines = grafts.read_text(encoding='utf-8', errors='replace').splitlines()
         if any(line.strip() and not line.lstrip().startswith('#') for line in lines):
             raise RuntimeError('Git grafts can hide future objects: {}'.format(root))
-    alternates = common / 'objects' / 'info' / 'alternates'
+    alternates = [common / 'objects' / 'info' / name for name in ('alternates', 'http-alternates')]
+    pack = common / 'objects' / 'pack'
+    retained = sorted(p.name for p in pack.glob('*') if p.suffix in ('.keep', '.promisor')) if pack.is_dir() else []
+    private = Path(text(git(root, 'rev-parse', '--absolute-git-dir')))
+    if private.resolve() != common.resolve():
+        # Cleaning a shared common dir would touch other checkouts; only exclusive copies qualify.
+        raise RuntimeError('task workspace is a linked worktree of a shared repository: {}'.format(root))
     return dict(head=head, cutoff_commit=cutoff_commit, ref_count=len(refs), forbidden_refs=forbidden,
                 unreachable_objects=len(unreachable), fsck_exit_code=fsck.returncode,
-                object_alternates=alternates.exists())
+                object_alternates=any(path.exists() for path in alternates),
+                pseudo_refs=[name for name in PSEUDO_REFS if (common / name).exists() or (private / name).exists()],
+                state_paths=[name for name in STATE_PATHS if (common / name).exists()],
+                retained_packs=retained, fsck_warnings=fsck_warnings[:20])
 
 
-def sanitize_git(root):
+def converged(receipt):
+    return not (receipt['forbidden_refs'] or receipt['unreachable_objects'] or receipt['object_alternates']
+                or receipt['fsck_exit_code'] or receipt['pseudo_refs'] or receipt['state_paths']
+                or receipt['retained_packs'] or receipt.get('leftover_modules'))
+
+
+def _force(func, path, _):
+    os.chmod(path, stat.S_IWRITE)  # Git writes read-only object files
+    func(path)
+
+
+def remove(path):
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(str(path), onerror=_force)
+    elif path.exists() or path.is_symlink():
+        path.unlink()
+
+
+def sanitize_git(root, base=None):
+    """Delete everything not reachable from the frozen checkout, recursively.
+
+    ``base`` is the public task commit; it must be HEAD or one of its ancestors.
+    Only the disposable task copy at ``root`` is modified.
+    """
     repos = repositories(root)
     receipts = []
-    snapshots = [(repo, inspect_git(repo)) for repo in reversed(repos)]
+    snapshots = [(repo, inspect_git(repo, cutoff_commit=base if repo == repos[0] else None))
+                 for repo in reversed(repos)]
     for repo, before in snapshots:
         for ref in before['forbidden_refs']:
-            git(repo, 'update-ref', '--no-deref', '-d', ref)
-        common = Path(text(git(repo, 'rev-parse', '--git-common-dir')))
-        if not common.is_absolute():
-            common = repo / common
+            if git(repo, 'update-ref', '--no-deref', '-d', ref, check=False).returncode:
+                remove(common_dir(repo) / ref)  # a broken loose symref update-ref cannot resolve
+        common = common_dir(repo)
+        private = Path(text(git(repo, 'rev-parse', '--absolute-git-dir')))
+        for name in PSEUDO_REFS:
+            for directory in {common, private}:
+                remove(directory / name)
+        for name in STATE_PATHS:
+            remove(common / name)
+        stale = leftover_modules(repo, repos)
+        for module in stale:
+            remove(module)
         alternates = common / 'objects' / 'info' / 'alternates'
-        if alternates.exists():
+        if alternates.exists() or (common / 'objects' / 'info' / 'http-alternates').exists():
             # Materialize reachable objects before severing the shared object store.
             git(repo, 'repack', '-a', '-d')
-            alternates.unlink()
+            remove(alternates)
+            remove(common / 'objects' / 'info' / 'http-alternates')
+        for marker in before['retained_packs']:
+            # A .keep/.promisor pack survives gc with whatever unreachable objects it holds.
+            remove(common / 'objects' / 'pack' / marker)
         git(repo, 'reflog', 'expire', '--expire=now', '--expire-unreachable=now', '--all')
         git(repo, 'gc', '--prune=now')
         after = inspect_git(repo, cutoff_commit=before['cutoff_commit'])
-        if (after['head'] != before['head'] or after['forbidden_refs'] or
-                after['unreachable_objects'] or after['object_alternates'] or after['fsck_exit_code']):
+        after['leftover_modules'] = [str(path) for path in leftover_modules(repo, repos)]
+        if after['head'] != before['head'] or not converged(after):
             raise RuntimeError('Git isolation did not converge: {}'.format(repo))
-        receipts.append(dict(path=str(repo), removed_ref_count=len(before['forbidden_refs']), **after))
+        receipts.append(dict(path=str(repo), removed_ref_count=len(before['forbidden_refs']),
+                             removed_pseudo_refs=before['pseudo_refs'], removed_state_paths=before['state_paths'],
+                             removed_modules=[str(path) for path in stale], **after))
     return receipts
 
 
@@ -199,13 +290,18 @@ def main():
     parser.add_argument('--sanitize-git', action='store_true')
     parser.add_argument('--audit-copies', action='store_true')
     parser.add_argument('--module', action='append', default=[])
+    parser.add_argument('--base', help='public task base commit; must be HEAD or an ancestor of HEAD')
     args = parser.parse_args()
     started = time.monotonic()
     root = Path(args.root).resolve()
-    repos = sanitize_git(root) if args.sanitize_git else [dict(path=str(r), **inspect_git(r)) for r in repositories(root)]
-    result = dict(schema_version=1, root=str(root), repositories=repos)
-    git_passed = all(not r['forbidden_refs'] and not r['unreachable_objects'] and
-                     not r['object_alternates'] and not r['fsck_exit_code'] for r in repos)
+    if args.sanitize_git:
+        repos = sanitize_git(root, base=args.base)
+    else:
+        found = repositories(root)
+        repos = [dict(path=str(r), **inspect_git(r, cutoff_commit=args.base if r == found[0] else None),
+                      leftover_modules=[str(p) for p in leftover_modules(r, found)]) for r in found]
+    result = dict(schema_version=2, root=str(root), base=args.base, repositories=repos)
+    git_passed = all(converged(r) for r in repos)
     result['git_passed'] = git_passed
     if args.audit_copies:
         copies = audit_source_copies(root, args.module or project_modules(root))

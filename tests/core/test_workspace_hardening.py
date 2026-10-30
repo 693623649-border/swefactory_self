@@ -173,3 +173,113 @@ def test_successful_preparation_retains_the_audit_receipt():
     setup = PreAgentSetup(SimpleNamespace(execute=execute), '/task')
     asyncio.run(setup.remove_future_commits())
     assert setup.hardening_receipt == receipt
+
+
+def test_every_leak_channel_is_unreadable_after_cleanup_and_base_history_survives(tmp_path):
+    """Planted future commit reachable through each mechanism must lose its object."""
+    source, root, donor = tmp_path / 'source', tmp_path / 'task', tmp_path / 'donor'
+    repository(source); base = repository(root); repository(donor)
+    (root / 'code.py').write_text('before\nsecond\n')
+    git(root, 'commit', '-qam', 'second'); base = text(git(root, 'rev-parse', 'HEAD'))
+    git(root, '-c', 'protocol.file.allow=always', 'submodule', 'add', '-q', str(source), 'nested')
+    git(root, 'commit', '-qm', 'submodule'); head = text(git(root, 'rev-parse', 'HEAD'))
+    nested = root / 'nested'
+    for repo in (nested,):
+        git(repo, 'config', 'user.name', 'Fixture'); git(repo, 'config', 'user.email', 'f@example.invalid')
+        git(repo, 'config', 'commit.gpgsign', 'false')
+    nested_future = add_future(nested)
+    planted = {}
+    def future(label):
+        (root / 'code.py').write_text('answer ' + label + '\n')
+        git(root, 'commit', '-qam', 'future ' + label)
+        sha = text(git(root, 'rev-parse', 'HEAD'))
+        git(root, 'reset', '-q', '--hard', head)
+        planted[label] = sha
+        return sha
+    git(root, 'branch', 'upstream-fix', future('branch'))
+    git(root, 'tag', '-a', 'v-next', '-m', 'release', future('tag'))
+    git(root, 'notes', 'add', '-m', 'see ' + future('note-target'), head)
+    git(root, 'replace', head, future('replace'))
+    git(root, 'replace', '-d', head)  # replace ref recreated below on a non-HEAD object
+    git(root, 'update-ref', 'refs/replace/' + base, planted['replace'])
+    future('reflog')  # only reachable through HEAD's reflog
+    (root / 'code.py').write_text('stashed answer\n'); git(root, 'stash', '-q')
+    planted['stash'] = text(git(root, 'rev-parse', 'refs/stash'))
+    common = root / '.git'
+    (common / 'FETCH_HEAD').write_text(future('fetch-head') + '\t\tbranch main\n')
+    (common / 'ORIG_HEAD').write_text(future('orig-head') + '\n')
+    keep_sha = future('keep-pack')
+    pack = subprocess.run(['git', '-C', str(root), 'pack-objects', str(common / 'objects/pack/pack')],
+                          input=(keep_sha + '\n').encode(), capture_output=True, check=True).stdout.decode().strip()
+    (common / 'objects/pack' / ('pack-' + pack + '.keep')).write_text('')
+    wt = tmp_path / 'linked'
+    git(root, 'worktree', 'add', '-q', '--detach', str(wt), future('worktree-head'))
+    (donor / 'code.py').write_text('donor-only upstream answer\n')
+    git(donor, 'commit', '-qam', 'donor answer')
+    donor_sha = text(git(donor, 'rev-parse', 'HEAD'))
+    (common / 'objects/info/alternates').write_text(str((donor / '.git/objects').resolve()) + '\n')
+    old_module = common / 'modules' / 'retired'
+    subprocess.run(['git', 'clone', '-q', '--bare', str(donor), str(old_module)], check=True)
+    git(root, 'reflog', 'expire', '--expire=never', '--all', check=False)
+
+    before = inspect_git(root, cutoff_commit=base)
+    assert before['pseudo_refs'] and before['retained_packs'] and before['object_alternates']
+    receipt = sanitize_git(root, base=base)
+    assert receipt[-1]['removed_modules'] and receipt[-1]['removed_pseudo_refs']
+    for label, sha in planted.items():
+        assert git(root, 'cat-file', '-e', sha, check=False).returncode != 0, label
+    assert git(root, 'cat-file', '-e', donor_sha, check=False).returncode != 0
+    assert git(nested, 'cat-file', '-e', nested_future, check=False).returncode != 0
+    assert not old_module.exists() and not (common / 'worktrees').exists()
+    assert text(git(root, 'rev-parse', 'HEAD')) == head
+    assert text(git(root, 'for-each-ref', '--format=%(refname)')) == 'refs/heads/' + text(
+        git(root, 'symbolic-ref', '--short', 'HEAD'))
+    assert 'second' in text(git(root, 'log', '--format=%s'))
+    assert base in text(git(root, 'blame', '--porcelain', 'code.py'))
+
+
+def test_base_must_be_head_or_ancestor(tmp_path):
+    root = tmp_path / 'task'
+    repository(root)
+    future = add_future(root)
+    with pytest.raises(RuntimeError, match='not an ancestor'):
+        sanitize_git(root, base=future)
+    with pytest.raises(RuntimeError, match='not a commit'):
+        sanitize_git(root, base='0' * 40)
+
+
+def test_linked_worktree_of_shared_repository_is_refused_untouched(tmp_path):
+    root = tmp_path / 'shared'
+    repository(root)
+    future = add_future(root)
+    linked = tmp_path / 'linked'
+    git(root, 'worktree', 'add', '-q', '--detach', str(linked), 'HEAD')
+    with pytest.raises(RuntimeError, match='linked worktree'):
+        sanitize_git(linked)
+    assert git(root, 'cat-file', '-e', future).returncode == 0
+    assert (root / '.git' / 'worktrees').exists()
+
+
+def test_dangling_remote_head_is_removed_and_legacy_timezone_history_is_kept_as_warning(tmp_path):
+    # Shape of the SWE-bench requests image: origin/HEAD points at a missing branch and
+    # an old upstream commit carries a malformed timezone that fsck reports as an error.
+    root = tmp_path / 'task'
+    repository(root)
+    tree = text(git(root, 'rev-parse', 'HEAD^{tree}'))
+    legacy = 'tree {}\nauthor Old <old@example.invalid> 1100000000 +05\ncommitter Old <old@example.invalid> 1100000000 +05\n\nlegacy\n'
+    old = subprocess.run(['git', 'hash-object', '-t', 'commit', '-w', '--literally', '--stdin'], cwd=root,
+                         input=legacy.format(tree).encode(), capture_output=True, check=True).stdout.decode().strip()
+    base = text(git(root, 'commit-tree', tree, '-p', old, '-m', 'base'))
+    git(root, 'checkout', '-q', '--detach', base)
+    future = add_future(root)
+    (root / '.git' / 'refs' / 'remotes' / 'origin').mkdir(parents=True)
+    (root / '.git' / 'refs' / 'remotes' / 'origin' / 'HEAD').write_text('ref: refs/remotes/origin/main\n')
+    before = inspect_git(root, cutoff_commit=base)
+    assert 'refs/remotes/origin/HEAD' in before['forbidden_refs']
+    sanitize_git(root, base=base)
+    after = inspect_git(root)
+    assert after['fsck_exit_code'] == 0 and not after['forbidden_refs']
+    assert any('badTimezone' in line for line in after['fsck_warnings'])
+    assert not (root / '.git' / 'refs' / 'remotes' / 'origin' / 'HEAD').exists()
+    assert git(root, 'cat-file', '-e', future, check=False).returncode != 0
+    assert git(root, 'cat-file', '-e', old).returncode == 0
