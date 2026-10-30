@@ -386,7 +386,18 @@ def main() -> None:
                         help="stop once total unique trajectories in FORMAL reaches this number")
     parser.add_argument("--reserve-gb", type=float, default=RESERVE_GB,
                         help="disk reserve threshold in GiB")
+    parser.add_argument("--acceptance", default=os.environ.get("SWE_PRODUCTION_ACCEPTANCE"),
+                        help="P0 acceptance receipt bound to this solver and current sources")
     args = parser.parse_args()
+
+    sys.path.insert(0, str(ROOT))
+    from aweagent.core.eval.production_gate import require_acceptance
+    try:
+        # This legacy runner still invokes dsh_compat; native-DSH evidence must
+        # never silently authorize it just because the task pool is shared.
+        require_acceptance(args.acceptance, solver_id='python-dsh-compat', project_root=ROOT.parent)
+    except (ValueError, OSError, KeyError) as error:
+        raise SystemExit(str(error)) from error
 
     # 1) Acquire cross-process OS file lock
     lock = ProcessLock(LOCK_FILE)
