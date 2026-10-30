@@ -140,8 +140,10 @@ def build_decision(renderer: Renderer, request_view: dict, assistant: dict,
         reason = "OPAQUE_REASONING_UNAVAILABLE"
     elif not (assistant.get("content") or assistant.get("reasoning_raw") or assistant.get("tool_calls")):
         reason = "EMPTY_RESPONSE"
+    call_tools = {c.get('id'): (c.get('function') or {}).get('name') for c in assistant.get('tool_calls') or []}
     for result in response_results or []:
-        if reason is None and result.get("content", "").lstrip().startswith("Error:"):
+        if (reason is None and call_tools.get(result.get('tool_call_id')) in {'read', 'edit'}
+                and result.get("content", "").lstrip().startswith("Error:")):
             reason = "TOOL_CONTRACT_ERROR"
     ids = prefix_ids + target_ids
     if len(ids) > max_tokens:

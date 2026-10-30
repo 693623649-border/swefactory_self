@@ -301,7 +301,7 @@ def build_manifest(
     training_pools = {}
 
     # Pool A (reviewed)
-    a_admitted = [r for r in a_rows if r["decision"] == "ADMIT" and r.get("training_eligible")]
+    a_admitted = [r for r in a_rows if r["decision"] == "ADMIT" and r.get("training_eligible") is True]
     a_sha = file_sha256(reviewed_a_payload_path)
     training_pools["A"] = {
         "pool": "A",
@@ -328,7 +328,7 @@ def build_manifest(
 
         if p == "C3":
             # C3 is eligible strictly if training_eligible == 1 / True in bc_ledger
-            eligible_entries = [r for r in ledger_entries if r.get("decision") == "ADMIT" and r.get("training_eligible")]
+            eligible_entries = [r for r in ledger_entries if r.get("decision") == "ADMIT" and r.get("training_eligible") is True]
             seq_tokens = sum(r["seq_tokens"] or 0 for r in eligible_entries)
             supervised_tokens = sum(r["supervised_tokens"] or 0 for r in eligible_entries)
             training_pools[p] = {
@@ -343,7 +343,7 @@ def build_manifest(
                 "note": "C3 filtered strictly by final bc_ledger.training_eligible; seeds are excluded.",
             }
         else:
-            admitted = [r for r in ledger_entries if r.get("decision") == "ADMIT" and r.get("training_eligible", True)]
+            admitted = [r for r in ledger_entries if r.get("decision") == "ADMIT" and r.get("training_eligible") is True]
             seq_tokens = sum(r["seq_tokens"] or 0 for r in admitted)
             supervised_tokens = sum(r["supervised_tokens"] or 0 for r in admitted)
             training_pools[p] = {
@@ -383,7 +383,7 @@ def build_manifest(
     # B, C1, C2, C3
     for p in ("B", "C1", "C2", "C3"):
         for r in by_pool_bc[p]:
-            if r.get("decision") == "ADMIT" and r.get("training_eligible"):
+            if r.get("decision") == "ADMIT" and r.get("training_eligible") is True:
                 view_groups[r["instance_id"]].append({
                     "pool": p,
                     "sample_id": r["sample_id"],
@@ -438,7 +438,7 @@ def register_to_sqlite(
         # 1. Update pool_reviewed_a
         db.execute("DELETE FROM pool_reviewed_a")
         for row in a_rows:
-            is_admit = row["decision"] == "ADMIT" and bool(row.get("training_eligible"))
+            is_admit = row["decision"] == "ADMIT" and row.get("training_eligible") is True
             db.execute(
                 "INSERT INTO pool_reviewed_a VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (

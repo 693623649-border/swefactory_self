@@ -15,6 +15,7 @@ import json
 import sqlite3
 import sys
 from collections import Counter
+from contextlib import closing
 from hashlib import sha256
 from pathlib import Path
 
@@ -172,8 +173,15 @@ def load_jsonl(path: Path) -> list[dict]:
 
 def build() -> dict:
     ledger = load_jsonl(FORMAL / "admission_ledger.jsonl")
+    if DB.exists():
+        with closing(sqlite3.connect(DB.resolve().as_uri() + '?mode=ro', uri=True)) as existing:
+            has_samples = existing.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='samples'").fetchone()
+            if has_samples and existing.execute('SELECT COUNT(*) FROM samples').fetchone()[0] > len(ledger):
+                raise ValueError('Legacy ledger is incomplete; refuse to replace the larger existing index')
     batch_rows = load_jsonl(FORMAL / "batch_ledger.jsonl")
     traj = trajectory_index()
+    if any(r['instance_id'] not in traj or not traj[r['instance_id']].is_file() for r in ledger):
+        raise ValueError('Legacy sources incomplete; historical snapshots are indexed by release hash, not rebuilt')
     db = sqlite3.connect(DB)
     db.executescript("DROP VIEW IF EXISTS v_reject_reasons;"
                      "DROP VIEW IF EXISTS v_needs_rerun;"
@@ -338,7 +346,7 @@ def check() -> int:
 
     db.close()
     if problems:
-        print("INDEX OUT OF DATE — rebuild with: python results/build_index_db.py")
+        print("LEGACY INDEX INCOMPLETE — restore authoritative ledgers and source trajectories before rebuilding")
         for problem in problems:
             print("  -", problem)
         return 1
@@ -347,12 +355,29 @@ def check() -> int:
     return 0
 
 
+def native_index(release, database, *, check_only=False, isolated=False):
+    """Add/check v2 tables at the canonical query entry without rebuilding legacy."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'storage'))
+    from native_registry import register
+    from native_release import check_release
+    if not check_only:
+        register(Path(release), Path(database), isolated=isolated)
+    return check_release(Path(release), Path(database), allow_synthetic=isolated)['summary']
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", action="store_true")
     parser.add_argument("--check", action="store_true",
                         help="exit 1 when the index disagrees with the ledgers")
+    parser.add_argument('--native-release', type=Path)
+    parser.add_argument('--database', type=Path)
+    parser.add_argument('--isolated', action='store_true', help='synthetic tests only, separate database')
     args = parser.parse_args()
+    if args.native_release:
+        print(json.dumps(native_index(args.native_release, args.database or DB,
+                                     check_only=args.check, isolated=args.isolated)))
+        return
     if args.check:
         raise SystemExit(check())
     if args.report:
