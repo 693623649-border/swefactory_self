@@ -212,7 +212,17 @@ def sanitize_git(root, base=None):
 
 
 def project_modules(root):
-    """Conventional Python import roots; callers can supply explicit modules."""
+    """Python import roots the project installs; callers can supply explicit modules.
+
+    An installed checkout's ``*.egg-info/top_level.txt`` is authoritative. Without it,
+    fall back to conventional top-level packages, which can include dev-only dirs.
+    """
+    declared = {name.strip() for base in (Path(root), Path(root) / 'src', Path(root) / 'lib')
+                for listing in base.glob('*.egg-info/top_level.txt')
+                for name in listing.read_text(encoding='utf-8', errors='replace').splitlines()
+                if name.strip().isidentifier()}
+    if declared:
+        return sorted(declared)
     names = set()
     for base in (Path(root), Path(root) / 'src'):
         if not base.is_dir():

@@ -283,3 +283,17 @@ def test_dangling_remote_head_is_removed_and_legacy_timezone_history_is_kept_as_
     assert not (root / '.git' / 'refs' / 'remotes' / 'origin' / 'HEAD').exists()
     assert git(root, 'cat-file', '-e', future, check=False).returncode != 0
     assert git(root, 'cat-file', '-e', old).returncode == 0
+
+
+def test_installed_top_level_names_the_modules_so_dev_dirs_do_not_flag_stdlib(tmp_path):
+    # Shape of the SWE-bench sphinx image: a dev-only top-level utils/ package next to the project.
+    root = tmp_path / 'task'; root.mkdir()
+    for name in ('sphinx', 'utils'):
+        (root / name).mkdir(); (root / name / '__init__.py').write_text('')
+    (root / 'Sphinx.egg-info').mkdir(); (root / 'Sphinx.egg-info' / 'top_level.txt').write_text('sphinx\n')
+    stdlib = tmp_path / 'lib' / 'email'; stdlib.mkdir(parents=True); (stdlib / 'utils.py').write_text('')
+    vendored = tmp_path / 'lib' / 'pip' / '_vendor' / 'sphinx'; vendored.mkdir(parents=True)
+    (vendored / '__init__.py').write_text('newer release')
+    modules = project_modules(root)
+    assert modules == ['sphinx']
+    assert audit_source_copies(root, modules, scan_root=tmp_path)['external_copies'] == [str(vendored)]
