@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 # Shell snippet that commits all current changes as a "pre-agent" snapshot.
 _GIT_COMMIT_PRE_AGENT = (
     'git submodule update --recursive --no-fetch && '
+    'git update-ref refs/aweagent/pre-solver-base HEAD && '
     'git config user.email "pre-agent@awe-agent.local" && '
     'git config user.name "Pre-Agent" && '
     'git add -A && '

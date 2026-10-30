@@ -54,16 +54,24 @@ def repositories(root):
     return result
 
 
-def inspect_git(root):
+def inspect_git(root, cutoff_commit=None):
     head = text(git(root, 'rev-parse', 'HEAD'))
+    if cutoff_commit is None:
+        saved = git(root, 'rev-parse', '--verify', 'refs/aweagent/pre-solver-base^{commit}', check=False)
+        cutoff_commit = text(saved) if saved.returncode == 0 else head
+    if git(root, 'merge-base', '--is-ancestor', cutoff_commit, head, check=False).returncode:
+        raise RuntimeError('pre-solver base is not an ancestor of HEAD')
+    cutoff_time = int(text(git(root, 'show', '-s', '--format=%ct', cutoff_commit)))
     branch = text(git(root, 'symbolic-ref', '-q', 'HEAD', check=False))
     refs = []
     forbidden = []
-    for ref in text(git(root, 'for-each-ref', '--format=%(refname)')).splitlines():
+    for entry in text(git(root, 'for-each-ref', '--format=%(refname)%09%(taggerdate:unix)')).splitlines():
+        ref, _, tag_time = entry.partition('\t')
         target = git(root, 'rev-parse', ref + '^{commit}', check=False)
         ancestor = target.returncode == 0 and git(
             root, 'merge-base', '--is-ancestor', text(target), head, check=False).returncode == 0
-        allowed = (ref == branch and text(target) == head) or (ref.startswith('refs/tags/') and ancestor)
+        allowed = (ref == branch and text(target) == head) or (
+            ref.startswith('refs/tags/') and ancestor and (not tag_time or int(tag_time) <= cutoff_time))
         refs.append(ref)
         if not allowed:
             forbidden.append(ref)
@@ -73,7 +81,7 @@ def inspect_git(root):
     if not common.is_absolute():
         common = Path(root) / common
     alternates = common / 'objects' / 'info' / 'alternates'
-    return dict(head=head, ref_count=len(refs), forbidden_refs=forbidden,
+    return dict(head=head, cutoff_commit=cutoff_commit, ref_count=len(refs), forbidden_refs=forbidden,
                 unreachable_objects=len(unreachable), fsck_exit_code=fsck.returncode,
                 object_alternates=alternates.exists())
 
@@ -95,7 +103,7 @@ def sanitize_git(root):
             alternates.unlink()
         git(repo, 'reflog', 'expire', '--expire=now', '--expire-unreachable=now', '--all')
         git(repo, 'gc', '--prune=now')
-        after = inspect_git(repo)
+        after = inspect_git(repo, cutoff_commit=before['cutoff_commit'])
         if (after['head'] != before['head'] or after['forbidden_refs'] or
                 after['unreachable_objects'] or after['object_alternates'] or after['fsck_exit_code']):
             raise RuntimeError('Git isolation did not converge: {}'.format(repo))

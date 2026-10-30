@@ -1,9 +1,11 @@
 """Real Git object tests: future answers cannot survive in nested repositories."""
 import asyncio
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import zipfile
+import subprocess
 
 import pytest
 
@@ -71,6 +73,16 @@ def test_submodule_revision_drift_is_not_silently_blessed(tmp_path):
         '-c', 'commit.gpgsign=false', 'commit', '-qm', 'wrong')
     with pytest.raises(RuntimeError, match='pinned gitlink'):
         sanitize_git(root)
+
+
+def test_late_annotated_tag_on_old_commit_is_removed(tmp_path):
+    root = tmp_path / 'task'
+    repository(root)
+    subprocess.run(['git', '-C', str(root), 'tag', '-a', 'later-release', '-m', 'later'],
+                   env={**os.environ, 'GIT_COMMITTER_DATE': '2099-01-01T00:00:00Z'}, check=True)
+    assert 'refs/tags/later-release' in inspect_git(root)['forbidden_refs']
+    sanitize_git(root)
+    assert text(git(root, 'tag', '--list')) == ''
 
 
 def test_external_package_and_wheel_are_found_but_workspace_is_preserved(tmp_path):
