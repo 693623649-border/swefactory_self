@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import tarfile
 import time
 import zipfile
 
@@ -56,6 +57,9 @@ def repositories(root):
 
 def inspect_git(root, cutoff_commit=None):
     head = text(git(root, 'rev-parse', 'HEAD'))
+    index = git(root, 'diff-index', '--cached', '--quiet', 'HEAD', '--', check=False)
+    if index.returncode:
+        raise RuntimeError('Git index differs from HEAD: {}'.format(root))
     if cutoff_commit is None:
         saved = git(root, 'rev-parse', '--verify', 'refs/aweagent/pre-solver-base^{commit}', check=False)
         cutoff_commit = text(saved) if saved.returncode == 0 else head
@@ -80,6 +84,11 @@ def inspect_git(root, cutoff_commit=None):
     common = Path(text(git(root, 'rev-parse', '--git-common-dir')))
     if not common.is_absolute():
         common = Path(root) / common
+    grafts = common / 'info' / 'grafts'
+    if grafts.is_file():
+        lines = grafts.read_text(encoding='utf-8', errors='replace').splitlines()
+        if any(line.strip() and not line.lstrip().startswith('#') for line in lines):
+            raise RuntimeError('Git grafts can hide future objects: {}'.format(root))
     alternates = common / 'objects' / 'info' / 'alternates'
     return dict(head=head, cutoff_commit=cutoff_commit, ref_count=len(refs), forbidden_refs=forbidden,
                 unreachable_objects=len(unreachable), fsck_exit_code=fsck.returncode,
@@ -89,8 +98,8 @@ def inspect_git(root, cutoff_commit=None):
 def sanitize_git(root):
     repos = repositories(root)
     receipts = []
-    for repo in reversed(repos):
-        before = inspect_git(repo)
+    snapshots = [(repo, inspect_git(repo)) for repo in reversed(repos)]
+    for repo, before in snapshots:
         for ref in before['forbidden_refs']:
             git(repo, 'update-ref', '--no-deref', '-d', ref)
         common = Path(text(git(repo, 'rev-parse', '--git-common-dir')))
@@ -128,7 +137,7 @@ def project_modules(root):
 
 
 def audit_source_copies(root, modules, scan_root='/'):
-    """Look for the project's import namespaces and wheel/egg copies outside root.
+    """Look for the project's import namespaces and Python source/archive copies outside root.
 
     This is a named Python-source check, not a claim to recognize renamed code.
     Pseudo-filesystems are excluded. Archive entries are inspected without extraction.
@@ -138,8 +147,16 @@ def audit_source_copies(root, modules, scan_root='/'):
     modules = set(modules)
     hits, scanned, errors = [], 0, []
     excluded = {Path(p) for p in ('/proc', '/sys', '/dev', '/run')}
+    tar_suffixes = ('.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz2', '.tar.xz', '.txz')
     def onerror(error):
         errors.append(str(error.filename))
+    def namespaced(name):
+        parts = [part for part in name.replace('\\', '/').lstrip('/').split('/')
+                 if part and part != '.']
+        if any(part in modules for part in parts):
+            return True
+        return bool(parts) and parts[-1].lower().endswith(('.py', '.pyc', '.pyo')) \
+            and parts[-1].split('.')[0] in modules
     for directory, dirs, files in os.walk(scan_root, topdown=True, onerror=onerror):
         current = Path(directory)
         dirs[:] = [d for d in dirs if current / d not in excluded
@@ -154,20 +171,26 @@ def audit_source_copies(root, modules, scan_root='/'):
         for name in files:
             scanned += 1
             path = current / name
-            if path.suffix == '.py' and path.stem in modules:
+            if path.suffix.lower() in {'.py', '.pyc', '.pyo'} and namespaced(name):
                 if path.resolve() != root and root not in path.resolve().parents:
                     hits.append(str(path))
             elif path.suffix.lower() in {'.whl', '.egg', '.zip'}:
                 try:
                     with zipfile.ZipFile(path) as archive:
-                        if any(part.split('/')[0].split('.')[0] in modules
-                               for part in archive.namelist()):
+                        if any(namespaced(part) for part in archive.namelist()):
                             hits.append(str(path))
                 except (OSError, zipfile.BadZipFile):
                     errors.append(str(path))
+            elif path.name.lower().endswith(tar_suffixes):
+                try:
+                    with tarfile.open(path, 'r:*') as archive:
+                        if any(namespaced(part) for part in archive.getnames()):
+                            hits.append(str(path))
+                except (OSError, tarfile.TarError, EOFError):
+                    errors.append(str(path))
     return dict(modules=sorted(modules), external_copies=sorted(set(hits)),
                 files_inspected=scanned, unreadable_paths=sorted(set(errors)),
-                scope='named Python namespaces and wheel/egg/zip entries; excludes proc/sys/dev/run')
+                scope='named Python namespaces and py/pyc/wheel/egg/zip/tar entries; excludes proc/sys/dev/run')
 
 
 def main():

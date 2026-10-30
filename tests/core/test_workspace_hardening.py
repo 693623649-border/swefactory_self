@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 from types import SimpleNamespace
+import tarfile
 import zipfile
 import subprocess
 
@@ -85,6 +86,46 @@ def test_late_annotated_tag_on_old_commit_is_removed(tmp_path):
     assert text(git(root, 'tag', '--list')) == ''
 
 
+def test_graft_hidden_future_commit_cannot_pass_cleanup(tmp_path):
+    root = tmp_path / 'task'
+    repository(root)
+    future = add_future(root)
+    graft = root / '.git' / 'info' / 'grafts'
+    graft.parent.mkdir(parents=True, exist_ok=True)
+    graft.write_text('{} {}\n'.format(text(git(root, 'rev-parse', 'HEAD')), future))
+    with pytest.raises(RuntimeError, match='grafts'):
+        sanitize_git(root)
+    assert git(root, 'cat-file', '-e', future, check=False).returncode == 0
+
+
+def test_index_only_future_object_cannot_pass_cleanup(tmp_path):
+    root = tmp_path / 'task'
+    repository(root)
+    blob = subprocess.run(
+        ['git', '-C', str(root), 'hash-object', '-w', '--stdin'],
+        input=b'future answer\n', capture_output=True, check=True,
+    ).stdout.decode().strip()
+    git(root, 'update-index', '--add', '--cacheinfo', '100644,{},answer.py'.format(blob))
+    with pytest.raises(RuntimeError, match='index differs from HEAD'):
+        sanitize_git(root)
+    assert git(root, 'cat-file', '-e', blob, check=False).returncode == 0
+
+
+def test_staged_future_submodule_gitlink_cannot_pass_cleanup(tmp_path):
+    source, root = tmp_path / 'source', tmp_path / 'task'
+    repository(source)
+    future = add_future(source)
+    repository(root)
+    git(root, '-c', 'protocol.file.allow=always', 'submodule', 'add', '-q', str(source), 'nested')
+    git(root, 'commit', '-qm', 'submodule')
+    nested = root / 'nested'
+    git(nested, 'checkout', '-q', future)
+    git(root, 'update-index', '--cacheinfo', '160000,{},nested'.format(future))
+    with pytest.raises(RuntimeError, match='index differs from HEAD'):
+        sanitize_git(root)
+    assert git(nested, 'cat-file', '-e', future, check=False).returncode == 0
+
+
 def test_external_package_and_wheel_are_found_but_workspace_is_preserved(tmp_path):
     root = tmp_path / 'task'; root.mkdir()
     package = root / 'samplepkg'; package.mkdir(); (package / '__init__.py').write_text('')
@@ -96,6 +137,25 @@ def test_external_package_and_wheel_are_found_but_workspace_is_preserved(tmp_pat
     assert project_modules(root) == ['samplepkg']
     result = audit_source_copies(root, ['samplepkg'], scan_root=tmp_path)
     assert set(result['external_copies']) == {str(outside), str(wheel)}
+    assert not result['unreadable_paths']
+
+
+def test_bytecode_and_tar_copies_are_found_without_extracting(tmp_path):
+    root = tmp_path / 'task'; root.mkdir()
+    (root / 'samplepkg').mkdir(); (root / 'samplepkg' / '__init__.py').write_text('')
+    legacy = tmp_path / 'legacy' / 'samplepkg.pyc'; legacy.parent.mkdir()
+    legacy.write_bytes(b'legacy bytecode')
+    cached = tmp_path / 'cache' / '__pycache__' / 'samplepkg.cpython-312.pyc'
+    cached.parent.mkdir(parents=True); cached.write_bytes(b'cached bytecode')
+    payload = tmp_path / 'payload.txt'; payload.write_text('cached source')
+    flat = tmp_path / 'flat.tar'
+    with tarfile.open(flat, 'w') as archive:
+        archive.add(payload, arcname='./samplepkg/__init__.py')
+    compressed = tmp_path / 'samplepkg-1.0.tar.gz'
+    with tarfile.open(compressed, 'w:gz') as archive:
+        archive.add(payload, arcname='samplepkg-1.0/samplepkg/__init__.py')
+    result = audit_source_copies(root, ['samplepkg'], scan_root=tmp_path)
+    assert {str(legacy), str(cached), str(flat), str(compressed)} <= set(result['external_copies'])
     assert not result['unreadable_paths']
 
 
