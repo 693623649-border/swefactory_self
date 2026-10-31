@@ -13,6 +13,7 @@ import re
 import shutil
 import stat
 import subprocess
+import sys
 import tarfile
 import time
 import zipfile
@@ -237,27 +238,148 @@ def project_modules(root):
     return sorted(names)
 
 
-def audit_source_copies(root, modules, scan_root='/'):
+PY_SUFFIXES = ('.py', '.pyc', '.pyo')
+# Directories whose direct children are import roots: installs, eggs and vendored copies.
+SITE_DIRS = {'site-packages', 'dist-packages'}
+VENDOR_DIRS = {'_vendor', 'vendor', '_vendored', 'vendored', 'extern', '_extern', 'externals',
+               'third_party', '_third_party', 'packages', '_packages'}
+# Names every package can have; they say nothing about which project a directory copies.
+GENERIC_MEMBERS = {'__init__.py', '__main__.py', 'conftest.py'}
+
+
+def _source_name(relative):
+    """``a/__pycache__/b.cpython-311.pyc`` -> ``a/b.py``; None for non-Python names."""
+    parts = relative.split('/')
+    if not parts[-1].lower().endswith(PY_SUFFIXES):
+        return None
+    folders = parts[:-1]
+    if folders and folders[-1] == '__pycache__':
+        folders = folders[:-1]
+    return '/'.join([*folders, parts[-1].split('.')[0] + '.py'])
+
+
+def _members(relatives):
+    names = {_source_name(r) for r in relatives}
+    return {n for n in names if n and n.rsplit('/', 1)[-1] not in GENERIC_MEMBERS}
+
+
+def module_shapes(root, modules):
+    """Each module's form in the checkout: its member set (package), 'module', or None (not found)."""
+    root = Path(root)
+    shapes = {}
+    for name in modules:
+        shapes[name] = None
+        for base in (root, root / 'src', root / 'lib'):
+            if (base / name).is_dir():
+                shapes[name] = frozenset(_members(p.relative_to(base / name).as_posix()
+                                                  for p in (base / name).rglob('*') if p.is_file()))
+                break
+            if (base / f'{name}.py').is_file():
+                shapes[name] = 'module'
+                break
+    return shapes
+
+
+def classify_named_path(is_dir, parent_is_package, import_root, members, shape):
+    """'copy' or 'collision' for one path outside root named like a project module.
+
+    At an import root (sys.path entry, site/dist-packages, egg, vendoring directory,
+    archive top level) the name shadows or ships the project: always a copy. Elsewhere
+    a directory is a copy when its members overlap the project's package members, and
+    a file is a collision only as another package's submodule. Anything that cannot be
+    compared (project form unknown or a single file, no non-generic members) is a copy.
+    """
+    if import_root or not isinstance(shape, frozenset):
+        return 'copy'
+    if not is_dir:
+        return 'collision' if parent_is_package else 'copy'
+    if not shape:
+        return 'copy'
+    return 'copy' if members & shape else 'collision'
+
+
+def _import_root_name(name):
+    return name in SITE_DIRS or name in VENDOR_DIRS or name.endswith('.egg')
+
+
+def _is_package(directory):
+    return (directory / '__init__.py').is_file() or (directory / '__init__.pyc').is_file() \
+        or any((directory / '__pycache__').glob('__init__.*.pyc'))
+
+
+def _archive_verdicts(names, modules, shapes):
+    """Classify same-named entries of one archive listing, without extraction."""
+    entries = {'/'.join(p for p in n.replace('\\', '/').split('/') if p and p != '.') for n in names}
+    entries.discard('')
+    packages = set()
+    for entry in entries:
+        source = _source_name(entry)
+        if source and source.rsplit('/', 1)[-1] == '__init__.py':
+            packages.add(source.rpartition('/')[0])
+    verdicts = {}
+    for entry in entries:
+        parts = entry.split('/')
+        for index, part in enumerate(parts):
+            is_dir = index < len(parts) - 1
+            if not is_dir and not part.lower().endswith(PY_SUFFIXES):
+                continue
+            name = part if is_dir else part.split('.')[0]
+            if name not in modules:
+                continue
+            path = '/'.join(parts[:index + 1])
+            if (path, is_dir) in verdicts:
+                continue
+            parent = parts[:index]
+            if parent and parent[-1] == '__pycache__':
+                parent = parent[:-1]
+            members = _members(e[len(path) + 1:] for e in entries if e.startswith(path + '/')) if is_dir else set()
+            verdicts[path, is_dir] = classify_named_path(is_dir, '/'.join(parent) in packages,
+                                                         not parent or _import_root_name(parent[-1]),
+                                                         members, shapes.get(name))
+    return verdicts
+
+
+def audit_source_copies(root, modules, scan_root='/', import_roots=None):
     """Look for the project's import namespaces and Python source/archive copies outside root.
 
     This is a named Python-source check, not a claim to recognize renamed code.
+    Same-named submodules of unrelated packages (``pygments/formatters/svg.py``,
+    ``numpy/tests``) are reported as name collisions, see ``classify_named_path``.
+    ``import_roots`` defaults to this interpreter's sys.path (the container's Python).
     Pseudo-filesystems are excluded. Archive entries are inspected without extraction.
     """
     root = Path(root).resolve()
     scan_root = Path(scan_root).resolve()
     modules = set(modules)
-    hits, scanned, errors = [], 0, []
+    roots = {Path(p).resolve() for p in (sys.path if import_roots is None else import_roots) if p}
+    roots -= {root, Path('/').resolve()}
+    shapes = module_shapes(root, modules)
+    hits, collisions, scanned, errors = [], [], 0, []
     excluded = {Path(p) for p in ('/proc', '/sys', '/dev', '/run')}
     tar_suffixes = ('.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz2', '.tar.xz', '.txz')
     def onerror(error):
         errors.append(str(error.filename))
-    def namespaced(name):
-        parts = [part for part in name.replace('\\', '/').lstrip('/').split('/')
-                 if part and part != '.']
-        if any(part in modules for part in parts):
-            return True
-        return bool(parts) and parts[-1].lower().endswith(('.py', '.pyc', '.pyo')) \
-            and parts[-1].split('.')[0] in modules
+    def outside(path):
+        return path.resolve() != root and root not in path.resolve().parents
+    def judge(path, name, is_dir):
+        parent = path.parent.parent if path.parent.name == '__pycache__' else path.parent
+        members = set()
+        if is_dir:
+            try:
+                members = _members(p.relative_to(path).as_posix() for p in path.rglob('*') if p.is_file())
+            except OSError:
+                errors.append(str(path))
+        verdict = classify_named_path(is_dir, _is_package(parent),
+                                      _import_root_name(parent.name) or parent.resolve() in roots,
+                                      members, shapes.get(name))
+        (hits if verdict == 'copy' else collisions).append(str(path))
+        return verdict
+    def archive(path, names):
+        verdicts = _archive_verdicts(names, modules, shapes).values()
+        if 'copy' in verdicts:
+            hits.append(str(path))
+        elif verdicts:
+            collisions.append(str(path))
     for directory, dirs, files in os.walk(scan_root, topdown=True, onerror=onerror):
         current = Path(directory)
         dirs[:] = [d for d in dirs if current / d not in excluded
@@ -267,31 +389,32 @@ def audit_source_copies(root, modules, scan_root='/'):
             continue
         for name in list(dirs):
             path = current / name
-            if name in modules and path.resolve() != root and root not in path.resolve().parents:
-                hits.append(str(path)); dirs.remove(name)
+            # A collision is still walked: it may contain a vendored copy further down.
+            if name in modules and outside(path) and judge(path, name, True) == 'copy':
+                dirs.remove(name)
         for name in files:
             scanned += 1
             path = current / name
-            if path.suffix.lower() in {'.py', '.pyc', '.pyo'} and namespaced(name):
-                if path.resolve() != root and root not in path.resolve().parents:
-                    hits.append(str(path))
+            if path.suffix.lower() in PY_SUFFIXES:
+                if name.split('.')[0] in modules and outside(path):
+                    judge(path, name.split('.')[0], False)
             elif path.suffix.lower() in {'.whl', '.egg', '.zip'}:
                 try:
-                    with zipfile.ZipFile(path) as archive:
-                        if any(namespaced(part) for part in archive.namelist()):
-                            hits.append(str(path))
+                    with zipfile.ZipFile(path) as opened:
+                        archive(path, opened.namelist())
                 except (OSError, zipfile.BadZipFile):
                     errors.append(str(path))
             elif path.name.lower().endswith(tar_suffixes):
                 try:
-                    with tarfile.open(path, 'r:*') as archive:
-                        if any(namespaced(part) for part in archive.getnames()):
-                            hits.append(str(path))
+                    with tarfile.open(path, 'r:*') as opened:
+                        archive(path, opened.getnames())
                 except (OSError, tarfile.TarError, EOFError):
                     errors.append(str(path))
     return dict(modules=sorted(modules), external_copies=sorted(set(hits)),
+                name_collisions=sorted(set(collisions)),
                 files_inspected=scanned, unreadable_paths=sorted(set(errors)),
-                scope='named Python namespaces and py/pyc/wheel/egg/zip/tar entries; excludes proc/sys/dev/run')
+                scope='named Python namespaces and py/pyc/wheel/egg/zip/tar entries; excludes proc/sys/dev/run; '
+                      'outside import roots, same-named paths sharing no project members are collisions, not copies')
 
 
 def main():

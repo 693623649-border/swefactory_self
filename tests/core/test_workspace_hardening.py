@@ -297,3 +297,88 @@ def test_installed_top_level_names_the_modules_so_dev_dirs_do_not_flag_stdlib(tm
     modules = project_modules(root)
     assert modules == ['sphinx']
     assert audit_source_copies(root, modules, scan_root=tmp_path)['external_copies'] == [str(vendored)]
+
+
+def package(base, *files):
+    for name in files:
+        path = base / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('x')
+    return base
+
+
+def test_tests_top_level_ignores_other_packages_tests_but_blocks_real_copies(tmp_path):
+    # fugue-project/triad declares tests as an installed top-level next to triad.
+    root = tmp_path / 'task'
+    package(root / 'tests', '__init__.py', 'utils/__init__.py', 'utils/test_convert.py', 'collections/test_schema.py')
+    package(root / 'triad', '__init__.py', 'utils/__init__.py', 'utils/convert.py')
+    package(root / 'triad.egg-info', 'top_level.txt').joinpath('top_level.txt').write_text('tests\ntriad\n')
+    site = tmp_path / 'site-packages'
+    other = package(site / 'numpy', '__init__.py', 'tests/__init__.py', 'tests/test_numeric.py',
+                    'lib/__init__.py', 'lib/tests/__init__.py', 'lib/tests/test_io.py')
+    copied_tests = package(site / 'tests', '__init__.py', 'utils/test_convert.py')            # installed top-level
+    nested_copy = package(site / 'fugue' / 'tests', 'utils/test_convert.py')                  # same members, nested
+    (site / 'fugue' / '__init__.py').write_text('')
+    old_triad = package(site / 'fugue' / 'triad', 'utils/convert.py')
+    wheel = tmp_path / 'setuptools.whl'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        archive.writestr('setuptools/__init__.py', ''); archive.writestr('setuptools/tests/test_egg.py', '')
+    future_wheel = tmp_path / 'triad-9.whl'
+    with zipfile.ZipFile(future_wheel, 'w') as archive:
+        archive.writestr('triad/utils/convert.py', 'future')
+    result = audit_source_copies(root, project_modules(root), scan_root=tmp_path)
+    assert set(result['external_copies']) == {str(copied_tests), str(nested_copy), str(old_triad), str(future_wheel)}
+    assert {str(other / 'tests'), str(other / 'lib' / 'tests'), str(wheel)} <= set(result['name_collisions'])
+
+
+def test_svg_submodules_of_pygments_are_collisions_but_svg_copies_are_blocked(tmp_path):
+    # regebro/svg.path: src/svg/path is the project; pygments has formatters/svg.py.
+    root = tmp_path / 'task'
+    package(root / 'src' / 'svg', '__init__.py', 'path/__init__.py', 'path/parser.py', 'path/path.py')
+    site = tmp_path / 'site-packages'
+    package(site / 'pygments', '__init__.py', 'formatters/__init__.py', 'formatters/svg.py')
+    pyc = site / 'pygments' / 'formatters' / '__pycache__' / 'svg.cpython-311.pyc'
+    pyc.parent.mkdir(); pyc.write_bytes(b'')
+    pip_wheel = tmp_path / 'pip.whl'
+    with zipfile.ZipFile(pip_wheel, 'w') as archive:
+        for name in ('pip/__init__.py', 'pip/_vendor/__init__.py', 'pip/_vendor/pygments/__init__.py',
+                     'pip/_vendor/pygments/formatters/__init__.py', 'pip/_vendor/pygments/formatters/svg.py'):
+            archive.writestr(name, '')
+    installed = package(site / 'svg', 'path/parser.py')
+    vendored = package(site / 'pip' / '_vendor' / 'svg', '__init__.py')
+    (site / 'pip' / '__init__.py').write_text(''); (site / 'pip' / '_vendor' / '__init__.py').write_text('')
+    nested = package(site / 'pygments' / 'svg', 'path/path.py')
+    loose_bytecode = site / 'svg.pyc'; loose_bytecode.write_bytes(b'')
+    sdist = tmp_path / 'svg.path-9.tar.gz'
+    payload = tmp_path / 'payload.txt'; payload.write_text('future')
+    with tarfile.open(sdist, 'w:gz') as archive:
+        archive.add(payload, arcname='svg.path-9/src/svg/path/path.py')
+    result = audit_source_copies(root, project_modules(root), scan_root=tmp_path)
+    assert project_modules(root) == ['svg']
+    assert set(result['external_copies']) == {str(installed), str(vendored), str(nested), str(loose_bytecode), str(sdist)}
+    assert {str(site / 'pygments' / 'formatters' / 'svg.py'), str(pyc), str(pip_wheel)} <= set(result['name_collisions'])
+
+
+def test_vendored_requests_inside_pip_stays_an_external_copy(tmp_path):
+    root = tmp_path / 'task'
+    package(root / 'requests', '__init__.py', 'api.py', 'sessions.py')
+    site = tmp_path / 'site-packages'
+    package(site / 'pip', '__init__.py', '_vendor/__init__.py')
+    vendored = package(site / 'pip' / '_vendor' / 'requests', '__init__.py', 'api.py')
+    old_layout = package(site / 'botocore', '__init__.py', 'vendored/__init__.py')
+    old_copy = package(site / 'botocore' / 'vendored' / 'requests', '__init__.py')            # only generic names
+    wheel = tmp_path / 'pip-24.whl'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        for name in ('pip/__init__.py', 'pip/_vendor/__init__.py', 'pip/_vendor/requests/__init__.py'):
+            archive.writestr(name, '')
+    result = audit_source_copies(root, ['requests'], scan_root=tmp_path)
+    assert set(result['external_copies']) == {str(vendored), str(old_copy), str(wheel)}
+    assert not result['name_collisions']
+
+
+def test_single_file_and_unknown_projects_cannot_be_compared_so_stay_blocked(tmp_path):
+    root = tmp_path / 'task'; root.mkdir(); (root / 'six.py').write_text('')
+    site = tmp_path / 'site-packages'
+    inline = package(site / 'django', '__init__.py', 'utils/__init__.py', 'utils/six.py') / 'utils' / 'six.py'
+    assert audit_source_copies(root, ['six'], scan_root=tmp_path)['external_copies'] == [str(inline)]
+    unknown = tmp_path / 'other'; unknown.mkdir()
+    nested = package(site / 'django', 'ghost/__init__.py') / 'ghost'
+    assert str(nested) in audit_source_copies(unknown, ['ghost'], scan_root=tmp_path)['external_copies']
