@@ -654,14 +654,12 @@ async def test_apply_patch_all_fail():
 
 
 def test_restore_test_files_recursive_glob():
-    """restore_test_files uses **/ prefix for recursive glob."""
-    import inspect
-    from aweagent.core.eval.utils import restore_test_files
+    """The restore surface matches named Python tests at any depth."""
+    from aweagent.core.eval.utils import is_test_path
 
-    source = inspect.getsource(restore_test_files)
-    assert "**/test_*.py" in source
-    assert "**/*_test.py" in source
-    assert "**/conftest.py" in source
+    assert is_test_path("a/b/test_x.py")
+    assert is_test_path("a/b/x_test.py")
+    assert is_test_path("a/b/conftest.py")
 
 
 def test_parse_junit_xml_exact_match():

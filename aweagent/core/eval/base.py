@@ -105,9 +105,10 @@ class PatchTestEvaluator(Evaluator):
                             duration=time.monotonic() - start,
                         )
 
-                # 3 ── Restore test files
+                # 3 ── Restore test files (a failed restore rejects, never passes)
+                restored = None
                 if self._restore_tests:
-                    await restore_test_files(session, instance.workdir)
+                    restored = await restore_test_files(session, instance.workdir)
 
                 # 4 ── Task-specific setup
                 for cmd in self.get_setup_commands(instance):
@@ -115,6 +116,8 @@ class PatchTestEvaluator(Evaluator):
 
                 # 5 ── Run tests (subclass implementation)
                 eval_result = await self.run_tests(instance, session)
+                if restored is not None:
+                    eval_result.details["test_restore"] = restored
                 eval_result.duration = time.monotonic() - start
                 return eval_result
 

@@ -218,23 +218,82 @@ def build_pytest_command(
 # ── Test file restoration ──────────────────────────────────────────────────
 
 
-async def restore_test_files(session: RuntimeSession, workdir: str) -> None:
-    """Restore test files to HEAD, preventing agent test tampering.
+TEST_DIRS = frozenset({"tests", "test", "Test", "Tests"})
+_ARG_CHUNK_BYTES = 64 * 1024
 
-    Silently ignores errors when directories or patterns do not exist in
-    the repository (common for projects with non-standard layouts).
+
+def is_test_path(path: str) -> bool:
+    """Return True for a repository path that belongs to the test surface.
+
+    A path inside any ``tests/ test/ Test/ Tests/`` directory (at any depth)
+    counts, so data fixtures beside the tests are protected too. Elsewhere only
+    ``test_*.py``, ``*_test.py`` and ``conftest.py`` count.
     """
-    await session.execute(
-        "git checkout HEAD -- tests/ test/ Test/ Tests/ "
-        "2>/dev/null || true",
-        cwd=workdir,
-    )
-    await session.execute(
-        "git checkout HEAD -- "
-        "$(git ls-files '**/test_*.py' '**/*_test.py' '**/conftest.py' 2>/dev/null) "
-        "2>/dev/null || true",
-        cwd=workdir,
-    )
+    parts = path.split("/")
+    if any(part in TEST_DIRS for part in parts[:-1]):
+        return True
+    name = parts[-1]
+    return name == "conftest.py" or (name.endswith(".py") and (name.startswith("test_") or name.endswith("_test.py")))
+
+
+def _nul_paths(output: str) -> list[str]:
+    paths = [path for path in output.split("\0") if path]
+    if any("\ufffd" in path for path in paths):
+        raise RuntimeError("test restore cannot address a non-UTF-8 repository path")
+    return paths
+
+
+def _chunks(paths: list[str]):
+    chunk, size = [], 0
+    for path in paths:
+        quoted = shlex.quote(path)
+        if chunk and size + len(quoted) > _ARG_CHUNK_BYTES:
+            yield " ".join(chunk)
+            chunk, size = [], 0
+        chunk.append(quoted)
+        size += len(quoted) + 1
+    if chunk:
+        yield " ".join(chunk)
+
+
+async def restore_test_files(session: RuntimeSession, workdir: str) -> dict:
+    """Restore the test surface to ``HEAD`` (the frozen pre-solver base).
+
+    Only test paths that exist in ``HEAD`` are checked out, so a missing
+    ``test/`` or ``Tests/`` directory is normal rather than an error. Edited or
+    deleted tests and fixtures come back byte-for-byte; files the patch added on
+    the test surface (including a new ``conftest.py``) are removed, so later
+    hidden-test injection starts from the base test tree. Git-ignored files are
+    left alone: the patch cannot carry them and the image may own them. Source, build and
+    dependency files outside the test surface keep the patch's changes.
+
+    Any git/rm failure or a remaining difference raises ``RuntimeError``; the
+    evaluator turns that into a rejected result rather than a judged pass.
+    """
+    env = {"GIT_LITERAL_PATHSPECS": "1"}
+
+    async def run(command: str, what: str) -> str:
+        result = await session.execute(command, cwd=workdir, env=env)
+        if not result.success:
+            raise RuntimeError(f"test restore failed to {what}: {result.output[-1000:]}")
+        return result.stdout
+
+    tracked = [p for p in _nul_paths(await run("git ls-tree -r -z --name-only --full-tree HEAD", "list HEAD"))
+               if is_test_path(p)]
+    tracked_set = set(tracked)
+    added = [p for p in _nul_paths(await run("git ls-files -z --others --exclude-standard", "list new files"))
+             if is_test_path(p) and p not in tracked_set]
+    for args in _chunks(tracked):
+        await run(f"git checkout HEAD -- {args}", "checkout HEAD test paths")
+    for args in _chunks(added):
+        await run(f"rm -f -- {args}", "remove added test files")
+    for args in _chunks(tracked):
+        await run(f"git diff --quiet HEAD -- {args}", "verify restored test paths")
+    remaining = [p for p in _nul_paths(await run("git ls-files -z --others --exclude-standard", "re-list new files"))
+                 if is_test_path(p) and p not in tracked_set]
+    if remaining:
+        raise RuntimeError(f"test restore left added test files: {remaining[:5]}")
+    return {"restored_paths": len(tracked), "removed_added_paths": added}
 
 
 # ── Shared F2P / P2P evaluation flow ───────────────────────────────────────
