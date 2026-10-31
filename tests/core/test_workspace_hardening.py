@@ -401,3 +401,35 @@ def test_same_named_package_with_changed_layout_under_plain_directory_is_a_copy(
     result = audit_source_copies(root, ['triad'], scan_root=tmp_path, import_roots=[])
     assert set(result['external_copies']) == {str(download), str(sdist), str(bundle)}
     assert result['name_collisions'] == [str(unrelated)]
+
+
+def test_python_namespace_under_plain_directory_is_a_copy_unless_inside_another_package(tmp_path):
+    # regebro/svg.path ships svg as a PEP 420 namespace: there is no svg/__init__.py.
+    root = tmp_path / 'task'
+    package(root / 'src' / 'svg', 'path/path.py')
+    namespace = package(tmp_path / 'download' / 'svg', 'new_api.py')        # later layout, no shared name
+    nested = package(tmp_path / 'mirror' / 'svg', 'v2/core.py')
+    conftest_only = package(tmp_path / 'cache' / 'svg', 'conftest.py')
+    main_only = package(tmp_path / 'bin' / 'svg', '__main__.py')
+    bytecode = tmp_path / 'pyc' / 'svg'
+    (bytecode / '__pycache__').mkdir(parents=True)
+    (bytecode / '__pycache__' / 'render.cpython-311.pyc').write_bytes(b'')
+    payload = tmp_path / 'payload.txt'; payload.write_text('future')
+    sdist = tmp_path / 'svg.path-9.tar.gz'
+    with tarfile.open(sdist, 'w:gz') as archive:
+        archive.add(payload, arcname='svg.path-9/src/svg/new_api.py')
+    bundle = tmp_path / 'svg.path-9.zip'
+    with zipfile.ZipFile(bundle, 'w') as archive:
+        archive.writestr('svg.path-9/svg/new_api.py', '')
+    data_only = package(tmp_path / 'share' / 'icons' / 'svg', 'logo.svg')   # not Python
+    script_only = package(tmp_path / 'share' / 'hg' / 'svg', 'run-tests.py')  # not an importable name
+    # Shape of setuptools/_distutils/compilers/C/tests: a PEP 420 dir inside another package's tree.
+    site = tmp_path / 'site-packages'
+    inner = package(site / 'lib2', '__init__.py', 'compilers/C/svg/render.py') / 'compilers' / 'C' / 'svg'
+    wheel = tmp_path / 'lib2.whl'
+    with zipfile.ZipFile(wheel, 'w') as archive:
+        archive.writestr('lib2/__init__.py', ''); archive.writestr('lib2/compilers/svg/render.py', '')
+    result = audit_source_copies(root, ['svg'], scan_root=tmp_path, import_roots=[])
+    assert set(result['external_copies']) == {str(namespace), str(nested), str(conftest_only), str(main_only),
+                                              str(bytecode), str(sdist), str(bundle)}
+    assert set(result['name_collisions']) == {str(data_only), str(script_only), str(inner), str(wheel)}
