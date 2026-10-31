@@ -85,7 +85,7 @@ class NativeDshAgent(Agent):
             trajectory_kind=args.trajectory_kind, generation_kind=args.generation_kind,
             teacher_policy_path=args.teacher_policy, student_upstream=args.student_upstream,
             student_model=args.student_model, student_model_dir=args.student_model_dir,
-            force_takeover_at=args.force_takeover_at)
+            force_takeover_at=args.force_takeover_at, public_probe_freeze=args.public_probe_freeze)
         result = await asyncio.to_thread(
             self.driver.solve, args.task_file, args.instance_id, args.run_dir,
             "production", args.dsh_repo, args.upstream, profile_name=args.profile,
@@ -139,6 +139,8 @@ async def main():
     parser.add_argument("--student-model", default="Qwen/Qwen3.5-4B")
     parser.add_argument("--force-takeover-at", type=int,
                         help="smoke-only P2 switch at this request; labelled unnatural, refused in production")
+    parser.add_argument("--public-probe-freeze", type=Path,
+                        help="opt-in public-probe-feedback-v1 freeze receipt (outside the run dir); selects the -probe profile")
     args = parser.parse_args()
     for key in ("task_file", "run_dir", "eval_root", "dsh_repo"):
         setattr(args, key, getattr(args, key).resolve())
@@ -148,7 +150,11 @@ async def main():
     args.generation_kind = 'production_candidate' if args.mode == 'production' else 'acceptance_smoke'
     if args.trajectory_kind is not None:
         if args.profile == parser.get_default('profile'):
-            args.profile = 'swe-agent-v3-takeover-high'
+            args.profile = 'swe-agent-v3-takeover-high' + ('-probe' if args.public_probe_freeze else '')
+        if args.public_probe_freeze:
+            args.public_probe_freeze = args.public_probe_freeze.resolve()
+    elif args.public_probe_freeze:
+        parser.error('--public-probe-freeze requires --trajectory-kind (the routed P1/P2/P3 protocol)')
         args.budget = args.budget or args.eval_root/'config/budget-takeover-high.json'
         args.teacher_policy = (args.teacher_policy or args.eval_root/'config/teacher-policy-deepseek-flash-high.json').resolve()
         if args.api_key_file is not None:
