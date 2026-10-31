@@ -280,19 +280,23 @@ def module_shapes(root, modules):
     return shapes
 
 
-def classify_named_path(is_dir, parent_is_package, import_root, members, shape):
+def classify_named_path(is_dir, parent_is_package, import_root, members, shape, is_package=False):
     """'copy' or 'collision' for one path outside root named like a project module.
 
     At an import root (sys.path entry, site/dist-packages, egg, vendoring directory,
-    archive top level) the name shadows or ships the project: always a copy. Elsewhere
-    a directory is a copy when its members overlap the project's package members, and
-    a file is a collision only as another package's submodule. Anything that cannot be
-    compared (project form unknown or a single file, no non-generic members) is a copy.
+    archive top level) the name shadows or ships the project: always a copy. Under an
+    ordinary directory a same-named package is a copy too: a different layout can be an
+    older or later release. Only a non-package directory, or a submodule of another
+    package, is compared by members; a file is a collision only inside a package.
+    Anything that cannot be compared (project form unknown or a single file, no
+    non-generic members) is a copy.
     """
     if import_root or not isinstance(shape, frozenset):
         return 'copy'
     if not is_dir:
         return 'collision' if parent_is_package else 'copy'
+    if is_package and not parent_is_package:
+        return 'copy'
     if not shape:
         return 'copy'
     return 'copy' if members & shape else 'collision'
@@ -335,7 +339,7 @@ def _archive_verdicts(names, modules, shapes):
             members = _members(e[len(path) + 1:] for e in entries if e.startswith(path + '/')) if is_dir else set()
             verdicts[path, is_dir] = classify_named_path(is_dir, '/'.join(parent) in packages,
                                                          not parent or _import_root_name(parent[-1]),
-                                                         members, shapes.get(name))
+                                                         members, shapes.get(name), path in packages)
     return verdicts
 
 
@@ -371,7 +375,7 @@ def audit_source_copies(root, modules, scan_root='/', import_roots=None):
                 errors.append(str(path))
         verdict = classify_named_path(is_dir, _is_package(parent),
                                       _import_root_name(parent.name) or parent.resolve() in roots,
-                                      members, shapes.get(name))
+                                      members, shapes.get(name), is_dir and _is_package(path))
         (hits if verdict == 'copy' else collisions).append(str(path))
         return verdict
     def archive(path, names):

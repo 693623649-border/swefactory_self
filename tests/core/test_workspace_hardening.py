@@ -382,3 +382,22 @@ def test_single_file_and_unknown_projects_cannot_be_compared_so_stay_blocked(tmp
     unknown = tmp_path / 'other'; unknown.mkdir()
     nested = package(site / 'django', 'ghost/__init__.py') / 'ghost'
     assert str(nested) in audit_source_copies(unknown, ['ghost'], scan_root=tmp_path)['external_copies']
+
+
+def test_same_named_package_with_changed_layout_under_plain_directory_is_a_copy(tmp_path):
+    # A later/older release can share no file names with the checkout; it is still the project.
+    root = tmp_path / 'task'
+    package(root / 'src' / 'triad', '__init__.py', 'old_api.py')
+    download = package(tmp_path / 'download' / 'triad', '__init__.py', 'new_api.py')
+    payload = tmp_path / 'payload.txt'; payload.write_text('future')
+    sdist = tmp_path / 'triad-9.0.tar.gz'
+    with tarfile.open(sdist, 'w:gz') as archive:
+        for name in ('triad-9.0/src/triad/__init__.py', 'triad-9.0/src/triad/new_api.py'):
+            archive.add(payload, arcname=name)
+    bundle = tmp_path / 'triad-9.0.zip'
+    with zipfile.ZipFile(bundle, 'w') as archive:
+        archive.writestr('triad-9.0/src/triad/__init__.py', ''); archive.writestr('triad-9.0/src/triad/new_api.py', '')
+    unrelated = package(tmp_path / 'share' / 'tool' / 'triad', 'README')   # not Python, no shared members
+    result = audit_source_copies(root, ['triad'], scan_root=tmp_path, import_roots=[])
+    assert set(result['external_copies']) == {str(download), str(sdist), str(bundle)}
+    assert result['name_collisions'] == [str(unrelated)]
