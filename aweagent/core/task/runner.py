@@ -56,9 +56,9 @@ def _sanitize_model_name(model: str) -> str:
 
 
 def _build_run_dir(base: Path, model: str) -> Path:
-    """Build a unique run directory: ``base / {model}_{YYYYMMDD_HHMMSS}``."""
+    """Build a run directory using model name and timestamp through microseconds."""
     sanitized = _sanitize_model_name(model)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     return base / f"{sanitized}_{timestamp}"
 
 
@@ -79,7 +79,7 @@ def _save_run_config(
         "instance_ids": [inst.id for inst in instances],
     }
     (run_dir / "run_config.json").write_text(
-        json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+        json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
 
 
@@ -138,6 +138,20 @@ def _build_trajectory_record(result: TaskResult) -> dict[str, Any] | None:
         if key in agent_result.metadata:
             record[key] = agent_result.metadata[key]
     return record
+
+
+def _append_jsonl(path: Path, record: dict[str, Any]) -> None:
+    line = json.dumps(record, ensure_ascii=False, default=str) + "\n"
+    with open(path, "a", encoding="utf-8", newline="\n") as stream:
+        offset = stream.tell()
+        try:
+            stream.write(line)
+            stream.flush()
+        except Exception:
+            # Do not leave a partial record for the next instance to append to.
+            stream.seek(offset)
+            stream.truncate()
+            raise
 
 
 class TaskRunner:
@@ -205,16 +219,13 @@ class TaskRunner:
 
         # Build timestamped run directory
         run_dir = _build_run_dir(self.output_path, self.llm_config.model)
-        run_dir.mkdir(parents=True, exist_ok=True)
+        run_dir.mkdir(parents=True, exist_ok=False)
         self.run_dir = run_dir
         logger.info("Run directory: %s", run_dir)
 
         # Save run config snapshot
         if self._config_snapshot:
-            try:
-                _save_run_config(run_dir, self._config_snapshot, instances, run_dir.name)
-            except Exception as e:
-                logger.warning("Failed to save run config: %s", e)
+            _save_run_config(run_dir, self._config_snapshot, instances, run_dir.name)
 
         # Trajectories file
         traj_file: Path | None = None
@@ -256,32 +267,6 @@ class TaskRunner:
             for attempt in range(1, self.max_retries + 1):
                 try:
                     result = await self._run_instance(instance)
-
-                    # Write result summary + trajectory (under same lock)
-                    async with write_lock:
-                        with open(output_file, "a") as f:
-                            f.write(json.dumps({
-                                "instance_id": result.instance_id,
-                                "dataset_id": instance.dataset_id,
-                                "task": instance.metadata.get("task_type", ""),
-                                "success": result.success,
-                                "score": result.eval_result.score if result.eval_result else 0.0,
-                                "error": result.error,
-                                "finish_reason": result.agent_result.finish_reason if result.agent_result else "",
-                            }) + "\n")
-
-                        # Append trajectory to jsonl
-                        if traj_file is not None and result.agent_result is not None:
-                            try:
-                                record = _build_trajectory_record(result)
-                                if record is not None:
-                                    with open(traj_file, "a") as f:
-                                        f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
-                            except Exception as e:
-                                logger.warning("Failed to save trajectory for %s: %s", result.instance_id, e)
-
-                    return result
-
                 except Exception as e:
                     last_error = f"[{type(e).__name__}] {e}"
                     logger.warning(
@@ -292,26 +277,49 @@ class TaskRunner:
                     )
                     if attempt < self.max_retries:
                         await asyncio.sleep(attempt * 2)
+                else:
+                    break
+            else:
+                logger.error(
+                    "Instance %s failed after %d retries: %s",
+                    instance.id, self.max_retries, last_error,
+                )
+                result = TaskResult(instance_id=instance.id, error=last_error)
 
-            # All retries exhausted — record an error row so the failure is
-            # visible in ``results.jsonl`` rather than silently swallowed.
-            logger.error(
-                "Instance %s failed after %d retries: %s",
-                instance.id, self.max_retries, last_error,
-            )
-            error_result = TaskResult(instance_id=instance.id, error=last_error)
+            # Archival is outside the solve retry loop: never rerun a completed agent.
+            archive = {"status": "saved", "errors": {}, "solve_error": result.error,
+                       "eval_accepted": bool(result.eval_result and result.eval_result.accepted)}
+            result.metadata["archive"] = archive
+
+            def failed(kind: str, error: Exception) -> None:
+                detail = f"[{type(error).__name__}] {error}"
+                archive["status"] = "failed"
+                archive["errors"][kind] = detail
+                result.error = "; ".join(filter(None, [result.error, f"[archive:{kind}] {detail}"]))
+                logger.error("Failed to save %s for %s: %s", kind, result.instance_id, detail)
+
             async with write_lock:
-                with open(output_file, "a") as f:
-                    f.write(json.dumps({
-                        "instance_id": instance.id,
+                if traj_file is not None and result.agent_result is not None:
+                    try:
+                        record = _build_trajectory_record(result)
+                        if record is not None:
+                            _append_jsonl(traj_file, record)
+                    except Exception as e:
+                        failed("trajectory", e)
+                try:
+                    _append_jsonl(output_file, {
+                        "instance_id": result.instance_id,
                         "dataset_id": instance.dataset_id,
                         "task": instance.metadata.get("task_type", ""),
-                        "success": False,
-                        "score": 0.0,
-                        "error": last_error,
-                        "finish_reason": "error",
-                    }) + "\n")
-            return error_result
+                        "success": result.success,
+                        "score": result.eval_result.score if result.eval_result else 0.0,
+                        "error": result.error,
+                        "finish_reason": result.agent_result.finish_reason if result.agent_result else "error",
+                        "archive": archive,
+                    })
+                except Exception as e:
+                    failed("summary", e)
+            return result
 
     @asynccontextmanager
     async def _instance_session(self, instance: Instance):

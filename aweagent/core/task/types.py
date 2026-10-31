@@ -50,4 +50,4 @@ class TaskResult:
 
     @property
     def success(self) -> bool:
-        return self.eval_result is not None and self.eval_result.accepted
+        return self.error is None and self.eval_result is not None and self.eval_result.accepted
