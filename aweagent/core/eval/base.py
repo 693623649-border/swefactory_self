@@ -108,7 +108,7 @@ class PatchTestEvaluator(Evaluator):
                 # 3 ── Restore test files (a failed restore rejects, never passes)
                 restored = None
                 if self._restore_tests:
-                    restored = await restore_test_files(session, instance.workdir)
+                    restored = await restore_test_files(session, instance.workdir, patch)
 
                 # 4 ── Task-specific setup
                 for cmd in self.get_setup_commands(instance):

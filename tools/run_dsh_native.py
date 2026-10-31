@@ -117,7 +117,7 @@ class NativeDshAgent(Agent):
         )
 
 
-async def main():
+def configure(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task-file", type=Path, required=True)
     parser.add_argument("--instance-id", required=True)
@@ -141,27 +141,46 @@ async def main():
                         help="smoke-only P2 switch at this request; labelled unnatural, refused in production")
     parser.add_argument("--public-probe-freeze", type=Path,
                         help="opt-in public-probe-feedback-v1 freeze receipt (outside the run dir); selects the -probe profile")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     for key in ("task_file", "run_dir", "eval_root", "dsh_repo"):
         setattr(args, key, getattr(args, key).resolve())
-    sys.path.insert(0, str(args.eval_root / "swe"))
-    import native_task
-
     args.generation_kind = 'production_candidate' if args.mode == 'production' else 'acceptance_smoke'
     if args.trajectory_kind is not None:
         if args.profile == parser.get_default('profile'):
             args.profile = 'swe-agent-v3-takeover-high' + ('-probe' if args.public_probe_freeze else '')
         if args.public_probe_freeze:
             args.public_probe_freeze = args.public_probe_freeze.resolve()
-    elif args.public_probe_freeze:
-        parser.error('--public-probe-freeze requires --trajectory-kind (the routed P1/P2/P3 protocol)')
         args.budget = args.budget or args.eval_root/'config/budget-takeover-high.json'
         args.teacher_policy = (args.teacher_policy or args.eval_root/'config/teacher-policy-deepseek-flash-high.json').resolve()
         if args.api_key_file is not None:
             parser.error('--api-key-file is the legacy path; the teacher policy names private key files/env vars')
+    elif args.public_probe_freeze:
+        parser.error('--public-probe-freeze requires --trajectory-kind (the routed P1/P2/P3 protocol)')
     args.budget = args.budget.resolve() if args.budget else args.eval_root/'config/budget-deepseek-p0.json'
+    return parser, args
+
+
+def validate_probe(args, public, driver):
+    profile = (args.eval_root/'profiles'/args.profile/'cordis.patch.yml').read_text(encoding='utf-8')
+    if ('publicProbe:' in profile) != bool(args.public_probe_freeze):
+        raise ValueError('publicProbe profile and --public-probe-freeze must be paired')
+    if args.public_probe_freeze:
+        if args.public_probe_freeze == args.run_dir or args.run_dir in args.public_probe_freeze.parents:
+            raise ValueError('public probe freeze must be outside the run dir')
+        from public_probe import FrozenProbe
+        image = json.loads(driver.run(['docker', 'image', 'inspect', public['image']]).stdout)[0]['Id']
+        FrozenProbe(args.public_probe_freeze, args.task_file, args.instance_id, image, public['base_commit'])
+
+
+async def main(argv=None):
+    parser, args = configure(argv)
+    sys.path.insert(0, str(args.eval_root / 'swe'))
+    import native_task
     public = native_task.load_task_row(args.instance_id, args.task_file)
+    validate_probe(args, public, native_task)
     if args.mode == 'production':
+        if args.trajectory_kind in ('P2', 'P3') and (args.student_upstream is None or args.student_model_dir is None):
+            raise SystemExit('P2/P3 requires the student upstream and tokenizer directory')
         if args.trajectory_kind is None:
             raise SystemExit('legacy single-model production is retired; use --trajectory-kind with the high policy')
         if args.force_takeover_at is not None:

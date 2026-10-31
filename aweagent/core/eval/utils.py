@@ -256,15 +256,15 @@ def _chunks(paths: list[str]):
         yield " ".join(chunk)
 
 
-async def restore_test_files(session: RuntimeSession, workdir: str) -> dict:
+async def restore_test_files(session: RuntimeSession, workdir: str, patch: str | None = None) -> dict:
     """Restore the test surface to ``HEAD`` (the frozen pre-solver base).
 
     Only test paths that exist in ``HEAD`` are checked out, so a missing
     ``test/`` or ``Tests/`` directory is normal rather than an error. Edited or
     deleted tests and fixtures come back byte-for-byte; files the patch added on
     the test surface (including a new ``conftest.py``) are removed, so later
-    hidden-test injection starts from the base test tree. Git-ignored files are
-    left alone: the patch cannot carry them and the image may own them. Source, build and
+    hidden-test injection starts from the base test tree. Patch-touched and indexed
+    additions are included even when ignored; untouched ignored image assets remain. Source, build and
     dependency files outside the test surface keep the patch's changes.
 
     Any git/rm failure or a remaining difference raises ``RuntimeError``; the
@@ -281,12 +281,20 @@ async def restore_test_files(session: RuntimeSession, workdir: str) -> dict:
     tracked = [p for p in _nul_paths(await run("git ls-tree -r -z --name-only --full-tree HEAD", "list HEAD"))
                if is_test_path(p)]
     tracked_set = set(tracked)
-    added = [p for p in _nul_paths(await run("git ls-files -z --others --exclude-standard", "list new files"))
-             if is_test_path(p) and p not in tracked_set]
+    candidates = set(_nul_paths(await run("git ls-files -z --others --exclude-standard", "list new files")))
+    indexed = set(_nul_paths(await run("git diff --cached --name-only -z --diff-filter=A", "list indexed additions")))
+    candidates.update(indexed)
+    if patch and patch.strip():
+        stats = await run(f"printf %s {shlex.quote(patch)} | git apply --numstat -z", "list patch paths")
+        candidates.update(item.split("\t", 2)[-1] for item in _nul_paths(stats))
+    added = sorted(p for p in candidates if is_test_path(p) and p not in tracked_set)
     for args in _chunks(tracked):
         await run(f"git checkout HEAD -- {args}", "checkout HEAD test paths")
+    for args in _chunks(sorted(set(added) & indexed)):
+        await run(f"git rm --cached -f -- {args}", "remove added index entries")
     for args in _chunks(added):
         await run(f"rm -f -- {args}", "remove added test files")
+        await run(f"for p in {args}; do test ! -e \"$p\" && test ! -L \"$p\" || exit 1; done", "verify removed test files")
     for args in _chunks(tracked):
         await run(f"git diff --quiet HEAD -- {args}", "verify restored test paths")
     remaining = [p for p in _nul_paths(await run("git ls-files -z --others --exclude-standard", "re-list new files"))

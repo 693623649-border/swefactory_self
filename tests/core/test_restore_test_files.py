@@ -159,3 +159,27 @@ def test_evaluator_rejects_when_restore_fails(repo: Path):
     assert result.accepted is False and "test restore failed" in result.details["error"]
     ok = asyncio.run(_PassingEvaluator().evaluate(instance, "", _Runtime(LocalSession())))
     assert ok.accepted is True and ok.details["test_restore"]["restored_paths"] == 5
+
+
+def test_git_apply_ignored_hook_and_index_additions_are_removed(repo):
+    (repo/'.gitignore').write_text('*.pyc\ntests/conftest.py\ntests/base.bin\n', encoding='utf-8')
+    git(repo, 'add', '.gitignore')
+    git(repo, 'commit', '-qm', 'ignore hooks')
+    (repo/'tests/base.bin').write_bytes(b'trusted image asset')
+    (repo/'tests/cache.pyc').write_bytes(b'trusted cache')
+    patch = ('diff --git a/tests/conftest.py b/tests/conftest.py\nnew file mode 100644\n'
+             '--- /dev/null\n+++ b/tests/conftest.py\n@@ -0,0 +1 @@\n+raise RuntimeError("injected")\n')
+    patch_path = repo/'input.diff'
+    patch_path.write_text(patch, encoding='utf-8')
+    git(repo, 'apply', str(patch_path))
+    (repo/'tests/staged.txt').write_text('injected', encoding='utf-8')
+    git(repo, 'add', 'tests/staged.txt')
+    (repo/'pkg/core.py').write_text('VALUE = 2\n', encoding='utf-8')
+    receipt = asyncio.run(restore_test_files(LocalSession(), str(repo), patch))
+    assert receipt['removed_added_paths'] == ['tests/conftest.py', 'tests/staged.txt']
+    assert not (repo/'tests/conftest.py').exists()
+    assert not (repo/'tests/staged.txt').exists()
+    assert (repo/'tests/base.bin').read_bytes() == b'trusted image asset'
+    assert (repo/'tests/cache.pyc').read_bytes() == b'trusted cache'
+    assert (repo/'pkg/core.py').read_text(encoding="utf-8") == 'VALUE = 2\n'
+    assert not git(repo, 'diff', '--cached', '--name-only')
