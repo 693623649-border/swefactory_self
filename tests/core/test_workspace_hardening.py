@@ -1,5 +1,6 @@
 """Real Git object tests: future answers cannot survive in nested repositories."""
 import asyncio
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -7,6 +8,7 @@ from types import SimpleNamespace
 import tarfile
 import zipfile
 import subprocess
+import py_compile
 
 import pytest
 
@@ -303,6 +305,72 @@ def package(base, *files):
     for name in files:
         path = base / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('x')
     return base
+
+
+@pytest.mark.parametrize('layout', ['', 'src'])
+@pytest.mark.parametrize('namespace', [False, True])
+def test_poetry_default_discovery_uses_the_installed_package_not_dev_packages(tmp_path, layout, namespace):
+    root = tmp_path / 'task'
+    package(root / 'doc', '__init__.py', 'conf.py')
+    package(root / layout / 'sample_models', 'models.py', *([] if namespace else ['__init__.py']))
+    (root / 'pyproject.toml').write_text(
+        '[build-system]\nrequires = ["poetry-core"]\nbuild-backend = "poetry.core.masonry.api"\n'
+        '[tool.poetry]\nname = "sample-models"\nversion = "1.0"\n')
+    unrelated_doc = package(tmp_path / 'share' / 'doc', 'examples/helper.py')
+    real_copy = package(tmp_path / 'download' / 'sample_models', 'new_api.py',
+                        *([] if namespace else ['__init__.py']))
+    assert project_modules(root) == ['sample_models']
+    result = audit_source_copies(root, project_modules(root), scan_root=tmp_path, import_roots=[])
+    assert result['external_copies'] == [str(real_copy)]
+    assert unrelated_doc.exists()
+
+
+def test_poetry_explicit_package_can_itself_be_named_doc(tmp_path):
+    root = tmp_path / 'task'
+    package(root / 'lib' / 'doc', 'api.py')  # Declared PEP 420 package, not a blanket doc exclusion.
+    package(root / 'dev_helpers', '__init__.py')
+    (root / 'pyproject.toml').write_text(
+        '[tool.poetry]\nname = "distribution-name"\n'
+        'packages = [{include = "doc", from = "lib"}]\n')
+    real_copy = package(tmp_path / 'share' / 'doc', 'different_api.py')
+    assert project_modules(root) == ['doc']
+    assert audit_source_copies(root, project_modules(root), scan_root=tmp_path,
+                               import_roots=[])['external_copies'] == [str(real_copy)]
+
+
+@pytest.mark.parametrize('namespace', [False, True])
+def test_verified_os_package_collision_does_not_hide_injected_source_or_bytecode(tmp_path, monkeypatch, namespace):
+    from aweagent.core.eval import workspace_hardening as hardening
+    root = tmp_path / 'task'
+    package(root / 'samplepkg', 'project_api.py', *([] if namespace else ['__init__.py']))
+    system = package(tmp_path / 'system' / 'samplepkg', 'unrelated_api.py',
+                     *([] if namespace else ['__init__.py']))
+    records = {p: hashlib.md5(p.read_bytes()).hexdigest() for p in system.rglob('*.py')}
+    monkeypatch.setattr(hardening, 'system_package_sources',
+                        lambda path: records if path == system else {}, raising=False)
+    real_copy = package(tmp_path / 'download' / 'samplepkg', 'changed_layout.py')
+    def audit():
+        return audit_source_copies(root, ['samplepkg'], scan_root=tmp_path, import_roots=[])
+    assert audit()['external_copies'] == [str(real_copy)]
+    assert audit()['name_collisions'] == [str(system)]
+    bytecode = Path(py_compile.compile(str(system / 'unrelated_api.py'), doraise=True))
+    assert audit()['external_copies'] == [str(real_copy)]
+    original_bytecode = bytecode.read_bytes()
+    bytecode.write_bytes(original_bytecode + b'future answer')
+    assert set(audit()['external_copies']) == {str(system), str(real_copy)}
+    bytecode.write_bytes(original_bytecode)
+    injected = system / 'future_api.py'; injected.write_text('future = True\n')
+    assert set(audit()['external_copies']) == {str(system), str(real_copy)}
+    injected.unlink()
+    injected = system / 'unrelated_api.extra.py'; injected.write_text('future = True\n')
+    assert set(audit()['external_copies']) == {str(system), str(real_copy)}
+    injected.unlink()
+    (system / 'unrelated_api.py').write_text('modified = True\n')
+    assert set(audit()['external_copies']) == {str(system), str(real_copy)}
+    (system / 'unrelated_api.py').write_text('x')
+    other = tmp_path / 'answer.py'; other.write_text('future = True\n')
+    py_compile.compile(str(other), cfile=str(bytecode), doraise=True)
+    assert set(audit()['external_copies']) == {str(system), str(real_copy)}
 
 
 def test_tests_top_level_ignores_other_packages_tests_but_blocks_real_copies(tmp_path):

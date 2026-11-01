@@ -6,7 +6,11 @@ No task solutions or hidden tests are read. File-copy checks inspect names only.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import importlib.util
+import io
 import json
+import marshal
 import os
 from pathlib import Path
 import re
@@ -16,6 +20,7 @@ import subprocess
 import sys
 import tarfile
 import time
+import tomllib
 import zipfile
 
 # Files outside refs/ that can name or retain objects beyond the frozen base.
@@ -215,8 +220,8 @@ def sanitize_git(root, base=None):
 def project_modules(root):
     """Python import roots the project installs; callers can supply explicit modules.
 
-    An installed checkout's ``*.egg-info/top_level.txt`` is authoritative. Without it,
-    fall back to conventional top-level packages, which can include dev-only dirs.
+    Prefer installed egg metadata or Poetry's package selection. Only projects
+    without either declaration use conventional top-level package discovery.
     """
     declared = {name.strip() for base in (Path(root), Path(root) / 'src', Path(root) / 'lib')
                 for listing in base.glob('*.egg-info/top_level.txt')
@@ -224,6 +229,26 @@ def project_modules(root):
                 if name.strip().isidentifier()}
     if declared:
         return sorted(declared)
+    root = Path(root)
+    pyproject = root / 'pyproject.toml'
+    if pyproject.is_file():
+        poetry = tomllib.loads(pyproject.read_text(encoding='utf-8')).get('tool', {}).get('poetry', {})
+        if 'packages' in poetry or poetry.get('name'):
+            packages = poetry.get('packages')
+            if packages is None:
+                # Poetry installs its normalized project name, not sibling dev packages.
+                name = re.sub(r'[-_.]+', '_', poetry['name']).lower()
+                packages = [{'include': include, 'from': base} for base in ('', 'src')
+                            for include in (name, name + '.py')]
+            declared = set()
+            for package in packages:
+                base = root / package.get('from', '')
+                for entry in base.glob(package['include']):
+                    top = entry.relative_to(base).parts[0]
+                    name = Path(top).stem if entry.is_file() else top
+                    if name.isidentifier() and (entry.is_dir() or entry.suffix == '.py'):
+                        declared.add(name)
+            return sorted(declared)
     names = set()
     for base in (Path(root), Path(root) / 'src'):
         if not base.is_dir():
@@ -351,6 +376,78 @@ def _archive_verdicts(names, modules, shapes):
     return verdicts
 
 
+def system_package_sources(path):
+    """Checksums of OS-owned Python stdlib sources, or no ownership evidence."""
+    query = shutil.which('dpkg-query')
+    if not query:
+        return {}
+    try:
+        owner = subprocess.run([query, '-S', str(path)], capture_output=True, text=True, timeout=10)
+        if owner.returncode or len(owner.stdout.splitlines()) != 1:
+            return {}
+        package = owner.stdout.partition(': ')[0]
+        source = subprocess.run([query, '-W', '-f=${source:Package}', package],
+                                capture_output=True, text=True, timeout=10)
+        if source.returncode or not re.fullmatch(r'python\d+(?:\.\d+)*', source.stdout.strip()):
+            return {}
+        listing = subprocess.run([query, '--control-path', package, 'md5sums'],
+                                 capture_output=True, text=True, timeout=10)
+        if listing.returncode:
+            return {}
+        records = (line.split(None, 1) for line in Path(listing.stdout.strip()).read_text().splitlines())
+        return {Path('/') / name: checksum for checksum, name in records}
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return {}
+
+
+def verified_stdlib_collision(path, members, shape, compiler_evidence=None):
+    """An unrelated OS stdlib namespace stays a collision only while all Python bytes verify."""
+    if not isinstance(shape, frozenset) or not shape or members & shape:
+        return False
+    records = system_package_sources(path)
+    if not records:
+        return False
+    try:
+        for file in path.rglob('*'):
+            if not file.is_file() or not file.name.lower().endswith(PY_SUFFIXES):
+                continue
+            source = file if file.suffix == '.py' else path / _source_name(file.relative_to(path).as_posix())
+            if source not in records or hashlib.md5(source.read_bytes()).hexdigest() != records[source]:
+                return False
+            if file.suffix != '.py':
+                data = file.read_bytes()
+                optimized = re.search(r'\.opt-([12])\.pyc$', file.name)
+                expected = compile(source.read_bytes(), str(source), 'exec', dont_inherit=True,
+                                   optimize=int(optimized[1]) if optimized else 0)
+                payload = io.BytesIO(data[16:])
+                actual = marshal.load(payload)
+                if data[:4] != importlib.util.MAGIC_NUMBER or payload.tell() != len(data) - 16:
+                    return False
+                if actual != expected:
+                    # A second Python patch version can emit different code with the same magic.
+                    compiler = shutil.which(f'python{sys.version_info.major}.{sys.version_info.minor}', path=os.defpath)
+                    if not compiler:
+                        return False
+                    compiler = Path(compiler).resolve()
+                    binaries = system_package_sources(compiler)
+                    if compiler not in binaries or hashlib.md5(compiler.read_bytes()).hexdigest() != binaries[compiler]:
+                        return False
+                    code = ("import marshal,pathlib,sys; s=pathlib.Path(sys.argv[1]); "
+                            "actual=marshal.loads(pathlib.Path(sys.argv[2]).read_bytes()[16:]); "
+                            "expected=compile(s.read_bytes(),str(s),'exec',dont_inherit=True,optimize=int(sys.argv[3])); "
+                            "print('match' if actual==expected else 'mismatch')")
+                    result = subprocess.run([str(compiler), '-I', '-B', '-c', code, str(source), str(file),
+                                             optimized[1] if optimized else '0'],
+                                            capture_output=True, text=True, timeout=10)
+                    if result.returncode or result.stdout.strip() != 'match':
+                        return False
+                    if compiler_evidence is not None:
+                        compiler_evidence.append(dict(bytecode=str(file), compiler=str(compiler)))
+    except (OSError, ValueError, EOFError, TypeError, SyntaxError, subprocess.TimeoutExpired):
+        return False
+    return True
+
+
 def audit_source_copies(root, modules, scan_root='/', import_roots=None):
     """Look for the project's import namespaces and Python source/archive copies outside root.
 
@@ -367,7 +464,7 @@ def audit_source_copies(root, modules, scan_root='/', import_roots=None):
     roots = {Path(p).resolve() for p in (sys.path if import_roots is None else import_roots) if p}
     roots -= {root, Path('/').resolve()}
     shapes = module_shapes(root, modules)
-    hits, collisions, scanned, errors = [], [], 0, []
+    hits, collisions, stdlib_collisions, stdlib_compilers, scanned, errors = [], [], [], [], 0, []
     excluded = {Path(p) for p in ('/proc', '/sys', '/dev', '/run')}
     tar_suffixes = ('.tar', '.tar.gz', '.tgz', '.tar.bz2', '.tbz2', '.tar.xz', '.txz')
     def onerror(error):
@@ -391,8 +488,12 @@ def audit_source_copies(root, modules, scan_root='/', import_roots=None):
                 inner = [p.relative_to(path).as_posix() for p in path.rglob('*') if p.is_file()]
             except OSError:
                 errors.append(str(path))
-        verdict = classify_named_path(is_dir, in_package(parent), import_root(parent), _members(inner),
+        members = _members(inner)
+        verdict = classify_named_path(is_dir, in_package(parent), import_root(parent), members,
                                       shapes.get(name), any(_importable(r.rsplit('/', 1)[-1]) for r in inner))
+        if verdict == 'copy' and is_dir and verified_stdlib_collision(path, members, shapes.get(name), stdlib_compilers):
+            verdict = 'collision'
+            stdlib_collisions.append(str(path))
         (hits if verdict == 'copy' else collisions).append(str(path))
         return verdict
     def archive(path, names):
@@ -433,10 +534,13 @@ def audit_source_copies(root, modules, scan_root='/', import_roots=None):
                     errors.append(str(path))
     return dict(modules=sorted(modules), external_copies=sorted(set(hits)),
                 name_collisions=sorted(set(collisions)),
+                verified_stdlib_collisions=sorted(set(stdlib_collisions)),
+                verified_stdlib_compilers=stdlib_compilers,
                 files_inspected=scanned, unreadable_paths=sorted(set(errors)),
                 scope='named Python namespaces and py/pyc/wheel/egg/zip/tar entries; excludes proc/sys/dev/run; '
                       'same-named files and importable Python directories (incl. PEP 420) are copies unless inside '
-                      'another package tree without shared project members; non-Python same-named dirs are collisions')
+                      'another package tree without shared project members; non-Python same-named dirs and '
+                      'OS stdlib namespaces with disjoint members and verified source/bytecode are collisions')
 
 
 def main():
