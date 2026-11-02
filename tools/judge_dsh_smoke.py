@@ -19,8 +19,8 @@ from aweagent.tasks.scale_swe.evaluator import ScaleSWEEvaluator
 from aweagent.tasks.scale_swe.task import ScaleSWETask
 
 
-# No shared policy can distinguish ignored source from benign generated files.
-STATUS_COMMAND = ("git status --porcelain=v1 -z --untracked-files=all --ignored "
+# Use Git's normal ignored-file policy while checking tracked and untracked changes.
+STATUS_COMMAND = ("git status --porcelain=v1 -z --untracked-files=all "
                   "--no-renames --ignore-submodules=none")
 
 
@@ -29,7 +29,7 @@ def sha(path: Path) -> str:
 
 
 def status_counts(output):
-    counts = {"tracked": 0, "untracked": 0, "ignored": 0}
+    counts = {"tracked": 0, "untracked": 0}
     if output and not output.endswith("\0"):
         raise RuntimeError("invalid judge status output")
     for record in output.split("\0"):
@@ -37,7 +37,9 @@ def status_counts(output):
             continue
         if len(record) < 4 or record[2] != " ":
             raise RuntimeError("invalid judge status output")
-        kind = {"??": "untracked", "!!": "ignored"}.get(record[:2], "tracked")
+        if record[:2] == "!!":
+            raise RuntimeError("invalid judge status output")
+        kind = "untracked" if record[:2] == "??" else "tracked"
         counts[kind] += 1
     return counts
 

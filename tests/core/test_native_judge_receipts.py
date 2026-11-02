@@ -92,6 +92,19 @@ class JudgeReceiptTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(evidence["diagnostics"]["source_copies"]["passed"])
         self.assertTrue(evidence["diagnostics"]["tree_matches_base"])
 
+    async def test_ignored_cache_before_and_during_setup_does_not_block_fresh_before(self):
+        cache = self.root / "ignored-build/cache.json"
+        cache.parent.mkdir()
+        cache.write_text('{"cached": true}\n', encoding="utf-8")
+        self.instance.setup_commands = ["printf cache > ignored-build/setup-cache"]
+        await self.evaluator.pre_patch_setup(self.instance, self.session)
+        diagnostics = self.evaluator.evidence["diagnostics"]
+        self.assertTrue(self.evaluator.evidence["fresh_before"])
+        self.assertEqual(diagnostics["stage"], "complete")
+        self.assertEqual(diagnostics["initial_status"], {"tracked": 0, "untracked": 0})
+        self.assertEqual(diagnostics["prepared_status"], {"tracked": 0, "untracked": 0})
+        self.assertTrue(diagnostics["source_copies"]["passed"])
+
     async def test_new_commit_with_same_tree_is_not_mistaken_for_a_dirty_tree(self):
         self.instance.setup_commands = ["git commit --allow-empty -qm synthetic-snapshot"]
         await self.evaluator.pre_patch_setup(self.instance, self.session)
@@ -134,18 +147,13 @@ class JudgeReceiptTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(diagnostics["stage"], "initial_identity")
         self.assertFalse(diagnostics["base_matched"])
 
-    async def test_untracked_and_ignored_source_are_rejected(self):
-        for folder, key in (("untracked", "untracked"), ("ignored-build", "ignored")):
-            with self.subTest(folder=folder):
-                copy = self.root / folder / "copied.py"
-                copy.parent.mkdir(exist_ok=True)
-                copy.write_text("value = 2\n", encoding="utf-8")
-                evaluator = judge.JudgeEvaluator()
-                with self.assertRaises(RuntimeError):
-                    await evaluator.pre_patch_setup(self.instance, self.session)
-                self.assertEqual(evaluator.evidence["diagnostics"]["initial_status"][key], 1)
-                copy.unlink()
-                copy.parent.rmdir()
+    async def test_untracked_source_is_rejected(self):
+        copy = self.root / "untracked/copied.py"
+        copy.parent.mkdir()
+        copy.write_text("value = 2\n", encoding="utf-8")
+        with self.assertRaises(RuntimeError):
+            await self.evaluator.pre_patch_setup(self.instance, self.session)
+        self.assertEqual(self.evaluator.evidence["diagnostics"]["initial_status"]["untracked"], 1)
 
     async def test_tracked_source_change_from_setup_is_rejected(self):
         self.instance.setup_commands = ["printf 'modified = True\\n' > samplepkg/__init__.py"]
@@ -161,15 +169,7 @@ class JudgeReceiptTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(diagnostics["stage"], "prepared_tree")
         self.assertEqual(diagnostics["committed_changes"]["added"], 1)
 
-    async def test_ignored_source_from_setup_is_rejected(self):
-        self.instance.setup_commands = ["mkdir -p ignored-build && cp samplepkg/__init__.py ignored-build/copy.py"]
-        with self.assertRaises(RuntimeError):
-            await self.evaluator.pre_patch_setup(self.instance, self.session)
-        diagnostics = self.evaluator.evidence["diagnostics"]
-        self.assertEqual(diagnostics["stage"], "prepared_tree")
-        self.assertEqual(diagnostics["prepared_status"]["ignored"], 1)
-
-    async def test_ignored_source_in_submodule_is_rejected(self):
+    async def test_submodule_ignored_cache_and_tracked_dirty_source(self):
         origin = self.sandbox / "child-origin"
         origin.mkdir()
         def child_git(*args):
@@ -184,14 +184,17 @@ class JudgeReceiptTests(unittest.IsolatedAsyncioTestCase):
         self.git("-c", "protocol.file.allow=always", "submodule", "add", "-q", str(origin), "child")
         self.git("commit", "-qam", "add synthetic child")
         self.instance.base_commit = self.git("rev-parse", "HEAD")
-        copied = self.root / "child/ignored-build/copy.py"
-        copied.parent.mkdir()
-        copied.write_text("value = 2\n", encoding="utf-8")
+        cache = self.root / "child/ignored-build/cache.json"
+        cache.parent.mkdir()
+        cache.write_text('{"cached": true}\n', encoding="utf-8")
+        self.assertEqual(await self.evaluator.workspace_status(self.instance, self.session),
+                         {"tracked": 0, "untracked": 0})
+        (self.root / "child/module.py").write_text("value = 2\n", encoding="utf-8")
         with self.assertRaises(RuntimeError):
             await self.evaluator.pre_patch_setup(self.instance, self.session)
         diagnostics = self.evaluator.evidence["diagnostics"]
         self.assertEqual(diagnostics["stage"], "initial_status")
-        self.assertEqual(diagnostics["initial_status"]["ignored"], 1)
+        self.assertGreaterEqual(diagnostics["initial_status"]["tracked"], 1)
 
     async def test_external_source_copy_is_rejected_without_exposing_paths(self):
         copy = self.sandbox / "site-packages/samplepkg"
