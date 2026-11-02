@@ -12,14 +12,48 @@ import subprocess
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from aweagent.core.eval import workspace_hardening
 from aweagent.core.runtime.config import RuntimeConfig, DockerConfig
 from aweagent.core.runtime.docker import DockerRuntime
 from aweagent.tasks.scale_swe.evaluator import ScaleSWEEvaluator
 from aweagent.tasks.scale_swe.task import ScaleSWETask
 
 
+# No shared policy can distinguish ignored source from benign generated files.
+STATUS_COMMAND = ("git status --porcelain=v1 -z --untracked-files=all --ignored "
+                  "--no-renames --ignore-submodules=none")
+
+
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def status_counts(output):
+    counts = {"tracked": 0, "untracked": 0, "ignored": 0}
+    if output and not output.endswith("\0"):
+        raise RuntimeError("invalid judge status output")
+    for record in output.split("\0"):
+        if not record:
+            continue
+        if len(record) < 4 or record[2] != " ":
+            raise RuntimeError("invalid judge status output")
+        kind = {"??": "untracked", "!!": "ignored"}.get(record[:2], "tracked")
+        counts[kind] += 1
+    return counts
+
+
+def committed_change_counts(output):
+    counts = {"added": 0, "modified": 0, "deleted": 0, "other": 0}
+    if not output:
+        return counts
+    records = output.split("\0")
+    if records[-1] or len(records) % 2 != 1:
+        raise RuntimeError("invalid judge change output")
+    for status, filename in zip(records[0:-1:2], records[1:-1:2]):
+        if len(status) != 1 or not filename:
+            raise RuntimeError("invalid judge change output")
+        counts[{"A": "added", "M": "modified", "D": "deleted"}.get(status, "other")] += 1
+    return counts
 
 
 class JudgeRuntime(DockerRuntime):
@@ -59,23 +93,102 @@ class JudgeRuntime(DockerRuntime):
 class JudgeEvaluator(ScaleSWEEvaluator):
     def __init__(self, timeout=1800):
         super().__init__(timeout=timeout)
-        self.evidence = {"fresh_before": False}
+        self.evidence = self.empty_evidence()
+
+    @staticmethod
+    def empty_evidence():
+        return {"fresh_before": False, "diagnostics": {
+            "stage": "not_started", "base_matched": None, "base_ancestor": None,
+            "tree_matches_base": None, "initial_status": None, "prepared_status": None,
+            "committed_changes": None, "source_copies": {
+                "passed": None, "git_passed": None, "command_succeeded": None,
+                "modules": None, "external": None, "unreadable": None,
+            },
+        }}
+
+    async def evaluate(self, instance, patch, runtime):
+        self.evidence = self.empty_evidence()
+        return await super().evaluate(instance, patch, runtime)
+
+    async def workspace_status(self, instance, session):
+        command = (STATUS_COMMAND + " && git submodule --quiet foreach --recursive "
+                   + shlex.quote(STATUS_COMMAND))
+        result = await session.execute(command, cwd=instance.workdir)
+        if not result.success:
+            raise RuntimeError("judge workspace status could not be verified")
+        return status_counts(result.stdout)
+
+    async def audit_source_copies(self, instance, session, diagnostics):
+        source = Path(workspace_hardening.__file__).read_text(encoding="utf-8")
+        command = ("python -c " + shlex.quote(source) + " --root " + shlex.quote(instance.workdir)
+                   + " --base " + shlex.quote(instance.base_commit) + " --audit-copies")
+        result = await session.execute(command, cwd=instance.workdir, timeout=300)
+        diagnostics["source_copies"]["command_succeeded"] = result.success
+        try:
+            receipt = json.loads(result.stdout)
+            copies = receipt["source_copies"]
+            modules, external, unreadable = (copies[key] for key in ("modules", "external_copies", "unreadable_paths"))
+            if not all(isinstance(value, list) for value in (modules, external, unreadable)):
+                raise ValueError("invalid audit counts")
+            passed = (receipt.get("source_copies_passed") is True
+                      and bool(modules) and not external and not unreadable)
+            diagnostics["source_copies"].update(passed=passed, git_passed=receipt.get("git_passed") is True,
+                                                  modules=len(modules), external=len(external),
+                                                  unreadable=len(unreadable))
+        except (ValueError, TypeError, KeyError):
+            raise RuntimeError("judge source-copy audit could not be verified") from None
+        if not result.success or receipt.get("git_passed") is not True or not passed:
+            raise RuntimeError("judge source-copy audit did not pass")
 
     async def pre_patch_setup(self, instance, session):
+        self.evidence = self.empty_evidence()
+        diagnostics = self.evidence["diagnostics"]
+        diagnostics["stage"] = "initial_identity"
         before = await session.execute("git rev-parse HEAD HEAD^{tree}", cwd=instance.workdir)
         identity = before.stdout.strip().splitlines()
-        if not before.success or len(identity) != 2 or identity[0] != instance.base_commit:
+        if before.success and len(identity) == 2:
+            diagnostics["base_matched"] = identity[0] == instance.base_commit
+        if diagnostics["base_matched"] is not True:
             raise RuntimeError("judge did not checkout the declared before commit")
         self.evidence.update(base_commit=identity[0], base_tree=identity[1])
+
+        diagnostics["stage"] = "initial_status"
+        diagnostics["initial_status"] = await self.workspace_status(instance, session)
+        if any(diagnostics["initial_status"].values()):
+            raise RuntimeError("judge before workspace is not clean")
+
+        diagnostics["stage"] = "setup"
         await super().pre_patch_setup(instance, session)
         base = shlex.quote(instance.base_commit)
-        prepared = await session.execute(
-            f"git diff --quiet {base} -- && git diff --cached --quiet {base} -- "
-            "&& git rev-parse HEAD HEAD^{tree}", cwd=instance.workdir)
+        diagnostics["stage"] = "prepared_state"
+        prepared = await session.execute("git rev-parse HEAD HEAD^{tree}", cwd=instance.workdir)
         after = prepared.stdout.strip().splitlines()
-        if not prepared.success or len(after) != 2 or after[1] != identity[1]:
+        if not prepared.success or len(after) != 2:
+            raise RuntimeError("judge prepared identity could not be verified")
+        self.evidence.update(prepared_commit=after[0], prepared_tree=after[1])
+        diagnostics["tree_matches_base"] = after[1] == identity[1]
+        diagnostics["prepared_status"] = await self.workspace_status(instance, session)
+        changes = await session.execute(
+            f"git diff --name-status --no-renames -z {base} HEAD --", cwd=instance.workdir)
+        if not changes.success:
+            raise RuntimeError("judge prepared changes could not be verified")
+        diagnostics["committed_changes"] = committed_change_counts(changes.stdout)
+        ancestor = await session.execute(f"git merge-base --is-ancestor {base} HEAD", cwd=instance.workdir)
+        if ancestor.exit_code not in (0, 1):
+            raise RuntimeError("judge base ancestry could not be verified")
+        diagnostics["base_ancestor"] = ancestor.exit_code == 0
+        if not diagnostics["base_ancestor"]:
+            diagnostics["stage"] = "prepared_tree"
             raise RuntimeError("judge setup changed the declared before source tree")
-        self.evidence.update(prepared_commit=after[0], prepared_tree=after[1], fresh_before=True)
+
+        diagnostics["stage"] = "source_copy_audit"
+        await self.audit_source_copies(instance, session, diagnostics)
+        diagnostics["stage"] = "prepared_tree"
+        if (not diagnostics["tree_matches_base"] or any(diagnostics["prepared_status"].values())
+                or any(diagnostics["committed_changes"].values())):
+            raise RuntimeError("judge setup changed the declared before source tree")
+        diagnostics["stage"] = "complete"
+        self.evidence["fresh_before"] = True
 
 
 async def main():
@@ -143,7 +256,8 @@ async def main():
         handle.write(json.dumps(output, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({"instance_id": instance.id, "accepted": result.accepted,
                       "independent": output["independent"], "fresh_before": output["fresh_before"],
-                      "cleanup_verified": cleanup_verified, "receipt": str(args.output)}))
+                      "cleanup_verified": cleanup_verified, "receipt": str(args.output),
+                      "diagnostics": evaluator.evidence["diagnostics"]}))
     if not cleanup_verified:
         raise SystemExit("judge cleanup could not be verified; receipt retained")
 
